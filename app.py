@@ -1,7 +1,6 @@
 
 import streamlit as st
 import pandas as pd
-import geopandas as gpd
 import folium
 from pandas import DataFrame
 from pandas.io.parsers import TextFileReader
