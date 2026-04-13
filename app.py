@@ -152,11 +152,11 @@ elif module == "🗺️ Interactive Map":
         geo_data=geojson,
         data=df,
         columns=["County", indicator],
-        key_on="feature.properties.NAME_1",
+        key_on="feature.properties.NAME_1",  # adjust if needed
         fill_color="YlOrRd",
         legend_name=indicator
     ).add_to(m)
-    
+
     st_folium(m, width=900, height=500)
 
     folium.GeoJson(
