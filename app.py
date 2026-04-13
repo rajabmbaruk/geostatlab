@@ -153,7 +153,7 @@ folium.Choropleth(
     geo_data=geojson,
     data=df,
     columns=["County", indicator],
-    key_on="feature.properties.county",
+    key_on="feature.properties.NAME_1",
     fill_color="YlOrRd",
     legend_name=indicator
 ).add_to(m)
