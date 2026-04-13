@@ -1,0 +1,6 @@
+streamlit
+pandas
+geopandas==0.14.3
+folium
+streamlit-folium
+json
