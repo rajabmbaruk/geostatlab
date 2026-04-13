@@ -26,11 +26,13 @@ def load_data():
     return pd.read_csv("geostatlab_data.csv")
 
 @st.cache_data
-def load_geo():
-    return gpd.read_file("kenya_counties.json")
+def load_geojson():
+    with open("kenya_counties.geojson") as f:
+        return json.load(f)
 
+geojson = load_geojson()
 df: TextFileReader | DataFrame = load_data()
-geo = load_geo()
+geo = load_geojson()
 
 # Normalize column names (adjust if needed)
 geo.columns = geo.columns.str.lower()
@@ -147,14 +149,16 @@ elif module == "🗺️ Interactive Map":
 
     m = folium.Map(location=[0.5, 37.8], zoom_start=6)
 
-    folium.Choropleth(
-        geo_data=gdf,
-        data=gdf,
-        columns=["County", indicator],
-        key_on="feature.properties.county",
-        fill_color="YlOrRd",
-        legend_name=indicator
-    ).add_to(m)
+folium.Choropleth(
+    geo_data=geojson,
+    data=df,
+    columns=["County", indicator],
+    key_on="feature.properties.county",
+    fill_color="YlOrRd",
+    legend_name=indicator
+).add_to(m)
+
+st_folium(m, width=900, height=500)
 
     folium.GeoJson(
         gdf,
