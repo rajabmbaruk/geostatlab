@@ -149,16 +149,16 @@ elif module == "🗺️ Interactive Map":
 
     m = folium.Map(location=[0.5, 37.8], zoom_start=6)
 
-folium.Choropleth(
-    geo_data=geojson,
-    data=df,
-    columns=["County", indicator],
-    key_on="feature.properties.NAME_1",
-    fill_color="YlOrRd",
-    legend_name=indicator
-).add_to(m)
-
-st_folium(m, width=900, height=500)
+    folium.Choropleth(
+        geo_data=geojson,
+        data=df,
+        columns=["County", indicator],
+        key_on="feature.properties.NAME_1",
+        fill_color="YlOrRd",
+        legend_name=indicator
+    ).add_to(m)
+    
+    st_folium(m, width=900, height=500)
 
     folium.GeoJson(
         gdf,
