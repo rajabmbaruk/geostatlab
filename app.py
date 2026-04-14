@@ -24,29 +24,20 @@ st.set_page_config(page_title="GeoStatLab", layout="wide")
 def load_data():
     return pd.read_csv("geostatlab_data.csv")
 
+#import json
+import os
+
 @st.cache_data
 def load_geojson():
-    with open("kenya_counties.geojson") as f:
+    file_path = os.path.join(os.path.dirname(__file__), "kenya_counties.geojson")
+    with open(file_path) as f:
         return json.load(f)
 
 geojson = load_geojson()
-df: TextFileReader | DataFrame = load_data()
-geo = load_geojson()
+df = load_data()
 
-# Normalize column names (adjust if needed)
-geo.columns = geo.columns.str.lower()
-
-# Try to match county names
-if "county" not in geo.columns:
-    if "name_1" in geo.columns:
-        geo = geo.rename(columns={"name_1": "county"})
-
-# Merge
-geo["county"] = geo["county"].str.strip()
+# Clean dataset county names (important for matching)
 df["County"] = df["County"].str.strip()
-
-gdf = geo.merge(df, left_on="county", right_on="County")
-
 # -------------------------
 # UI HEADER
 # -------------------------
