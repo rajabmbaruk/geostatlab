@@ -6,7 +6,7 @@ from pandas import DataFrame
 from pandas.io.parsers import TextFileReader
 from streamlit_folium import st_folium
 import json
-
+import numpy as np
 
 data = {'time': pd.Timestamp.now()}
 # default=str converts the Timestamp object to a string automatically
@@ -98,15 +98,36 @@ elif module == "📊 Dataset Overview":
 # -------------------------
 elif module == "🧪 Survey Simulation":
     st.header("Survey Simulation")
+   
 
-    sample_size = st.slider("Sample Size", 2, len(df), 5)
-    method = st.selectbox("Method", ["Random", "High Poverty Focus"])
+    sample_size = st.slider("Sample Size", 5, len(df), 20)
+   
+    #sample_size = st.slider("Sample Size", 2, len(df), 5)
+    #method = st.selectbox("Method", ["Random", "High Poverty Focus"])
+    sampling_method = st.selectbox(
+        "Select Sampling Method",
+        ["Simple Random", "Stratified", "Cluster", "Systematic"]
+        )
 
-    if method == "Random":
+    
+    if sampling_method == "Simple Random":
         sample = df.sample(sample_size)
-    else:
-        sample = df.sort_values("Poverty_Rate", ascending=False).head(sample_size)
-
+    
+    elif sampling_method == "Stratified":
+        # Example: stratify by County
+        sample = df.groupby("County", group_keys=False).apply(
+            lambda x: x.sample(min(len(x), max(1, sample_size // df["County"].nunique())))
+        )
+    
+    elif sampling_method == "Cluster":
+        # Select random counties (clusters)
+        clusters = np.random.choice(df["County"].unique(), size=3, replace=False)
+        sample = df[df["County"].isin(clusters)]
+    
+    elif sampling_method == "Systematic":
+        k = max(1, len(df) // sample_size)
+        sample = df.iloc[::k]
+    
     st.dataframe(sample)
 
     st.metric("Sample Avg Income", int(sample["Household_Income"].mean()))
@@ -114,6 +135,14 @@ elif module == "🧪 Survey Simulation":
 
     st.info("Compare this with full dataset to understand sampling bias")
     st.success("Learning Insight: Spatial disparities highlight regional inequalities.")
+    if sampling_method == "Stratified":
+    st.info("Stratified sampling ensures representation across regions.")
+
+    elif sampling_method == "Cluster":
+        st.info("Cluster sampling is cost-effective for large geographic surveys.")
+    
+    elif sampling_method == "Systematic":
+        st.info("Systematic sampling selects every k-th unit from the population.")
 # -------------------------
 # Data Analysis
 # -------------------------
