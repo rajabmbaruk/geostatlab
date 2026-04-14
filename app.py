@@ -151,11 +151,8 @@ elif module == "🗺️ Interactive Map":
     st_folium(m, width=900, height=500)
 
     folium.GeoJson(
-        gdf,
-        tooltip=folium.GeoJsonTooltip(
-            fields=["County", indicator],
-            aliases=["County:", "Value:"]
-        )
+        geojson,
+        name="Counties"
     ).add_to(m)
 
     st_folium(m, width=900, height=500)
