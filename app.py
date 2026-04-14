@@ -153,8 +153,11 @@ elif module == "📈 Data Analysis":
     st.header("Data Analysis")
 
     indicator = st.selectbox("Indicator", [
-        "Household Income (KES)": "Household_Income", "Poverty Rate (%)": "Poverty_Rate",
-        "Agricultural_Output", "Education_Level", "Unemployment Rate (%)": "Unemployment_Rate
+        "Household Income (KES)": "Household_Income",
+        "Poverty Rate (%)": "Poverty_Rate",
+        "Agricultural Output (%)":"Agricultural_Output",
+        "Education_Level", 
+        "Unemployment Rate (%)": "Unemployment_Rate"
     ])
 
     st.bar_chart(df.set_index("County")[indicator])
