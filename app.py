@@ -136,7 +136,7 @@ elif module == "🧪 Survey Simulation":
     st.info("Compare this with full dataset to understand sampling bias")
     st.success("Learning Insight: Spatial disparities highlight regional inequalities.")
     if sampling_method == "Stratified":
-    st.info("Stratified sampling ensures representation across regions.")
+        st.info("Stratified sampling ensures representation across regions.")
 
     elif sampling_method == "Cluster":
         st.info("Cluster sampling is cost-effective for large geographic surveys.")
