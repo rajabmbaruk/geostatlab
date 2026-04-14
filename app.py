@@ -113,17 +113,17 @@ elif module == "🧪 Survey Simulation":
     #import numpy as np
 
         #sample_size = st.slider("Sample Size", 5, len(df), 20)
-        sample_size = min(sample_size, len(df))  # safety check
+    sample_size = min(sample_size, len(df))  # safety check
         
-        if sampling_method == "Simple Random":
+    if sampling_method == "Simple Random":
             sample = df.sample(n=sample_size, replace=False)
         
-        elif sampling_method == "Stratified":
+    elif sampling_method == "Stratified":
             sample = df.groupby("County", group_keys=False).apply(
                 lambda x: x.sample(min(len(x), max(1, sample_size // df["County"].nunique())))
             )
         
-        elif sampling_method == "Cluster":
+    elif sampling_method == "Cluster":
             clusters = np.random.choice(
                 df["County"].unique(),
                 size=min(3, df["County"].nunique()),
@@ -131,7 +131,7 @@ elif module == "🧪 Survey Simulation":
             )
             sample = df[df["County"].isin(clusters)]
         
-        elif sampling_method == "Systematic":
+    elif sampling_method == "Systematic":
             k = max(1, len(df) // sample_size)
             sample = df.iloc[::k].head(sample_size)
     st.metric("Sample Avg Income", int(sample["Household_Income"].mean()))
