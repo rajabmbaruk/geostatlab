@@ -113,7 +113,7 @@ elif module == "🧪 Survey Simulation":
     st.metric("Sample Poverty", round(sample["Poverty_Rate"].mean(), 2))
 
     st.info("Compare this with full dataset to understand sampling bias")
-
+    st.success("Learning Insight: Spatial disparities highlight regional inequalities.")
 # -------------------------
 # Data Analysis
 # -------------------------
@@ -130,6 +130,16 @@ elif module == "📈 Data Analysis":
     st.markdown("### Insights")
     st.write(df.sort_values(indicator, ascending=False).head(3))
 
+    indicator_map = {
+    "Poverty Rate (%)": "Poverty_Rate",
+    "Household Income (KES)": "Household_Income",
+    "Unemployment Rate (%)": "Unemployment_Rate"
+    }
+    
+    selected_label = st.selectbox("Select Indicator", list(indicator_map.keys()))
+    indicator = indicator_map[selected_label]
+
+    st.success("Learning Insight: Spatial disparities highlight regional inequalities.")
 # -------------------------
 # INTERACTIVE MAP
 # -------------------------
@@ -140,6 +150,15 @@ elif module == "🗺️ Interactive Map":
         "Poverty_Rate", "Household_Income", "Unemployment_Rate"
     ])
 
+    indicator_map = {
+    "Poverty Rate (%)": "Poverty_Rate",
+    "Household Income (KES)": "Household_Income",
+    "Unemployment Rate (%)": "Unemployment_Rate"
+    }
+    
+    selected_label = st.selectbox("Select Indicator", list(indicator_map.keys()))
+    indicator = indicator_map[selected_label]
+    
     m = folium.Map(location=[0.5, 37.8], zoom_start=6)
 
     folium.Choropleth(
@@ -160,6 +179,7 @@ elif module == "🗺️ Interactive Map":
 
     st_folium(m, width=900, height=500)
     st.info("Darker regions indicate higher values of the selected indicator.")
+    st.success("Learning Insight: Spatial disparities highlight regional inequalities.")
 # -------------------------
 # Policy Simulation
 # -------------------------
