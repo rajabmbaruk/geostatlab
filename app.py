@@ -152,28 +152,24 @@ elif module == "🧪 Survey Simulation":
 elif module == "📈 Data Analysis":
     st.header("Data Analysis")
 
-    indicator = st.selectbox("Indicator", [
-        "Household Income (KES)": "Household_Income",
+    indicator_map = {
+    "Household Income (KES)": "Household_Income",
         "Poverty Rate (%)": "Poverty_Rate",
         "Agricultural Output (%)":"Agricultural_Output",
         "Education_Level", 
         "Unemployment Rate (%)": "Unemployment_Rate"
-    ])
+    }
 
+    selected_label = st.selectbox("Select Indicator", list(indicator_map.keys()))
+    indicator = indicator_map[selected_label]
+
+ 
     st.bar_chart(df.set_index("County")[indicator])
 
     st.markdown("### Insights")
     st.write(df.sort_values(indicator, ascending=False).head(3))
 
-    indicator_map = {
-    "Poverty Rate (%)": "Poverty_Rate",
-    "Household Income (KES)": "Household_Income",
-    "Unemployment Rate (%)": "Unemployment_Rate"
-    }
     
-    selected_label = st.selectbox("Select Indicator", list(indicator_map.keys()))
-    indicator = indicator_map[selected_label]
-
     st.success("Learning Insight: Spatial disparities highlight regional inequalities.")
 # -------------------------
 # INTERACTIVE MAP
