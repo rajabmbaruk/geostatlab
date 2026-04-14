@@ -133,8 +133,8 @@ elif module == "🧪 Survey Simulation":
     st.dataframe(sample)  
     st.write("Population Mean:", df["Population"].mean())
     st.write("Sample Mean:", sample["Population"].mean())
-    st.metric("Sample Avg Income", int(sample["Household_Income"].mean()))
-    st.metric("Sample Poverty", round(sample["Poverty_Rate"].mean(), 2))
+    st.write("Sample Avg Income", int(sample["Household_Income"].mean()))
+    st.write("Sample Poverty", round(sample["Poverty_Rate"].mean(), 2))
 
     st.info("Compare this with full dataset to understand sampling bias")
     st.success("Learning Insight: Spatial disparities highlight regional inequalities.")
