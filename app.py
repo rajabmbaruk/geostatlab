@@ -134,6 +134,10 @@ elif module == "🧪 Survey Simulation":
     elif sampling_method == "Systematic":
             k = max(1, len(df) // sample_size)
             sample = df.iloc[::k].head(sample_size)
+        
+    st.dataframe(sample)  
+    st.write("Population Mean:", df["Household_Income"].mean())
+    st.write("Sample Mean:", sample["Household_Income"].mean())
     st.metric("Sample Avg Income", int(sample["Household_Income"].mean()))
     st.metric("Sample Poverty", round(sample["Poverty_Rate"].mean(), 2))
 
