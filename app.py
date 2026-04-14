@@ -131,8 +131,8 @@ elif module == "🧪 Survey Simulation":
             sample = df.iloc[::k].head(sample_size)
         
     st.dataframe(sample)  
-    st.write("Population Mean:", df["Population"].mean())
-    st.write("Sample Mean:", sample["Population"].mean())
+    st.write("Population Mean:", int(df["Population"].mean()))
+    st.write("Sample Mean:", int(sample["Population"].mean()))
     st.write("Sample Avg Income", int(sample["Household_Income"].mean()))
     st.write("Sample Poverty", round(sample["Poverty_Rate"].mean(), 2))
 
