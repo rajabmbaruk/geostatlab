@@ -41,9 +41,12 @@ df["County"] = df["County"].str.strip()
 # -------------------------
 # UI HEADER
 # -------------------------
-st.title("🌍 GeoStatLab")
-st.markdown("**Interactive Platform for Teaching Spatial Statistics & Policy Analysis (KNBS Simulation)**")
+st.title("GeoStatLab: Teaching Spatial Statistics using KNBS-style Data")
 
+st.markdown("""
+This platform demonstrates how spatial data analysis, survey simulation,
+and policy modeling can support evidence-based decision making.
+""")
 # Sidebar
 st.sidebar.title("Navigation")
 module = st.sidebar.radio("Select Module", [
