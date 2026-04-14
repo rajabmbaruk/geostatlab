@@ -110,26 +110,30 @@ elif module == "🧪 Survey Simulation":
         )
 
     
-    if sampling_method == "Simple Random":
-        sample = df.sample(sample_size)
-    
-    elif sampling_method == "Stratified":
-        # Example: stratify by County
-        sample = df.groupby("County", group_keys=False).apply(
-            lambda x: x.sample(min(len(x), max(1, sample_size // df["County"].nunique())))
-        )
-    
-    elif sampling_method == "Cluster":
-        # Select random counties (clusters)
-        clusters = np.random.choice(df["County"].unique(), size=3, replace=False)
-        sample = df[df["County"].isin(clusters)]
-    
-    elif sampling_method == "Systematic":
-        k = max(1, len(df) // sample_size)
-        sample = df.iloc[::k]
-    
-    st.dataframe(sample)
+    #import numpy as np
 
+        #sample_size = st.slider("Sample Size", 5, len(df), 20)
+        sample_size = min(sample_size, len(df))  # safety check
+        
+        if sampling_method == "Simple Random":
+            sample = df.sample(n=sample_size, replace=False)
+        
+        elif sampling_method == "Stratified":
+            sample = df.groupby("County", group_keys=False).apply(
+                lambda x: x.sample(min(len(x), max(1, sample_size // df["County"].nunique())))
+            )
+        
+        elif sampling_method == "Cluster":
+            clusters = np.random.choice(
+                df["County"].unique(),
+                size=min(3, df["County"].nunique()),
+                replace=False
+            )
+            sample = df[df["County"].isin(clusters)]
+        
+        elif sampling_method == "Systematic":
+            k = max(1, len(df) // sample_size)
+            sample = df.iloc[::k].head(sample_size)
     st.metric("Sample Avg Income", int(sample["Household_Income"].mean()))
     st.metric("Sample Poverty", round(sample["Poverty_Rate"].mean(), 2))
 
