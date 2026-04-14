@@ -102,17 +102,12 @@ elif module == "🧪 Survey Simulation":
 
     sample_size = st.slider("Sample Size", 5, len(df), 20)
    
-    #sample_size = st.slider("Sample Size", 2, len(df), 5)
-    #method = st.selectbox("Method", ["Random", "High Poverty Focus"])
     sampling_method = st.selectbox(
         "Select Sampling Method",
         ["Simple Random", "Stratified", "Cluster", "Systematic"]
         )
 
     
-    #import numpy as np
-
-        #sample_size = st.slider("Sample Size", 5, len(df), 20)
     sample_size = min(sample_size, len(df))  # safety check
         
     if sampling_method == "Simple Random":
@@ -136,8 +131,8 @@ elif module == "🧪 Survey Simulation":
             sample = df.iloc[::k].head(sample_size)
         
     st.dataframe(sample)  
-    st.write("Population Mean:", df["Household_Income"].mean())
-    st.write("Sample Mean:", sample["Household_Income"].mean())
+    st.write("Population Mean:", df["Population"].mean())
+    st.write("Sample Mean:", sample["Population"].mean())
     st.metric("Sample Avg Income", int(sample["Household_Income"].mean()))
     st.metric("Sample Poverty", round(sample["Poverty_Rate"].mean(), 2))
 
