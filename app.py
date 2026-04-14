@@ -159,7 +159,7 @@ elif module == "🗺️ Interactive Map":
     ).add_to(m)
 
     st_folium(m, width=900, height=500)
-st.info("Darker regions indicate higher values of the selected indicator.")
+    st.info("Darker regions indicate higher values of the selected indicator.")
 # -------------------------
 # Policy Simulation
 # -------------------------
