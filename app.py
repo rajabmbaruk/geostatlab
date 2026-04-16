@@ -242,7 +242,7 @@ elif module == "🗺️ Interactive Map":
         folium.Marker(
             location=[-0.5 + hash(row["County"]) % 5, 36 + hash(row["County"]) % 5],
             popup=f"""
-            <b>{row['NAME_1']}</b><br>
+            <b>{row['County']}</b><br>
             Income: {row['Household_Income']}<br>
             Poverty: {row['Poverty_Rate']}<br>
             Agriculture: {row['Agricultural_Output']}<br>
