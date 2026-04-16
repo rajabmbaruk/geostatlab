@@ -263,7 +263,7 @@ elif module == "🗺️ Interactive Map":
     # Optional: dropdown for deeper dive
     selected = st.selectbox("Select County for Details", df["County"])
 
-    county_data = df[df["NAME_1"] == selected]
+    county_data = df[df["County"] == selected]
 
     st.write("### County Statistics")
     st.write(county_data)
