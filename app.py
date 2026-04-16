@@ -7,6 +7,7 @@ from pandas.io.parsers import TextFileReader
 from streamlit_folium import st_folium
 import json
 import numpy as np
+import branca.colormap as cm
 
 data = {'time': pd.Timestamp.now()}
 # default=str converts the Timestamp object to a string automatically
@@ -32,7 +33,13 @@ def load_geojson():
     file_path = os.path.join(os.path.dirname(__file__), "kenya_counties.geojson")
     with open(file_path) as f:
         return json.load(f)
-
+        
+# Create color scale
+min_val = df[indicator].min()
+max_val = df[indicator].max()
+colormap = cm.linear.YlOrRd_09.scale(min_val, max_val)
+colormap.caption = indicator
+    
 geojson = load_geojson()
 df = load_data()
 
@@ -44,7 +51,7 @@ df["County"] = df["County"].str.strip()
 st.title("GeoStatLab: NSO Simulation Platform ")
 
 st.markdown("""
-This platform demonstrates An interactive tool for Teaching Spatial Statistics using KNBS-style Data, how spatial data analysis, survey simulation,
+This platform is An interactive tool for Teaching Spatial Statistics using KNBS-style Data, how spatial data analysis, survey simulation,
 and policy modeling can support evidence-based decision making.
 """)
 # Sidebar
@@ -177,10 +184,10 @@ elif module == "📈 Data Analysis":
 elif module == "🗺️ Interactive Map":
     st.header("Kenya Spatial Analysis")
 
-    indicator = st.selectbox("Select Indicator", [
-        "Poverty_Rate", "Household_Income", "Unemployment_Rate","Agricultural_Output",
-        "Education_Level"
-    ])
+    #indicator = st.selectbox("Select Indicator", [
+     #   "Poverty_Rate", "Household_Income", "Unemployment_Rate","Agricultural_Output",
+      #  "Education_Level"
+   # ])
 
     indicator_map = {
     "Poverty Rate (%)": "Poverty_Rate",
@@ -212,6 +219,22 @@ elif module == "🗺️ Interactive Map":
     ).add_to(m)
 
     st_folium(m, width=900, height=500)
+
+    # Add hover tooltips
+    folium.GeoJson(
+        geojson,
+        name="Counties",
+        style_function=lambda x: {
+            "fillColor": "transparent",
+            "color": "black",
+            "weight": 0.5
+        },
+        tooltip=folium.GeoJsonTooltip(
+            fields=["name"],
+            aliases=["County:"],
+            localize=True
+        )
+    ).add_to(m)
     st.info("Darker regions indicate higher values of the selected indicator.")
     st.success("Learning Insight: Spatial disparities highlight regional inequalities.")
 # -------------------------
