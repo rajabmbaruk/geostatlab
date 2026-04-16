@@ -156,7 +156,7 @@ elif module == "📈 Data Analysis":
     "Household Income (KES)": "Household_Income",
         "Poverty Rate (%)": "Poverty_Rate",
         "Agricultural Output (%)":"Agricultural_Output",
-        "Education_Level", 
+        "Education Level":"Education_Level", 
         "Unemployment Rate (%)": "Unemployment_Rate"
     }
 
