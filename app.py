@@ -261,7 +261,7 @@ elif module == "🗺️ Interactive Map":
         st.write("Map clicked - explore county patterns above")
 
     # Optional: dropdown for deeper dive
-    selected = st.selectbox("Select County for Details", df["NAME_1"])
+    selected = st.selectbox("Select County for Details", df["County"])
 
     county_data = df[df["NAME_1"] == selected]
 
