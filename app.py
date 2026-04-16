@@ -212,14 +212,14 @@ elif module == "🗺️ Interactive Map":
         legend_name=indicator
     ).add_to(m)
 
-    st_folium(m, width=900, height=500)
+    #st_folium(m, width=900, height=500)
 
     folium.GeoJson(
         geojson,
         name="NAME_1"
     ).add_to(m)
 
-    st_folium(m, width=900, height=500)
+    
 
     # Add hover tooltips
     folium.GeoJson(
@@ -236,7 +236,8 @@ elif module == "🗺️ Interactive Map":
             localize=True
         )
     ).add_to(m)
-
+    #Render the map
+    st_folium(m, width=900, height=500)
     # Add markers with detailed info
     for _, row in df.iterrows():
         folium.Marker(
