@@ -231,7 +231,7 @@ elif module == "🗺️ Interactive Map":
             "weight": 0.5
         },
         tooltip=folium.GeoJsonTooltip(
-            fields=["name"],
+            fields=["NAME_1"],
             aliases=["County:"],
             localize=True
         )
@@ -240,9 +240,9 @@ elif module == "🗺️ Interactive Map":
     # Add markers with detailed info
     for _, row in df.iterrows():
         folium.Marker(
-            location=[-0.5 + hash(row["County"]) % 5, 36 + hash(row["County"]) % 5],
+            location=[-0.5 + hash(row["NAME_1"]) % 5, 36 + hash(row["NAME_1"]) % 5],
             popup=f"""
-            <b>{row['County']}</b><br>
+            <b>{row['NAME_1']}</b><br>
             Income: {row['Household_Income']}<br>
             Poverty: {row['Poverty_Rate']}<br>
             Agriculture: {row['Agricultural_Output']}<br>
@@ -261,9 +261,9 @@ elif module == "🗺️ Interactive Map":
         st.write("Map clicked - explore county patterns above")
 
     # Optional: dropdown for deeper dive
-    selected = st.selectbox("Select County for Details", df["County"])
+    selected = st.selectbox("Select County for Details", df["NAME_1"])
 
-    county_data = df[df["County"] == selected]
+    county_data = df[df["NAME_1"] == selected]
 
     st.write("### County Statistics")
     st.write(county_data)
