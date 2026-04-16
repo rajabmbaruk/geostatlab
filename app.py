@@ -253,7 +253,9 @@ elif module == "🗺️ Interactive Map":
     colormap.add_to(m)
 
     map_data = st_folium(m, width=700, height=500)
-
+    st.info("Darker regions indicate higher values of the selected indicator.")
+    st.success("Learning Insight: Spatial disparities highlight regional inequalities.")
+   
     # Click interaction feedback
     st.subheader("Selected County Insights")
 
@@ -267,8 +269,7 @@ elif module == "🗺️ Interactive Map":
 
     st.write("### County Statistics")
     st.write(county_data)
-    st.info("Darker regions indicate higher values of the selected indicator.")
-    st.success("Learning Insight: Spatial disparities highlight regional inequalities.")
+    
 # -------------------------
 # Policy Simulation
 # -------------------------
