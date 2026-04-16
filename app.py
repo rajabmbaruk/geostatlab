@@ -236,6 +236,37 @@ elif module == "🗺️ Interactive Map":
             localize=True
         )
     ).add_to(m)
+
+    # Add markers with detailed info
+    for _, row in df.iterrows():
+        folium.Marker(
+            location=[-0.5 + hash(row["County"]) % 5, 36 + hash(row["County"]) % 5],
+            popup=f"""
+            <b>{row['County']}</b><br>
+            Income: {row['Household_Income']}<br>
+            Poverty: {row['Poverty_Rate']}<br>
+            Agriculture: {row['Agricultural_Output']}<br>
+            Education: {row['Education_Level']}
+            """
+        ).add_to(m)
+
+    colormap.add_to(m)
+
+    map_data = st_folium(m, width=700, height=500)
+
+    # Click interaction feedback
+    st.subheader("Selected County Insights")
+
+    if map_data and map_data.get("last_clicked"):
+        st.write("Map clicked - explore county patterns above")
+
+    # Optional: dropdown for deeper dive
+    selected = st.selectbox("Select County for Details", df["County"])
+
+    county_data = df[df["County"] == selected]
+
+    st.write("### County Statistics")
+    st.write(county_data)
     st.info("Darker regions indicate higher values of the selected indicator.")
     st.success("Learning Insight: Spatial disparities highlight regional inequalities.")
 # -------------------------
