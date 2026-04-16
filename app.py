@@ -224,7 +224,7 @@ elif module == "🗺️ Interactive Map":
     # Add hover tooltips
     folium.GeoJson(
         geojson,
-        name="Counties",
+        name="NAME_1",
         style_function=lambda x: {
             "fillColor": "transparent",
             "color": "black",
