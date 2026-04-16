@@ -240,7 +240,7 @@ elif module == "🗺️ Interactive Map":
     # Add markers with detailed info
     for _, row in df.iterrows():
         folium.Marker(
-            location=[-0.5 + hash(row["NAME_1"]) % 5, 36 + hash(row["NAME_1"]) % 5],
+            location=[-0.5 + hash(row["County"]) % 5, 36 + hash(row["County"]) % 5],
             popup=f"""
             <b>{row['NAME_1']}</b><br>
             Income: {row['Household_Income']}<br>
