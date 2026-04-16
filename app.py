@@ -41,10 +41,10 @@ df["County"] = df["County"].str.strip()
 # -------------------------
 # UI HEADER
 # -------------------------
-st.title("GeoStatLab: Teaching Spatial Statistics using KNBS-style Data")
+st.title("GeoStatLab: NSO Simulation Platform ")
 
 st.markdown("""
-This platform demonstrates how spatial data analysis, survey simulation,
+This platform demonstrates An interactive tool for Teaching Spatial Statistics using KNBS-style Data, how spatial data analysis, survey simulation,
 and policy modeling can support evidence-based decision making.
 """)
 # Sidebar
@@ -178,13 +178,16 @@ elif module == "🗺️ Interactive Map":
     st.header("Kenya Spatial Analysis")
 
     indicator = st.selectbox("Select Indicator", [
-        "Poverty_Rate", "Household_Income", "Unemployment_Rate"
+        "Poverty_Rate", "Household_Income", "Unemployment_Rate","Agricultural_Output",
+        "Education_Level"
     ])
 
     indicator_map = {
     "Poverty Rate (%)": "Poverty_Rate",
     "Household Income (KES)": "Household_Income",
-    "Unemployment Rate (%)": "Unemployment_Rate"
+    "Unemployment Rate (%)": "Unemployment_Rate",
+    "Agricultural Output (%)": "Agricultural_Output",
+     "Education Level":   "Education_Level"
     }
     
     selected_label = st.selectbox("Select Indicator", list(indicator_map.keys()))
