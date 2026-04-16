@@ -34,11 +34,6 @@ def load_geojson():
     with open(file_path) as f:
         return json.load(f)
         
-# Create color scale
-min_val = df[indicator].min()
-max_val = df[indicator].max()
-colormap = cm.linear.YlOrRd_09.scale(min_val, max_val)
-colormap.caption = indicator
     
 geojson = load_geojson()
 df = load_data()
@@ -199,7 +194,13 @@ elif module == "🗺️ Interactive Map":
     
     selected_label = st.selectbox("Select Indicator", list(indicator_map.keys()))
     indicator = indicator_map[selected_label]
-    
+
+    # Create color scale
+    min_val = df[indicator].min()
+    max_val = df[indicator].max()
+    colormap = cm.linear.YlOrRd_09.scale(min_val, max_val)
+    colormap.caption = indicator
+
     m = folium.Map(location=[0.5, 37.8], zoom_start=6)
 
     folium.Choropleth(
