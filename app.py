@@ -310,30 +310,30 @@ elif module == "🗺️ Interactive Map":
 
  # Click interaction feedback
  st.subheader("Selected County Insights")
-# --- MAP CLICK FEEDBACK ---
-    if map_data and map_data.get("last_active_drawing"):
-        feature = map_data["last_active_drawing"]
-        if "properties" in feature:
-            clicked = feature["properties"].get("NAME_1")
-            if clicked:
-                st.session_state.selected_county = clicked
-    
-    # --- DROPDOWN (SYNCED WITH MAP) ---
-    selected = st.selectbox(
-        "Select County for Details",
-        df["County"],
-        index=list(df["County"]).index(st.session_state.selected_county)
-    )
-    
-    # Update session state if user changes dropdown
-    st.session_state.selected_county = selected
-    
-    # --- USE SINGLE SOURCE ---
-    county_data = df[df["County"] == st.session_state.selected_county]
-    
-    st.write("### 📊 County Statistics")
-    st.write(county_data)
-     
+ # --- MAP CLICK FEEDBACK ---
+if map_data and map_data.get("last_active_drawing"):
+    feature = map_data["last_active_drawing"]
+    if "properties" in feature:
+        clicked = feature["properties"].get("NAME_1")
+        if clicked:
+            st.session_state.selected_county = clicked
+
+# --- DROPDOWN (SYNCED WITH MAP) ---
+selected = st.selectbox(
+    "Select County for Details",
+    df["County"],
+    index=list(df["County"]).index(st.session_state.selected_county)
+)
+
+# Update session state if user changes dropdown
+st.session_state.selected_county = selected
+
+# --- USE SINGLE SOURCE ---
+county_data = df[df["County"] == st.session_state.selected_county]
+
+st.write("### 📊 County Statistics")
+st.write(county_data)
+ 
 # -------------------------
 # Policy Simulation
 # -------------------------
