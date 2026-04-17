@@ -161,16 +161,16 @@ elif module == "📈 Data Analysis":
    # st.subheader(f"Analysis for {selected}")
 
 selected = st.session_state.selected_county
-      county_data = df[df["County"] == selected]
+county_data = df[df["County"] == selected]
         
-      csv = county_data.to_csv(index=False).encode("utf-8")
+csv = county_data.to_csv(index=False).encode("utf-8")
         
-      st.download_button(
+st.download_button(
           label="📥 Download Selected County Data",
           data=csv,
           file_name=f"{selected}_data.csv",
           mime="text/csv"
-      )
+)
     indicator_map = {
     "Household Income (KES)": "Household_Income",
         "Poverty Rate (%)": "Poverty_Rate",
