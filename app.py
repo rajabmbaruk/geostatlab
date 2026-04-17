@@ -171,13 +171,13 @@ st.download_button(
        file_name=f"{selected}_data.csv",
        mime="text/csv"
 )
- indicator_map = {
+indicator_map = {
  "Household Income (KES)": "Household_Income",
      "Poverty Rate (%)": "Poverty_Rate",
      "Agricultural Output (%)":"Agricultural_Output",
      "Education Level":"Education_Level", 
      "Unemployment Rate (%)": "Unemployment_Rate"
- }
+}
 
  selected_label = st.selectbox("Select Indicator", list(indicator_map.keys()))
  indicator = indicator_map[selected_label]
