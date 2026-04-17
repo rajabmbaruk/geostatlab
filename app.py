@@ -260,8 +260,7 @@ elif module == "🗺️ Interactive Map":
         )
     ).add_to(m)
     
-    # Add legend
-    colormap.add_to(m)
+    
     #Render the map
     st_folium(m, width=900, height=500)
     # Add markers with detailed info
