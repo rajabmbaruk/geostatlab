@@ -160,7 +160,7 @@ elif module == "📈 Data Analysis":
   #  selected = st.session_state.selected_county
    # st.subheader(f"Analysis for {selected}")
 
-      selected = st.session_state.selected_county
+selected = st.session_state.selected_county
       county_data = df[df["County"] == selected]
         
       csv = county_data.to_csv(index=False).encode("utf-8")
