@@ -37,16 +37,6 @@ def load_geojson():
 geojson = load_geojson()
 df = load_data()
 
-# Clean dataset county names (important for matching)
-df["County"] = df["County"].str.strip()
-
-# Create lookup from dataframe
-data_lookup = df.set_index("County")[indicator].to_dict()
-
-# Inject values into GeoJSON
-for feature in geojson["features"]:
-    county_name = feature["properties"]["NAME_1"]  # adjust if needed
-    feature["properties"][indicator] = data_lookup.get(county_name, 0)        
 
 # -------------------------
 # UI HEADER
@@ -202,6 +192,17 @@ elif module == "🗺️ Interactive Map":
     
     selected_label = st.selectbox("Select Indicator", list(indicator_map.keys()))
     indicator = indicator_map[selected_label]
+
+    # Clean dataset county names (important for matching)
+    df["County"] = df["County"].str.strip()
+    
+    # Create lookup from dataframe
+    data_lookup = df.set_index("County")[indicator].to_dict()
+    
+    # Inject values into GeoJSON
+    for feature in geojson["features"]:
+        county_name = feature["properties"]["NAME_1"]  # adjust if needed
+        feature["properties"][indicator] = data_lookup.get(county_name, 0)        
 
     # Create color scale
     min_val = df[indicator].min()
