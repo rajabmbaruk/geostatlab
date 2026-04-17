@@ -9,8 +9,8 @@ import json
 import numpy as np
 import branca.colormap as cm
 
-if "selected_county" not in st.session_state:
-    st.session_state.selected_county = "Nairobi"  # default value
+#if "selected_county" not in st.session_state:
+ #   st.session_state.selected_county = "Nairobi"  # default value
 
 data = {'time': pd.Timestamp.now()}
 # default=str converts the Timestamp object to a string automatically
@@ -156,8 +156,8 @@ elif module == "🧪 Survey Simulation":
 elif module == "📈 Data Analysis":
     st.header("Data Analysis")
 
-    selected = st.session_state.selected_county
-    st.subheader(f"Analysis for {selected}")
+  #  selected = st.session_state.selected_county
+   # st.subheader(f"Analysis for {selected}")
     
     indicator_map = {
     "Household Income (KES)": "Household_Income",
@@ -323,8 +323,8 @@ elif module == "🗺️ Interactive Map":
 elif module == "🏛️ Policy Simulation":
     st.header("Policy Simulation")
 
-    selected = st.session_state.selected_county
-    st.subheader(f"Policy Impact for {selected}")
+    #selected = st.session_state.selected_county
+    #st.subheader(f"Policy Impact for {selected}")
 
     policy = st.selectbox("Policy Type", [
         "Agricultural Investment",
