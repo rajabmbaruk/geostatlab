@@ -179,17 +179,17 @@ indicator_map = {
      "Unemployment Rate (%)": "Unemployment_Rate"
 }
 
- selected_label = st.selectbox("Select Indicator", list(indicator_map.keys()))
- indicator = indicator_map[selected_label]
+selected_label = st.selectbox("Select Indicator", list(indicator_map.keys()))
+indicator = indicator_map[selected_label]
 
 
- st.bar_chart(df.set_index("County")[indicator])
+st.bar_chart(df.set_index("County")[indicator])
 
- st.markdown("### Insights")
- st.write(df.sort_values(indicator, ascending=False).head(3))
+st.markdown("### Insights")
+st.write(df.sort_values(indicator, ascending=False).head(3))
 
  
- st.success("Learning Insight: Spatial disparities highlight regional inequalities.")
+st.success("Learning Insight: Spatial disparities highlight regional inequalities.")
 # -------------------------
 # INTERACTIVE MAP
 # -------------------------
