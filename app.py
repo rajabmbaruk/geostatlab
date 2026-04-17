@@ -180,11 +180,11 @@ elif module == "📈 Data Analysis":
   
   st.markdown("### Insights")
   st.write(df.sort_values(indicator, ascending=False).head(3))
-  col1, col2, col3 = st.columns(3)
+#  col1, col2, col3 = st.columns(3)
 
-  col1.metric("Income", f"KES {int(county_data['Household_Income'].values[0]):,}")
-  col2.metric("Poverty Rate", f"{county_data['Poverty_Rate'].values[0]*100:.1f}%")
-  col3.metric("Agriculture", f"{int(county_data['Agricultural_Output'].values[0]):,}")  
+ # col1.metric("Income", f"KES {int(county_data['Household_Income'].values[0]):,}")
+  #col2.metric("Poverty Rate", f"{county_data['Poverty_Rate'].values[0]*100:.1f}%")
+  #col3.metric("Agriculture", f"{int(county_data['Agricultural_Output'].values[0]):,}")  
    
   st.success("Learning Insight: Spatial disparities highlight regional inequalities.")
 # -------------------------
@@ -310,18 +310,30 @@ elif module == "🗺️ Interactive Map":
 
  # Click interaction feedback
  st.subheader("Selected County Insights")
-
- if map_data and map_data.get("last_clicked"):
-     st.write("Map clicked - explore county patterns above")
-
- # Optional: dropdown for deeper dive
- selected = st.selectbox("Select County for Details", df["County"])
-
- county_data = df[df["County"] == selected]
-
- st.write("### County Statistics")
- st.write(county_data)
- 
+# --- MAP CLICK FEEDBACK ---
+    if map_data and map_data.get("last_active_drawing"):
+        feature = map_data["last_active_drawing"]
+        if "properties" in feature:
+            clicked = feature["properties"].get("NAME_1")
+            if clicked:
+                st.session_state.selected_county = clicked
+    
+    # --- DROPDOWN (SYNCED WITH MAP) ---
+    selected = st.selectbox(
+        "Select County for Details",
+        df["County"],
+        index=list(df["County"]).index(st.session_state.selected_county)
+    )
+    
+    # Update session state if user changes dropdown
+    st.session_state.selected_county = selected
+    
+    # --- USE SINGLE SOURCE ---
+    county_data = df[df["County"] == st.session_state.selected_county]
+    
+    st.write("### 📊 County Statistics")
+    st.write(county_data)
+     
 # -------------------------
 # Policy Simulation
 # -------------------------
