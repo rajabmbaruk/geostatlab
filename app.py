@@ -157,9 +157,9 @@ elif module == "📈 Data Analysis":
  #  selected = st.session_state.selected_county
  # st.subheader(f"Analysis for {selected}")
 #if "selected_county" not in st.session_state:
- st.session_state.selected_county = "Nairobi"  # default value 
- selected = st.session_state.selected_county
- county_data = df[df["County"] == selected]
+# st.session_state.selected_county = "Nairobi"  # default value 
+ #selected = st.session_state.selected_county
+ #county_data = df[df["County"] == selected]
       
  csv = county_data.to_csv(index=False).encode("utf-8")
       
