@@ -198,11 +198,25 @@ elif module == "🗺️ Interactive Map":
     
     # Create lookup from dataframe
     data_lookup = df.set_index("County")[indicator].to_dict()
-    
+
+    def format_value(indicator, value):
+        if indicator == "Household_Income":
+            return f"KES {value:,.0f}"
+        elif indicator == "Poverty_Rate":
+            return f"{value*100:.1f}%"
+        elif indicator == "Education_Level":
+            return f"{value*100:.1f}%"
+        elif indicator == "Agricultural_Output":
+            return f"{value:,.0f} tons"
+        else:
+            return str(value)
+            
     # Inject values into GeoJSON
     for feature in geojson["features"]:
-        county_name = feature["properties"]["NAME_1"]  # adjust if needed
-        feature["properties"][indicator] = data_lookup.get(county_name, 0)        
+        county_name = feature["properties"]["NAME_1"]
+        raw_value = data_lookup.get(county_name, 0)
+
+        feature["properties"][indicator] = format_value(indicator, raw_value)        
 
     # Create color scale
     min_val = df[indicator].min()
