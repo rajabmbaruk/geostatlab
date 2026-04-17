@@ -170,7 +170,7 @@ st.download_button(
     data=csv,
     file_name=f"{selected}_data.csv",
     mime="text/csv"
- )
+)
     indicator_map = {
     "Household Income (KES)": "Household_Income",
         "Poverty Rate (%)": "Poverty_Rate",
