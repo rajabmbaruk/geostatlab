@@ -10,9 +10,6 @@ import numpy as np
 import branca.colormap as cm
 import io
 
-if "selected_county" not in st.session_state:
- st.session_state.selected_county = "Nairobi"  # default value
-
 data = {'time': pd.Timestamp.now()}
 # default=str converts the Timestamp object to a string automatically
 json_string = json.dumps(data, default=str)
@@ -159,7 +156,8 @@ elif module == "📈 Data Analysis":
  
  #  selected = st.session_state.selected_county
  # st.subheader(f"Analysis for {selected}")
- 
+if "selected_county" not in st.session_state:
+ st.session_state.selected_county = "Nairobi"  # default value 
  selected = st.session_state.selected_county
  county_data = df[df["County"] == selected]
       
