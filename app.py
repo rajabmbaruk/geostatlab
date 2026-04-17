@@ -33,13 +33,21 @@ def load_geojson():
     file_path = os.path.join(os.path.dirname(__file__), "kenya_counties.geojson")
     with open(file_path) as f:
         return json.load(f)
-        
     
 geojson = load_geojson()
 df = load_data()
 
 # Clean dataset county names (important for matching)
 df["County"] = df["County"].str.strip()
+
+# Create lookup from dataframe
+data_lookup = df.set_index("County")[indicator].to_dict()
+
+# Inject values into GeoJSON
+for feature in geojson["features"]:
+    county_name = feature["properties"]["NAME_1"]  # adjust if needed
+    feature["properties"][indicator] = data_lookup.get(county_name, 0)        
+
 # -------------------------
 # UI HEADER
 # -------------------------
@@ -221,7 +229,7 @@ elif module == "🗺️ Interactive Map":
 
     
 
-    # Add hover tooltips
+    # Enhanced GeoJson (Tooltip + Highlight)
     folium.GeoJson(
         geojson,
         name="NAME_1",
@@ -230,12 +238,29 @@ elif module == "🗺️ Interactive Map":
             "color": "black",
             "weight": 0.5
         },
+        highlight_function=lambda x: {
+            "fillColor": "#ffff00",
+            "color": "black",
+            "weight": 2,
+            "fillOpacity": 0.5
+        },
         tooltip=folium.GeoJsonTooltip(
-            fields=["NAME_1"],
-            aliases=["County:"],
-            localize=True
+            fields=["NAME_1", indicator],
+            aliases=["County:", "Value:"],
+            localize=True,
+            sticky=True,
+            labels=True,
+            style="""
+                background-color: white;
+                border: 1px solid black;
+                border-radius: 3px;
+                box-shadow: 3px;
+            """
         )
     ).add_to(m)
+    
+    # Add legend
+    colormap.add_to(m)
     #Render the map
     st_folium(m, width=900, height=500)
     # Add markers with detailed info
