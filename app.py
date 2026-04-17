@@ -48,7 +48,10 @@ df = load_data()
 # UI HEADER
 # -------------------------
 st.title("GeoStatLab: NSO Simulation Platform ")
-
+st.markdown("""
+# 🌍 GeoStatLab  
+### *Spatial Statistics & Policy Simulation Platform*
+""")
 st.markdown("""
 This platform is An interactive tool for Teaching Spatial Statistics using KNBS-style Data, how spatial data analysis, survey simulation,
 and policy modeling can support evidence-based decision making.
