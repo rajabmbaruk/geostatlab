@@ -11,7 +11,7 @@ import branca.colormap as cm
 import io
 
 if "selected_county" not in st.session_state:
-st.session_state.selected_county = "Nairobi"  # default value
+ st.session_state.selected_county = "Nairobi"  # default value
 
 data = {'time': pd.Timestamp.now()}
 # default=str converts the Timestamp object to a string automatically
