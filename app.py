@@ -155,51 +155,47 @@ elif module == "🧪 Survey Simulation":
 # Data Analysis
 # -------------------------
 elif module == "📈 Data Analysis":
- st.header("Data Analysis")
-
-#  selected = st.session_state.selected_county
-# st.subheader(f"Analysis for {selected}")
-
-selected = st.session_state.selected_county
-county_data = df[df["County"] == selected]
-     
-csv = county_data.to_csv(index=False).encode("utf-8")
-     
-st.download_button(
-       label="📥 Download Selected County Data",
-       data=csv,
-       file_name=f"{selected}_data.csv",
-       mime="text/csv"
-)
-indicator_map = {
- "Household Income (KES)": "Household_Income",
-     "Poverty Rate (%)": "Poverty_Rate",
-     "Agricultural Output (%)":"Agricultural_Output",
-     "Education Level":"Education_Level", 
-     "Unemployment Rate (%)": "Unemployment_Rate"
-}
-
-selected_label = st.selectbox("Select Indicator", list(indicator_map.keys()))
-indicator = indicator_map[selected_label]
-
-
-st.bar_chart(df.set_index("County")[indicator])
-
-st.markdown("### Insights")
-st.write(df.sort_values(indicator, ascending=False).head(3))
-
+  st.header("Data Analysis")
  
-st.success("Learning Insight: Spatial disparities highlight regional inequalities.")
+ #  selected = st.session_state.selected_county
+ # st.subheader(f"Analysis for {selected}")
+ 
+ selected = st.session_state.selected_county
+ county_data = df[df["County"] == selected]
+      
+ csv = county_data.to_csv(index=False).encode("utf-8")
+      
+ st.download_button(
+        label="📥 Download Selected County Data",
+        data=csv,
+        file_name=f"{selected}_data.csv",
+        mime="text/csv"
+ )
+ indicator_map = {
+  "Household Income (KES)": "Household_Income",
+      "Poverty Rate (%)": "Poverty_Rate",
+      "Agricultural Output (%)":"Agricultural_Output",
+      "Education Level":"Education_Level", 
+      "Unemployment Rate (%)": "Unemployment_Rate"
+ }
+ 
+ selected_label = st.selectbox("Select Indicator", list(indicator_map.keys()))
+ indicator = indicator_map[selected_label]
+ 
+ 
+ st.bar_chart(df.set_index("County")[indicator])
+ 
+ st.markdown("### Insights")
+ st.write(df.sort_values(indicator, ascending=False).head(3))
+ 
+  
+ st.success("Learning Insight: Spatial disparities highlight regional inequalities.")
 # -------------------------
 # INTERACTIVE MAP
 # -------------------------
 elif module == "🗺️ Interactive Map":
  st.header("Kenya Spatial Analysis")
 
- #indicator = st.selectbox("Select Indicator", [
-  #   "Poverty_Rate", "Household_Income", "Unemployment_Rate","Agricultural_Output",
-   #  "Education_Level"
-# ])
 
  indicator_map = {
  "Poverty Rate (%)": "Poverty_Rate",
