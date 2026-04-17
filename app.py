@@ -9,6 +9,9 @@ import json
 import numpy as np
 import branca.colormap as cm
 
+if "selected_county" not in st.session_state:
+    st.session_state.selected_county = "Nairobi"  # default value
+
 data = {'time': pd.Timestamp.now()}
 # default=str converts the Timestamp object to a string automatically
 json_string = json.dumps(data, default=str)
