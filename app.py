@@ -87,6 +87,7 @@ if module == "📘 Learning Guide":
 elif module == "📊 Dataset Overview":
     st.header("Dataset Overview")
 
+    
     st.dataframe(df)
 
     st.subheader("Key Indicators")
@@ -152,6 +153,9 @@ elif module == "🧪 Survey Simulation":
 elif module == "📈 Data Analysis":
     st.header("Data Analysis")
 
+    selected = st.session_state.selected_county
+    st.subheader(f"Analysis for {selected}")
+    
     indicator_map = {
     "Household Income (KES)": "Household_Income",
         "Poverty Rate (%)": "Poverty_Rate",
@@ -315,6 +319,9 @@ elif module == "🗺️ Interactive Map":
 # -------------------------
 elif module == "🏛️ Policy Simulation":
     st.header("Policy Simulation")
+
+    selected = st.session_state.selected_county
+    st.subheader(f"Policy Impact for {selected}")
 
     policy = st.selectbox("Policy Type", [
         "Agricultural Investment",
