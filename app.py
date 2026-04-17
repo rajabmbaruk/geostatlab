@@ -57,7 +57,9 @@ This platform is An interactive tool for Teaching Spatial Statistics using KNBS-
 and policy modeling can support evidence-based decision making.
 """)
 # Sidebar
-st.sidebar.title("Navigation")
+#st.sidebar.title("Navigation")
+st.sidebar.title("📊 Navigation")
+st.sidebar.markdown("Select a module to explore data, maps, and policy simulations.")
 module = st.sidebar.radio("Select Module", [
  "📘 Learning Guide",
  "📊 Dataset Overview",
