@@ -182,9 +182,9 @@ elif module == "📈 Data Analysis":
   st.write(df.sort_values(indicator, ascending=False).head(3))
   col1, col2, col3 = st.columns(3)
 
-    col1.metric("Income", f"KES {int(county_data['Household_Income'].values[0]):,}")
-    col2.metric("Poverty Rate", f"{county_data['Poverty_Rate'].values[0]*100:.1f}%")
-    col3.metric("Agriculture", f"{int(county_data['Agricultural_Output'].values[0]):,}")  
+  col1.metric("Income", f"KES {int(county_data['Household_Income'].values[0]):,}")
+  col2.metric("Poverty Rate", f"{county_data['Poverty_Rate'].values[0]*100:.1f}%")
+  col3.metric("Agriculture", f"{int(county_data['Agricultural_Output'].values[0]):,}")  
    
   st.success("Learning Insight: Spatial disparities highlight regional inequalities.")
 # -------------------------
