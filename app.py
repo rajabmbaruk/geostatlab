@@ -154,21 +154,6 @@ elif module == "🧪 Survey Simulation":
 elif module == "📈 Data Analysis":
   st.header("Data Analysis")
  
- #  selected = st.session_state.selected_county
- # st.subheader(f"Analysis for {selected}")
-#if "selected_county" not in st.session_state:
-# st.session_state.selected_county = "Nairobi"  # default value 
- #selected = st.session_state.selected_county
- #county_data = df[df["County"] == selected]
-      
- csv = county_data.to_csv(index=False).encode("utf-8")
-      
- st.download_button(
-        label="📥 Download Selected County Data",
-        data=csv,
-        file_name=f"{selected}_data.csv",
-        mime="text/csv"
- )
  indicator_map = {
   "Household Income (KES)": "Household_Income",
       "Poverty Rate (%)": "Poverty_Rate",
