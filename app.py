@@ -1,8 +1,4 @@
-st.set_page_config(
-    page_title="GeoStatLab",
-    page_icon="📊",
-    layout="wide"
-)
+
 import streamlit as st
 import pandas as pd
 import folium
@@ -14,6 +10,11 @@ import numpy as np
 import branca.colormap as cm
 import io
 
+st.set_page_config(
+    page_title="GeoStatLab",
+    page_icon="📊",
+    layout="wide"
+)
 data = {'time': pd.Timestamp.now()}
 # default=str converts the Timestamp object to a string automatically
 json_string = json.dumps(data, default=str)
