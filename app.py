@@ -47,7 +47,7 @@ df = load_data()
 # -------------------------
 # UI HEADER
 # -------------------------
-st.title("GeoStatLab: NSO Simulation Platform ")
+#st.title("GeoStatLab: NSO Simulation Platform ")
 st.markdown("""
 # 🌍 GeoStatLab  
 ### *Spatial Statistics & Policy Simulation Platform*
