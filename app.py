@@ -208,6 +208,9 @@ elif module == "🗺️ Interactive Map":
  # Clean dataset county names (important for matching)
  df["County"] = df["County"].str.strip()
  
+ if "selected_county" not in st.session_state:
+    st.session_state.selected_county = df["County"].iloc[0]
+    
  # Create lookup from dataframe
  data_lookup = df.set_index("County")[indicator].to_dict()
 
