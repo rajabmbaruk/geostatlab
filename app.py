@@ -159,12 +159,12 @@ with tab1:
  st.dataframe(df)
  csv_full = df.to_csv(index=False).encode("utf-8")
 
-    st.download_button(
+ st.download_button(
         "📥 Download Dataset",
         csv_full,
         "dataset.csv",
         "text/csv"
-    )
+ )
 
  st.subheader("Key Indicators")
  st.write("Population Mean:", int(df["Population"].mean()))
