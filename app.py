@@ -403,7 +403,7 @@ with tab4:
  #)
 
  # Update session state if user changes dropdown
- st.session_state.selected_county = selected
+st.session_state.selected_county = selected
 
  # --- USE SINGLE SOURCE ---
  county_data = df[df["County"] == st.session_state.selected_county]
