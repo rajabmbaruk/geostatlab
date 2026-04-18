@@ -57,7 +57,7 @@ This platform is An interactive tool for Teaching Spatial Statistics using KNBS-
 and policy modeling can support evidence-based decision making.
 """)
 # Sidebar
-#st.sidebar.title("Navigation")
+
 st.sidebar.title("📊 Navigation")
 st.sidebar.markdown("Select a module to explore data, maps, and policy simulations.")
 module = st.sidebar.radio("Select Module", [
@@ -114,7 +114,7 @@ elif module == "🧪 Survey Simulation":
  st.header("Survey Simulation")
 
 
- sample_size = st.slider("Sample Size", 5, len(df), 20)
+ sample_size = st.slider("Sample Size", 5, len(df), 10)
 
  sampling_method = st.selectbox(
      "Select Sampling Method",
@@ -146,8 +146,8 @@ elif module == "🧪 Survey Simulation":
      
  st.dataframe(sample)  
  st.write("Sample Population Mean:", int(sample["Population"].mean()))
- st.write("Sample Avg Income", int(sample["Household_Income"].mean()))
- st.write("Sample Poverty", round(sample["Poverty_Rate"].mean(), 2))
+ st.write("Sample Average Income (KES)", int(sample["Household_Income"].mean()))
+ st.write("Sample Poverty Rate (%)", round(sample["Poverty_Rate"].mean(), 2))
 
  st.info("Compare this with full dataset to understand sampling bias")
  st.success("Learning Insight: Spatial disparities highlight regional inequalities.")
