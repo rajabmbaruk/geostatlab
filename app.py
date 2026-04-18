@@ -70,26 +70,74 @@ tab0, tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs([
 # Learning Guide
 # -------------------------
 with tab0:
-    #if module == "📘 Learning Guide":
- st.header("Learning Guide")
+    st.title("🌍 GeoStatLab")
+    st.subheader("Spatial Statistics & Policy Simulation Platform")
 
- st.markdown("""
- ### 🎓 What You Will Learn
- - Survey design & sampling
- - Data analysis & visualization
- - Spatial thinking using GIS
- - Policy impact evaluation
+    st.markdown("""
+    ### 📘 Learning Guide
 
- ### 🔄 Recommended Flow
- 1. Explore dataset  
- 2. Simulate survey  
- 3. Analyze indicators  
- 4. Explore map  
- 5. Test policies  
+    Welcome to **GeoStatLab**, an interactive platform designed to help users explore the integration of **statistics, geospatial data, and policy simulation**.
 
- 👉 This Learning Guide mirrors real workflows used by National Statistical Offices.
- """)
+    This tool is inspired by the work of national statistical systems such as the Kenya National Bureau of Statistics (KNBS), and aims to support learning, decision-making, and data-driven policy design.
+    """)
 
+    st.markdown("---")
+
+    st.markdown("### 🧭 How to Use This Tool")
+
+    st.markdown("""
+    **1️⃣ Dataset Overview**
+    - Explore socio-economic indicators across counties  
+    - Understand the structure of official statistics  
+
+    **2️⃣ Spatial Map**
+    - Visualize geographic patterns  
+    - Hover to view indicators  
+    - Click a county to interact with the dashboard  
+
+    **3️⃣ Data Analysis**
+    - View detailed statistics for selected counties  
+    - Compare indicators across regions  
+
+    **4️⃣ Policy Simulation**
+    - Adjust policy variables (e.g. agriculture investment)  
+    - Observe simulated impact on poverty and production  
+
+    **5️⃣ Story Mode**
+    - Follow a guided learning journey from data → insights → policy  
+    """)
+
+    st.markdown("---")
+
+    st.markdown("### 🎯 Learning Objectives")
+
+    col1, col2 = st.columns(2)
+
+    with col1:
+        st.markdown("""
+        - Understand spatial distribution of socio-economic indicators  
+        - Interpret official statistics  
+        - Explore relationships between variables  
+        """)
+
+    with col2:
+        st.markdown("""
+        - Apply data to policy scenarios  
+        - Strengthen evidence-based decision making  
+        - Build intuition in geospatial analytics  
+        """)
+
+    st.markdown("---")
+
+    st.markdown("### 🚀 Quick Start")
+
+    st.info("""
+    👉 Go to the **🗺️ Spatial Map** tab  
+    👉 Click on any county  
+    👉 Then explore **📈 Data Analysis** and **⚙️ Policy Simulation**
+    """)
+
+    st.success("💡 Tip: The selected county will update across all modules automatically.")
 # -------------------------
 # Dataset Overview
 # -------------------------
