@@ -93,7 +93,8 @@ with tab0:
 # -------------------------
 # Dataset Overview
 # -------------------------
-elif module == "📊 Dataset Overview":
+with tab1:
+    #elif module == "📊 Dataset Overview":
  st.header("Dataset Overview")
 
  
@@ -108,7 +109,8 @@ elif module == "📊 Dataset Overview":
 # -------------------------
 # Survey Simulation
 # -------------------------
-elif module == "🧪 Survey Simulation":
+with tab2:
+    #elif module == "🧪 Survey Simulation":
  st.header("Survey Simulation")
 
 
@@ -160,7 +162,8 @@ elif module == "🧪 Survey Simulation":
 # -------------------------
 # Data Analysis
 # -------------------------
-elif module == "📈 Data Analysis":
+with tab3:
+    #elif module == "📈 Data Analysis":
   st.header("Data Analysis")
   
   indicator_map = {
@@ -190,7 +193,8 @@ elif module == "📈 Data Analysis":
 # -------------------------
 # INTERACTIVE MAP
 # -------------------------
-elif module == "🗺️ Interactive Map":
+with tab4:
+    #elif module == "🗺️ Interactive Map":
  st.header("Kenya Spatial Analysis")
 
 
@@ -339,7 +343,8 @@ elif module == "🗺️ Interactive Map":
 # -------------------------
 # Policy Simulation
 # -------------------------
-elif module == "🏛️ Policy Simulation":
+with tab5:
+    #elif module == "🏛️ Policy Simulation":
  st.header("Policy Simulation")
 
  #selected = st.session_state.selected_county
