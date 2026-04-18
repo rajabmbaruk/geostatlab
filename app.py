@@ -57,13 +57,14 @@ and policy modeling can support evidence-based decision making.
 """)
 # Sidebar
 
-tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs([
-    "📊 Dataset",
-    "🧪 Survey",
-    "🗺️ Map",
-    "📈 Analysis",
-    "⚙️ Policy",
-    "📖 Story"
+tab0, tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs([
+    "🏠 Home",
+    "📊 Dataset Overview",
+    "🧪 Survey Simulation",
+    "🗺️ Spatial Map",
+    "📈 Data Analysis",
+    "⚙️ Policy Simulation",
+    "📖 Story Mode"
 ])
 # -------------------------
 # Learning Guide
