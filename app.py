@@ -277,15 +277,10 @@ with tab4:
 
  # Clean dataset county names (important for matching)
  
- if "properties" in feature:
-            clicked = feature["properties"].get("NAME_1")
-
-            if clicked:
-                st.session_state.selected_county = clicked.strip().title()
- #df["County"] = df["County"].str.strip()
+ df["County"] = df["County"].str.strip()
  
- #if "selected_county" not in st.session_state:
-  #  st.session_state.selected_county = df["County"].iloc[0]
+ if "selected_county" not in st.session_state:
+   st.session_state.selected_county = df["County"].iloc[0]
     
  # Create lookup from dataframe
  data_lookup = df.set_index("County")[indicator].to_dict()
@@ -384,6 +379,8 @@ with tab4:
  colormap.add_to(m)
 
  map_data = st_folium(m, width=700, height=500)
+ 
+ 
  st.info("Darker regions indicate higher values of the selected indicator.")
  st.success("Learning Insight: Spatial disparities highlight regional inequalities.")
 
@@ -393,9 +390,10 @@ with tab4:
  if map_data and map_data.get("last_active_drawing"):
     feature = map_data["last_active_drawing"]
     if "properties" in feature:
-        clicked = feature["properties"].get("NAME_1")
-        if clicked:
-            st.session_state.selected_county = clicked
+            clicked = feature["properties"].get("NAME_1")
+
+            if clicked:
+                st.session_state.selected_county = clicked.strip().title()
 
  # --- DROPDOWN (SYNCED WITH MAP) ---
 # selected = st.selectbox(
