@@ -69,7 +69,8 @@ tab0, tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs([
 # -------------------------
 # Learning Guide
 # -------------------------
-if module == "📘 Learning Guide":
+with tab0:
+    #if module == "📘 Learning Guide":
  st.header("Learning Guide")
 
  st.markdown("""
