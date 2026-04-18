@@ -89,7 +89,7 @@ if module == "📘 Learning Guide":
  4. Explore map  
  5. Test policies  
 
- 👉 This mirrors real workflows used by National Statistical Offices.
+ 👉 This Learning Guide mirrors real workflows used by National Statistical Offices.
  """)
 
 # -------------------------
@@ -102,8 +102,10 @@ elif module == "📊 Dataset Overview":
  st.dataframe(df)
 
  st.subheader("Key Indicators")
- st.metric("Avg Income (KES)", int(df["Household_Income"].mean()))
- st.metric("Avg Poverty Rate", round(df["Poverty_Rate"].mean(), 2))
+ st.write("Population Mean:", int(df["Population"].mean()))
+ st.write("Average Income (KES)", int(df["Household_Income"].mean()))
+ st.write("Average Poverty Rate (%)", round(df["Poverty_Rate"].mean(), 2))
+
 
 # -------------------------
 # Survey Simulation
@@ -143,8 +145,7 @@ elif module == "🧪 Survey Simulation":
          sample = df.iloc[::k].head(sample_size)
      
  st.dataframe(sample)  
- st.write("Population Mean:", int(df["Population"].mean()))
- st.write("Sample Mean:", int(sample["Population"].mean()))
+ st.write("Sample Population Mean:", int(sample["Population"].mean()))
  st.write("Sample Avg Income", int(sample["Household_Income"].mean()))
  st.write("Sample Poverty", round(sample["Poverty_Rate"].mean(), 2))
 
@@ -181,9 +182,9 @@ elif module == "📈 Data Analysis":
   st.markdown("### Insights")
   col1, col2, col3 = st.columns(3)
 
-  col1.metric("Income", f"KES {int(county_data['Household_Income'].values[0]):,}")
-  col2.metric("Poverty Rate", f"{county_data['Poverty_Rate'].values[0]*100:.1f}%")
-  col3.metric("Agriculture", f"{int(county_data['Agricultural_Output'].values[0]):,}")  
+  col1.metric("Income", f"KES {int(indicator['Household_Income'].values[0]):,}")
+  col2.metric("Poverty Rate", f"{indicator['Poverty_Rate'].values[0]*100:.1f}%")
+  col3.metric("Agriculture", f"{int(indicator['Agricultural_Output'].values[0]):,}")  
 
   st.write(df.sort_values(indicator, ascending=False).head(3))
    
