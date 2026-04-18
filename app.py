@@ -324,11 +324,11 @@ elif module == "🗺️ Interactive Map":
             st.session_state.selected_county = clicked
 
  # --- DROPDOWN (SYNCED WITH MAP) ---
- selected = st.selectbox(
-    "Select County for Details",
-    df["County"],
-    index=list(df["County"]).index(st.session_state.selected_county)
- )
+# selected = st.selectbox(
+ #   "Select County for Details",
+  #  df["County"],
+   # index=list(df["County"]).index(st.session_state.selected_county)
+ #)
 
  # Update session state if user changes dropdown
  st.session_state.selected_county = selected
