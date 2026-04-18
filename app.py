@@ -319,21 +319,21 @@ elif module == "🗺️ Interactive Map":
             if clicked:
                 st.session_state.selected_county = clicked
     
-    # --- DROPDOWN (SYNCED WITH MAP) ---
-    selected = st.selectbox(
+ # --- DROPDOWN (SYNCED WITH MAP) ---
+ selected = st.selectbox(
         "Select County for Details",
         df["County"],
         index=list(df["County"]).index(st.session_state.selected_county)
     )
     
-    # Update session state if user changes dropdown
-    st.session_state.selected_county = selected
+ # Update session state if user changes dropdown
+ st.session_state.selected_county = selected
     
-    # --- USE SINGLE SOURCE ---
-    county_data = df[df["County"] == st.session_state.selected_county]
+ # --- USE SINGLE SOURCE ---
+ county_data = df[df["County"] == st.session_state.selected_county]
     
-    st.write("### 📊 County Statistics")
-    st.write(county_data)
+ st.write("### 📊 County Statistics")
+ st.write(county_data)
 # -------------------------
 # Policy Simulation
 # -------------------------
