@@ -323,18 +323,37 @@ elif module == "🗺️ Interactive Map":
                 st.session_state.selected_county = clicked
     
  # --- DROPDOWN (SYNCED WITH MAP) ---
+ # --- 1. Render map  # --- 1. Render map ---
+ map_data = st_folium(m, width=900, height=500)
+
+ # --- 2. Handle map click FIRST ---
+ if map_data and map_data.get("last_active_drawing"):
+    feature = map_data["last_active_drawing"]
+    if "properties" in feature:
+        clicked = feature["properties"].get("NAME_1")
+        if clicked:
+            st.session_state.selected_county = clicked
+
+ # --- 3. Prepare county list ---
+ county_list = df["County"].tolist()
+
+ # Ensure valid state
+ if st.session_state.get("selected_county") not in county_list:
+    st.session_state.selected_county = county_list[0]
+
+ # --- 4. Dropdown (NOW reflects map click) ---
  selected = st.selectbox(
-        "Select County for Details",
-        df["County"],
-        index=list(df["County"]).index(st.session_state.selected_county)
-    )
-    
- # Update session state if user changes dropdown
+    "Select County for Details",
+    county_list,
+    index=county_list.index(st.session_state.selected_county)
+ )
+
+ # --- 5. Sync back ---
  st.session_state.selected_county = selected
-    
- # --- USE SINGLE SOURCE ---
+
+ #  --- 6. Use it ---
  county_data = df[df["County"] == st.session_state.selected_county]
-    
+
  st.write("### 📊 County Statistics")
  st.write(county_data)
 # -------------------------
