@@ -271,15 +271,21 @@ with tab4:
  "Agricultural Output (%)": "Agricultural_Output",
   "Education Level":   "Education_Level"
  }
- 
+
  selected_label = st.selectbox("Select Indicator", list(indicator_map.keys()))
  indicator = indicator_map[selected_label]
 
  # Clean dataset county names (important for matching)
- df["County"] = df["County"].str.strip()
  
- if "selected_county" not in st.session_state:
-    st.session_state.selected_county = df["County"].iloc[0]
+ if "properties" in feature:
+            clicked = feature["properties"].get("NAME_1")
+
+            if clicked:
+                st.session_state.selected_county = clicked.strip().title()
+ #df["County"] = df["County"].str.strip()
+ 
+ #if "selected_county" not in st.session_state:
+  #  st.session_state.selected_county = df["County"].iloc[0]
     
  # Create lookup from dataframe
  data_lookup = df.set_index("County")[indicator].to_dict()
