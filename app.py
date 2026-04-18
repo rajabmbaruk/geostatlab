@@ -180,11 +180,11 @@ elif module == "📈 Data Analysis":
   st.bar_chart(df.set_index("County")[indicator])
   
   st.markdown("### Insights")
-  col1, col2, col3 = st.columns(3)
+#  col1, col2, col3 = st.columns(3)
 
-  col1.metric("Income", f"KES {int(indicator['Household_Income'].values[0]):,}")
-  col2.metric("Poverty Rate", f"{indicator['Poverty_Rate'].values[0]*100:.1f}%")
-  col3.metric("Agriculture", f"{int(indicator['Agricultural_Output'].values[0]):,}")  
+ # col1.metric("Income", f"KES {int(indicator['Household_Income'].values[0]):,}")
+  #col2.metric("Poverty Rate", f"{indicator['Poverty_Rate'].values[0]*100:.1f}%")
+  #col3.metric("Agriculture", f"{int(indicator['Agricultural_Output'].values[0]):,}")  
 
   st.write(df.sort_values(indicator, ascending=False).head(3))
    
