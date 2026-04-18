@@ -1,4 +1,3 @@
-
 import streamlit as st
 import pandas as pd
 import folium
@@ -58,17 +57,14 @@ and policy modeling can support evidence-based decision making.
 """)
 # Sidebar
 
-st.sidebar.title("📊 Navigation")
-st.sidebar.markdown("Select a module to explore data, maps, and policy simulations.")
-module = st.sidebar.radio("Select Module", [
- "📘 Learning Guide",
- "📊 Dataset Overview",
- "🧪 Survey Simulation",
- "📈 Data Analysis",
- "🗺️ Interactive Map",
- "🏛️ Policy Simulation"
+tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs([
+    "📊 Dataset",
+    "🧪 Survey",
+    "🗺️ Map",
+    "📈 Analysis",
+    "⚙️ Policy",
+    "📖 Story"
 ])
-
 # -------------------------
 # Learning Guide
 # -------------------------
