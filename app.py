@@ -136,8 +136,18 @@ with tab0:
     👉 Click on any county  
     👉 Then explore **📈 Data Analysis** and **⚙️ Policy Simulation**
     """)
-
     st.success("💡 Tip: The selected county will update across all modules automatically.")
+    
+    st.markdown("## 📘 Learning Guide")
+
+    with st.expander("📊 Dataset Overview"):
+        st.write("Explore indicators across counties")
+
+    with st.expander("🗺️ Spatial Map"):
+        st.write("Interact with geospatial data")
+
+    st.markdown("---")
+    st.caption("Developed as part of CATCON 9 – ISPRS 2026 | GeoStatLab Prototype")
 # -------------------------
 # Dataset Overview
 # -------------------------
