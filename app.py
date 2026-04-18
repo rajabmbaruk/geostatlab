@@ -324,7 +324,7 @@ elif module == "🗺️ Interactive Map":
     
  # --- DROPDOWN (SYNCED WITH MAP) ---
  # --- 1. Render map  # --- 1. Render map ---
- map_data = st_folium(m, width=900, height=500)
+ map_data = st_folium(m, width=700, height=500)
 
  # --- 2. Handle map click FIRST ---
  if map_data and map_data.get("last_active_drawing"):
