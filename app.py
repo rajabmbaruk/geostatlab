@@ -487,4 +487,7 @@ with tab5:
         "simulation.csv",
         "text/csv"
 
+ )
  st.success("Policy simulation demonstrates data-driven decision making")
+
+
