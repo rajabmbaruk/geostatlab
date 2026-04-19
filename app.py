@@ -66,7 +66,19 @@ h1, h2, h3 {
 }
 </style>
 """, unsafe_allow_html=True)
-
+#--------------------------
+# Re-usable Card Wrapper
+#-------------------------
+def card(title, content):
+    st.markdown(f"""
+    <div class="card">
+        <h4>{title}</h4>
+        {content}
+    </div>
+    """, unsafe_allow_html=True)
+#---------------------------
+# Header
+#---------------------------
 st.markdown("""
 # 🌍 GeoStatLab  
 ### *Spatial Statistics & Policy Simulation Platform*
