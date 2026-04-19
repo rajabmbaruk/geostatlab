@@ -51,7 +51,7 @@ st.markdown("""
 # 🌍 GeoStatLab  
 ### *Spatial Statistics & Policy Simulation Platform*
 """)
-st.markdown(---)
+st.markdown("""---""")
 # Sidebar
 
 tab0, tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs([
