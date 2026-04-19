@@ -277,7 +277,7 @@ with tab4:
 
         col1.metric("Income", f"KES {int(row['Household_Income']):,}")
         col2.metric("Poverty Rate", f"{row['Poverty_Rate']*100:.1f}%")
-        col3.metric("Agriculture", f"{int(row['Agricultural_Output']):,}")
+        col3.metric("Agriculture", f"{int(row['Agricultural_Output']):,}tons")
 
         st.dataframe(county_data)
 
@@ -479,5 +479,12 @@ with tab5:
 
  st.subheader("Impact on Poverty")
  st.bar_chart(df_sim.set_index("County")["Poverty_Rate"])
+ csv_sim = df_sim.to_csv(index=False).encode("utf-8")
+
+ st.download_button(
+        "📥 Download Simulation",
+        csv_sim,
+        "simulation.csv",
+        "text/csv"
 
  st.success("Policy simulation demonstrates data-driven decision making")
