@@ -46,7 +46,27 @@ df = load_data()
 # -------------------------
 # UI HEADER
 # -------------------------
-#st.title("GeoStatLab: NSO Simulation Platform ")
+st.markdown("""
+<style>
+.main {
+    background-color: #f4f6f9;
+}
+.block-container {
+    padding-top: 2rem;
+}
+.card {
+    background-color: white;
+    padding: 1.2rem;
+    border-radius: 12px;
+    box-shadow: 0px 4px 12px rgba(0,0,0,0.08);
+    margin-bottom: 1rem;
+}
+h1, h2, h3 {
+    color: #1f4e79;
+}
+</style>
+""", unsafe_allow_html=True)
+
 st.markdown("""
 # 🌍 GeoStatLab  
 ### *Spatial Statistics & Policy Simulation Platform*
