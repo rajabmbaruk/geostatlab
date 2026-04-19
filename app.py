@@ -259,7 +259,7 @@ with tab4:
   county_list = df["County"].tolist()
 
     # Ensure valid selection
-    if st.session_state.selected_county not in county_list:
+  if st.session_state.selected_county not in county_list:
         st.session_state.selected_county = county_list[0]
 
     selected = st.selectbox(
