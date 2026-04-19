@@ -51,10 +51,7 @@ st.markdown("""
 # 🌍 GeoStatLab  
 ### *Spatial Statistics & Policy Simulation Platform*
 """)
-st.markdown("""
-This platform is An interactive tool for Teaching Spatial Statistics using KNBS-style Data, how spatial data analysis, survey simulation,
-and policy modeling can support evidence-based decision making.
-""")
+st.markdown(---)
 # Sidebar
 
 tab0, tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs([
@@ -66,6 +63,8 @@ tab0, tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs([
     "⚙️ Policy Simulation",
     "📖 Story Mode"
 ])
+if "active_tab" not in st.session_state:
+    st.session_state.active_tab = "Home"
 # -------------------------
 # Learning Guide
 # -------------------------
