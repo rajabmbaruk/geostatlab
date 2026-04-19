@@ -46,6 +46,7 @@ df = load_data()
 # -------------------------
 # UI HEADER
 # -------------------------
+# Style
 st.markdown("""
 <style>
 .main {
@@ -66,9 +67,8 @@ h1, h2, h3 {
 }
 </style>
 """, unsafe_allow_html=True)
-#--------------------------
+
 # Re-usable Card Wrapper
-#-------------------------
 def card(title, content):
     st.markdown(f"""
     <div class="card">
@@ -76,9 +76,8 @@ def card(title, content):
         {content}
     </div>
     """, unsafe_allow_html=True)
-#---------------------------
+
 # Header
-#---------------------------
 st.markdown("""
 # 🌍 GeoStatLab  
 ### *Spatial Statistics & Policy Simulation Platform*
@@ -302,13 +301,18 @@ with tab4:
   county_data = df[df["County"] == selected]
 
   if not county_data.empty:
-        row = county_data.iloc[0]
+    row = county_data.iloc[0]
 
-        col1, col2, col3 = st.columns(3)
+    col1, col2, col3 = st.columns(3)
 
-        col1.metric("Income", f"KES {int(row['Household_Income']):,}")
-        col2.metric("Poverty Rate", f"{row['Poverty_Rate']*100:.1f}%")
-        col3.metric("Agriculture", f"{int(row['Agricultural_Output']):,}tons")
+    with col1:
+        card("💰 Income", f"<h3>KES {int(row['Household_Income']):,}</h3>")
+
+    with col2:
+        card("📉 Poverty", f"<h3>{row['Poverty_Rate']*100:.1f}%</h3>")
+
+    with col3:
+        card("🌾 Agriculture", f"<h3>{int(row['Agricultural_Output']):,}tons</h3>")
 
         st.dataframe(county_data)
 
