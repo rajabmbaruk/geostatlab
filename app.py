@@ -56,7 +56,7 @@ st.markdown("""
     padding-top: 2rem;
 }
 .card {
-    background-color: white;
+    background-color: grey;
     padding: 1.2rem;
     border-radius: 12px;
     box-shadow: 0px 4px 12px rgba(0,0,0,0.08);
@@ -306,13 +306,13 @@ with tab4:
     col1, col2, col3 = st.columns(3)
 
     with col1:
-        ("💰 Income", f"<h3>KES {int(row['Household_Income']):,}</h3>")
+        card("💰 Income", f"<h3>KES {int(row['Household_Income']):,}</h3>")
 
     with col2:
-        ("📉 Poverty", f"<h3>{row['Poverty_Rate']*100:.1f}%</h3>")
+        card("📉 Poverty", f"<h3>{row['Poverty_Rate']*100:.1f}%</h3>")
 
     with col3:
-        ("🌾 Agriculture", f"<h3>{int(row['Agricultural_Output']):,}tons</h3>")
+        card("🌾 Agriculture", f"<h3>{int(row['Agricultural_Output']):,}tons</h3>")
 
         st.dataframe(county_data)
 
