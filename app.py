@@ -262,15 +262,15 @@ with tab4:
   if st.session_state.selected_county not in county_list:
         st.session_state.selected_county = county_list[0]
 
-    selected = st.selectbox(
+  selected = st.selectbox(
         "Select County",
         county_list,
         key="selected_county"
-    )
+  )
 
-    county_data = df[df["County"] == selected]
+  county_data = df[df["County"] == selected]
 
-    if not county_data.empty:
+  if not county_data.empty:
         row = county_data.iloc[0]
 
         col1, col2, col3 = st.columns(3)
@@ -288,8 +288,8 @@ with tab4:
             csv,
             f"{selected}.csv",
             "text/csv"
-        )
-    else:
+       )
+  else:
         st.warning("No data available")
 # -------------------------
 # INTERACTIVE MAP
