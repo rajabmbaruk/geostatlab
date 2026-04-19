@@ -228,7 +228,7 @@ with tab2:
 # -------------------------
 # Data Analysis
 # -------------------------
-with tab3:
+with tab4:
     #elif module == "📈 Data Analysis":
   st.header("Data Analysis")
   
