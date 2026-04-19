@@ -256,6 +256,41 @@ with tab4:
   st.write(df.sort_values(indicator, ascending=False).head(3))
    
   st.success("Learning Insight: Spatial disparities highlight regional inequalities.")
+  county_list = df["County"].tolist()
+
+    # Ensure valid selection
+    if st.session_state.selected_county not in county_list:
+        st.session_state.selected_county = county_list[0]
+
+    selected = st.selectbox(
+        "Select County",
+        county_list,
+        key="selected_county"
+    )
+
+    county_data = df[df["County"] == selected]
+
+    if not county_data.empty:
+        row = county_data.iloc[0]
+
+        col1, col2, col3 = st.columns(3)
+
+        col1.metric("Income", f"KES {int(row['Household_Income']):,}")
+        col2.metric("Poverty Rate", f"{row['Poverty_Rate']*100:.1f}%")
+        col3.metric("Agriculture", f"{int(row['Agricultural_Output']):,}")
+
+        st.dataframe(county_data)
+
+        csv = county_data.to_csv(index=False).encode("utf-8")
+
+        st.download_button(
+            "📥 Download County Data",
+            csv,
+            f"{selected}.csv",
+            "text/csv"
+        )
+    else:
+        st.warning("No data available")
 # -------------------------
 # INTERACTIVE MAP
 # -------------------------
