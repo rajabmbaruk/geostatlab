@@ -259,7 +259,7 @@ with tab3:
 # -------------------------
 # INTERACTIVE MAP
 # -------------------------
-with tab4:
+with tab3:
     #elif module == "🗺️ Interactive Map":
  st.header("Kenya Spatial Analysis")
 
@@ -396,14 +396,14 @@ with tab4:
                 st.session_state.selected_county = clicked.strip().title()
 
  # --- DROPDOWN (SYNCED WITH MAP) ---
- selected = st.selectbox(
-        "Select County for Details",
-        df["County"],
-    index=list(df["County"]).index(st.session_state.selected_county)
- )
+ #selected = st.selectbox(
+  #      "Select County for Details",
+   #     df["County"],
+  #  index=list(df["County"]).index(st.session_state.selected_county)
+ #)
 
  # Update session state if user changes dropdown
-#st.session_state.selected_county = selected
+# st.session_state.selected_county = selected
 
  # --- USE SINGLE SOURCE ---
  county_data = df[df["County"] == st.session_state.selected_county]
