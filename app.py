@@ -306,13 +306,13 @@ with tab4:
     col1, col2, col3 = st.columns(3)
 
     with col1:
-        card("💰 Income", f"<h3>KES {int(row['Household_Income']):,}</h3>")
+        ("💰 Income", f"<h3>KES {int(row['Household_Income']):,}</h3>")
 
     with col2:
-        card("📉 Poverty", f"<h3>{row['Poverty_Rate']*100:.1f}%</h3>")
+        ("📉 Poverty", f"<h3>{row['Poverty_Rate']*100:.1f}%</h3>")
 
     with col3:
-        card("🌾 Agriculture", f"<h3>{int(row['Agricultural_Output']):,}tons</h3>")
+        ("🌾 Agriculture", f"<h3>{int(row['Agricultural_Output']):,}tons</h3>")
 
         st.dataframe(county_data)
 
