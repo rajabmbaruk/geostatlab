@@ -490,4 +490,24 @@ with tab5:
  )
  st.success("Policy simulation demonstrates data-driven decision making")
 
+with tab6:
+    st.header("Guided Story Mode")
 
+    step = st.radio("Step", [
+        "1. Dataset",
+        "2. Map",
+        "3. Analysis",
+        "4. Policy"
+    ])
+
+    if step == "1. Dataset":
+        st.write("Explore national statistics")
+
+    elif step == "2. Map":
+        st.write("Understand spatial patterns")
+
+    elif step == "3. Analysis":
+        st.write(f"Current county: {st.session_state.selected_county}")
+
+    elif step == "4. Policy":
+        st.write("Simulate interventions")
