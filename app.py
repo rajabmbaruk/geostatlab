@@ -407,37 +407,28 @@ with tab3:
 
  # Enhanced GeoJson (Tooltip + Highlight)
  folium.GeoJson(
-     geojson,
-     name="NAME_1",
-     style_function=lambda x: {
-         "fillColor": "transparent",
-         "color": "black",
-         "weight": 0.5
-     },
-     highlight_function=lambda x: {
-         "fillColor": "#ffff00",
-         "color": "black",
-         "weight": 2,
-         "fillOpacity": 0.5
-     },
-     tooltip=folium.GeoJsonTooltip(
-         fields=["NAME_1", indicator],
-         aliases=["County:", "Value:"],
-         localize=True,
-         sticky=True,
-         labels=True,
-         style="""
-             background-color: white;
-             border: 1px solid black;
-             border-radius: 3px;
-             box-shadow: 3px;
-         """
-     )
+    geojson,
+    name="Counties",
+    style_function=lambda x: {
+        "fillColor": "transparent",
+        "color": "black",
+        "weight": 0.5
+    },
+    highlight_function=lambda x: {
+        "fillColor": "#ffff00",
+        "color": "black",
+        "weight": 2,
+        "fillOpacity": 0.5
+    },
+    tooltip=folium.GeoJsonTooltip(
+        fields=["NAME_1", indicator],
+        aliases=["County:", "Value:"],
+        sticky=True
+    )
  ).add_to(m)
  
- 
  #Render the map
- st_folium(m, width=900, height=500)
+ #st_folium(m, width=900, height=500)
  # Add markers with detailed info
  for _, row in df.iterrows():
      folium.Marker(
@@ -453,8 +444,14 @@ with tab3:
 
  colormap.add_to(m)
 
- map_data = st_folium(m, width=700, height=500)
- 
+  map_data = st_folium(m, width=700, height=500)
+
+if map_data:
+    if map_data.get("last_object_clicked"):
+        clicked = map_data["last_object_clicked"].get("properties", {}).get("NAME_1")
+
+        if clicked:
+            st.session_state.selected_county = clicked.strip()
  
  st.info("Darker regions indicate higher values of the selected indicator.")
  st.success("Learning Insight: Spatial disparities highlight regional inequalities.")
@@ -465,17 +462,15 @@ with tab3:
  county_list = df["County"].tolist()
 
 # --- 1. HANDLE MAP CLICK FIRST ---
- if map_data and map_data.get("last_active_drawing"):
-    feature = map_data["last_active_drawing"]
+ # --- HANDLE MAP CLICK ---
+if map_data and map_data.get("last_object_clicked"):
+    clicked = map_data["last_object_clicked"].get("properties", {}).get("NAME_1")
 
-    if "properties" in feature:
-        clicked = feature["properties"].get("NAME_1")
+    if clicked:
+        clicked_clean = clicked.strip()
 
-        if clicked:
-            clicked_clean = clicked.strip().title()
-
-            if clicked_clean in county_list:
-                st.session_state.selected_county = clicked_clean
+        if clicked_clean in df["County"].values:
+            st.session_state.selected_county = clicked_clean
 
 # --- 2. INITIALIZE STATE SAFELY ---
  if "selected_county" not in st.session_state:
