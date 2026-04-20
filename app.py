@@ -464,7 +464,7 @@ with tab3:
  # --- MAP CLICK FEEDBACK ---
  if map_data and map_data.get("last_active_drawing"):
     feature = map_data["last_active_drawing"]
-    if "properties" in feature:
+ if "properties" in feature:
             clicked = feature["properties"].get("NAME_1")
 
             #if clicked:
