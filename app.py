@@ -428,7 +428,7 @@ with tab3:
  ).add_to(m)
  
  #Render the map
- #st_folium(m, width=900, height=500)
+ st_folium(m, width=900, height=500)
  # Add markers with detailed info
  for _, row in df.iterrows():
      folium.Marker(
@@ -444,7 +444,7 @@ with tab3:
 
  colormap.add_to(m)
 
- map_data = st_folium(m, width=700, height=500)
+ map_data = st_folium(m, width=900, height=500)
 
  if map_data:
     if map_data.get("last_object_clicked"):
