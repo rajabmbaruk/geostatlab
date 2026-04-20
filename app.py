@@ -467,8 +467,8 @@ with tab3:
  if "properties" in feature:
             clicked = feature["properties"].get("NAME_1")
 
-            #if clicked:
- st.session_state.selected_county = clicked.strip().title()
+ if clicked:
+     st.session_state.selected_county = clicked.strip().title()
 
  # --- DROPDOWN (SYNCED WITH MAP) ---
  #selected = st.selectbox(
