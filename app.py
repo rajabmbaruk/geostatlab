@@ -473,8 +473,7 @@ with tab3:
  # --- DROPDOWN (SYNCED WITH MAP) ---
  selected = st.selectbox(
        "Select County for Details",
-      df["County"],
-   index=list(df["County"]).index(st.session_state.selected_county)
+      df["County"],index=list(df["County"]).index(st.session_state.selected_county)
  )
 
  # Update session state if user changes dropdown
