@@ -463,7 +463,7 @@ with tab3:
 
 # --- 1. HANDLE MAP CLICK FIRST ---
  # --- HANDLE MAP CLICK ---
-if map_data and map_data.get("last_object_clicked"):
+ if map_data and map_data.get("last_object_clicked"):
     clicked = map_data["last_object_clicked"].get("properties", {}).get("NAME_1")
 
     if clicked:
