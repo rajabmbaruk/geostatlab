@@ -483,7 +483,7 @@ with tab3:
  # --- USE SINGLE SOURCE ---
  county_data = df[df["County"] == st.session_state.selected_county]
 
- st.write("### 📊 County Statistics",st.session_state.selected_county = clicked.strip().title())
+ st.write("### 📊 County Statistics",st.session_state.selected_county == clicked.strip().title())
  st.write(county_data)
 # -------------------------
 # Policy Simulation
