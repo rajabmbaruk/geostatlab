@@ -297,8 +297,7 @@ with tab4:
   if selected not in county_list:
     selected = county_list[0]
     st.session_state.selected_county = selected
-  if st.session_state.selected_county not in county_list:
-        st.session_state.selected_county = county_list[0]
+  
 
   selected = st.selectbox(
     "Select County for Details",
