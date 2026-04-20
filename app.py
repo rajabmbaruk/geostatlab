@@ -428,7 +428,7 @@ with tab3:
  ).add_to(m)
  
  #Render the map
- st_folium(m, width=900, height=500)
+ #st_folium(m, width=900, height=500)
  # Add markers with detailed info
  for _, row in df.iterrows():
      folium.Marker(
@@ -442,17 +442,10 @@ with tab3:
          """
      ).add_to(m)
 
- colormap.add_to(m)
+ #colormap.add_to(m)
 
  map_data = st_folium(m, width=900, height=500)
 
- if map_data:
-    if map_data.get("last_object_clicked"):
-        clicked = map_data["last_object_clicked"].get("properties", {}).get("NAME_1")
-
-        if clicked:
-            st.session_state.selected_county = clicked.strip()
- 
  st.info("Darker regions indicate higher values of the selected indicator.")
  st.success("Learning Insight: Spatial disparities highlight regional inequalities.")
 
