@@ -461,36 +461,41 @@ with tab3:
 
  # Click interaction feedback
  st.subheader("Selected County Insights")
- # --- MAP CLICK FEEDBACK ---
- if map_data and map_data.get("last_active_drawing"):
-    feature = map_data["last_active_drawing"]
- if "properties" in feature:
-            clicked = feature["properties"].get("NAME_1")
 
- if clicked:
-     st.session_state.selected_county = clicked.title()
-
- # --- DROPDOWN (SYNCED WITH MAP) ---
  county_list = df["County"].tolist()
 
- selected = st.session_state.get("selected_county", county_list[0])
+# --- 1. HANDLE MAP CLICK FIRST ---
+ if map_data and map_data.get("last_active_drawing"):
+    feature = map_data["last_active_drawing"]
 
- # Ensure valid value
- if selected not in county_list:
-    selected = county_list[0]
-    st.session_state.selected_county = selected
+    if "properties" in feature:
+        clicked = feature["properties"].get("NAME_1")
 
+        if clicked:
+            clicked_clean = clicked.strip().title()
+
+            if clicked_clean in county_list:
+                st.session_state.selected_county = clicked_clean
+
+# --- 2. INITIALIZE STATE SAFELY ---
+ if "selected_county" not in st.session_state:
+    st.session_state.selected_county = county_list[0]
+
+# --- 3. ENSURE VALID VALUE ---
+ if st.session_state.selected_county not in county_list:
+    st.session_state.selected_county = county_list[0]
+
+# --- 4. DROPDOWN (SYNCED) ---
  selected = st.selectbox(
     "Select County",
     county_list,
-    index=county_list.index(selected)
+    index=county_list.index(st.session_state.selected_county)
  )
- 
 
- # Update session state if user changes dropdown
-# st.session_state.selected_county = selected
+# --- 5. SYNC BACK ---
+ st.session_state.selected_county = selected
 
- # --- USE SINGLE SOURCE ---
+# --- 6. USE SINGLE SOURCE ---
  county_data = df[df["County"] == st.session_state.selected_county]
 
  st.write(f"### 📊 County Statistics for {st.session_state.selected_county}")
