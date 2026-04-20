@@ -471,10 +471,21 @@ with tab3:
      st.session_state.selected_county = clicked.title()
 
  # --- DROPDOWN (SYNCED WITH MAP) ---
+ county_list = df["County"].tolist()
+
+ selected = st.session_state.get("selected_county", county_list[0])
+
+ # Ensure valid value
+ if selected not in county_list:
+    selected = county_list[0]
+    st.session_state.selected_county = selected
+
  selected = st.selectbox(
-       "Select County for Details",
-      df["County"],index=list(df["County"]).index(st.session_state.selected_county)
+    "Select County",
+    county_list,
+    index=county_list.index(selected)
  )
+ 
 
  # Update session state if user changes dropdown
 # st.session_state.selected_county = selected
