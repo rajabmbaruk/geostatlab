@@ -9,6 +9,55 @@ from folium.plugins import MarkerCluster
 
 st.set_page_config(page_title="GeoStatLab", page_icon="📊", layout="wide")
 
+
+# -------------------------
+# LOAD DATA
+# -------------------------
+@st.cache_data
+def load_data():
+    return pd.read_csv("geostatlab_data.csv")
+
+@st.cache_data
+def load_geojson():
+    path = os.path.join(os.path.dirname(__file__), "kenya_counties.geojson")
+    with open(path) as f:
+        return json.load(f)
+
+df_base = load_data()
+geojson = load_geojson()
+
+#---------------------------
+# Panel Data
+#---------------------------
+years = list(range(2018, 2025))
+panel = []
+
+for _, row in df_base.iterrows():
+    for i, year in enumerate(years):
+        r = row.copy()
+        r["Year"] = year
+
+        r["Household_Income"] *= (1 + 0.05 * i)
+        r["Poverty_Rate"] *= (1 - 0.02 * i)
+        r["Agricultural_Output"] *= (1 + np.random.uniform(-0.1, 0.1))
+        r["Education_Level"] = min(1, r["Education_Level"] * (1 + 0.015 * i))
+        r["Unemployment_Rate"] *= (1 + np.random.uniform(-0.05, 0.05))
+
+        panel.append(r)
+
+df = pd.DataFrame(panel).sort_values(["County", "Year"])
+
+#----------------------------
+# Global State
+#----------------------------
+county_list = sorted(df["County"].unique())
+
+if "selected_county" not in st.session_state:
+    st.session_state.selected_county = county_list[0]
+
+if "year" not in st.session_state:
+    st.session_state.year = df["Year"].max()
+
 # -------------------------
 # UI HEADER
 # -------------------------
@@ -247,55 +296,6 @@ with tab6:
 
     elif step == "4. Policy":
         st.write("Simulate interventions")
-
-
-# -------------------------
-# LOAD DATA
-# -------------------------
-@st.cache_data
-def load_data():
-    return pd.read_csv("geostatlab_data.csv")
-
-@st.cache_data
-def load_geojson():
-    path = os.path.join(os.path.dirname(__file__), "kenya_counties.geojson")
-    with open(path) as f:
-        return json.load(f)
-
-df_base = load_data()
-geojson = load_geojson()
-
-#---------------------------
-# Panel Data
-#---------------------------
-years = list(range(2018, 2025))
-panel = []
-
-for _, row in df_base.iterrows():
-    for i, year in enumerate(years):
-        r = row.copy()
-        r["Year"] = year
-
-        r["Household_Income"] *= (1 + 0.05 * i)
-        r["Poverty_Rate"] *= (1 - 0.02 * i)
-        r["Agricultural_Output"] *= (1 + np.random.uniform(-0.1, 0.1))
-        r["Education_Level"] = min(1, r["Education_Level"] * (1 + 0.015 * i))
-        r["Unemployment_Rate"] *= (1 + np.random.uniform(-0.05, 0.05))
-
-        panel.append(r)
-
-df = pd.DataFrame(panel).sort_values(["County", "Year"])
-
-#----------------------------
-# Global State
-#----------------------------
-county_list = sorted(df["County"].unique())
-
-if "selected_county" not in st.session_state:
-    st.session_state.selected_county = county_list[0]
-
-if "year" not in st.session_state:
-    st.session_state.year = df["Year"].max()
 
 #-----------------------------
 # Centroid
