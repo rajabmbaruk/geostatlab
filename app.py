@@ -459,18 +459,115 @@ with tab3:
 #Data Analyis
 #----------------------------
 with tab4:
-    st.header("Data Analysis")
+  st.header("Data Analysis")
 
-    selected = st.session_state.selected_county
+  selected = st.session_state.selected_county
 
-    indicator = st.selectbox(
+  indicator = st.selectbox(
         "Indicator",
         ["Household_Income", "Poverty_Rate", "Agricultural_Output"]
-    )
+  )
 
-    trend = df[df["County"] == selected]
+  trend = df[df["County"] == selected]
 
-    st.line_chart(trend.set_index("Year")[indicator])
+  st.line_chart(trend.set_index("Year")[indicator])
+# -------------------------
+# Data Analysis
+# -------------------------
+#with tab4:
+    #elif module == "📈 Data Analysis":
+  st.header("⚙️ Policy Simulation")
+
+  policy = st.selectbox("Policy", ["Agriculture", "Education", "Jobs"])
+  intensity = st.slider("Intensity", 0, 50, 10)
+
+  df_sim = df_year.copy()
+
+  if policy == "Agriculture":
+    df_sim["Agricultural_Output"] *= (1 + intensity/100)
+
+  elif policy == "Education":
+    df_sim["Education_Level"] *= (1 + intensity/100)
+
+  elif policy == "Jobs":
+    df_sim["Unemployment_Rate"] *= (1 - intensity/100)
+
+  st.bar_chart(df_sim.set_index("County")[indicator])
+  play = st.checkbox("▶️ Play Time Animation")
+
+  if play:
+    import time
+    for y in years:
+        st.session_state["year"] = y
+        time.sleep(0.5)
+        st.rerun()
+  
+  st.bar_chart(df.set_index("County")[indicator])
+  
+  st.markdown("### Insights")
+
+  st.write(df.sort_values(indicator, ascending=False).head(3))
+   
+  st.success("Learning Insight: Spatial disparities highlight regional inequalities.")
+  county_list = df["County"].tolist()
+
+    # Ensure valid selection
+  #county_list = df["County"].tolist()
+
+  selected = st.session_state.get("selected_county", county_list[0])
+
+  # Ensure it's valid
+  if selected not in county_list:
+    selected = county_list[0]
+    st.session_state.selected_county = selected
+  
+
+  selected = st.selectbox(
+    "Select County for Details",
+    county_list,
+    index=county_list.index(selected)
+  )
+
+  # Sync
+  st.session_state.selected_county = selected
+
+  county_data = df[df["County"] == selected]
+
+  selected = st.session_state.selected_county
+
+  trend_data = df[df["County"] == selected]
+
+  st.line_chart(
+    trend_data.set_index("Year")[indicator]
+  )  
+  
+  if not county_data.empty:
+    row = county_data.iloc[0]
+
+    col1, col2, col3 = st.columns(3)
+
+    with col1:
+        card("💰 Income", f"<h3>KES {int(row['Household_Income']):,}</h3>")
+
+    with col2:
+        card("📉 Poverty", f"<h3>{row['Poverty_Rate']*100:.1f}%</h3>")
+
+    with col3:
+        card("🌾 Agriculture", f"<h3>{int(row['Agricultural_Output']):,}tons</h3>")
+
+        st.dataframe(county_data)
+
+        csv = county_data.to_csv(index=False).encode("utf-8")
+
+        st.download_button(
+            "📥 Download County Data",
+            csv,
+            f"{selected}.csv",
+            "text/csv"
+       )
+  else:
+        st.warning("No data available")
+
 #-------------------------
 # Policy Simulation
 #------------------------
@@ -775,333 +872,6 @@ with tab2:
  
  elif sampling_method == "Systematic":
      st.info("Systematic sampling selects every k-th unit from the population.")
-# -------------------------
-# INTERACTIVE MAP
-# -------------------------
-with tab3:
-    #elif module == "🗺️ Interactive Map":
- st.header("Kenya Spatial Analysis")
- 
- years = sorted(df["Year"].unique())
-
- selected_year = st.slider(
-    "📅 Select Year",
-    min_value=int(min(years)),
-    max_value=int(max(years)),
-    value=int(max(years)),
-    step=1
- )
- df_year = df[df["Year"] == selected_year]
-    
- indicator_map = {
- "Poverty Rate (%)": "Poverty_Rate",
- "Household Income (KES)": "Household_Income",
- "Unemployment Rate (%)": "Unemployment_Rate",
- "Agricultural Output (%)": "Agricultural_Output",
-  "Education Level":   "Education_Level"
- }
-
- selected_label = st.selectbox("Select Indicator", list(indicator_map.keys()))
- indicator = indicator_map[selected_label]
-
- # Clean dataset county names (important for matching)
- 
- df_year["County"] = df_year["County"].str.strip()
- 
- if "selected_county" not in st.session_state:
-   st.session_state.selected_county = df_year["County"].iloc[0]
-    
- # Create lookup from dataframe
- data_lookup = df_year.set_index("County")[indicator].to_dict()
-
- def format_value(indicator, value):
-     if indicator == "Household_Income":
-         return f"KES {value:,.0f}"
-     elif indicator == "Poverty_Rate":
-         return f"{value*100:.1f}%"
-     elif indicator == "Education_Level":
-         return f"{value*100:.1f}%"
-     elif indicator == "Agricultural_Output":
-         return f"{value:,.0f} tons"
-     else:
-         return str(value)
-         
- # Inject values into GeoJSON
- for feature in geojson["features"]:
-     county_name = feature["properties"]["NAME_1"]
-     raw_value = data_lookup.get(county_name, 0)
-
-     feature["properties"][indicator] = format_value(indicator, raw_value)        
-
- # Create color scale
- min_val = df_year[indicator].min()
- max_val = df_year[indicator].max()
- colormap = cm.linear.YlOrRd_09.scale(min_val, max_val)
- colormap.caption = indicator
-
- m = folium.Map(location=[0.5, 37.8], zoom_start=6)
-
- folium.Choropleth(
-     geo_data=geojson,
-     data=df_year,
-     columns=["County", indicator],
-     key_on="feature.properties.NAME_1",  # adjust if needed
-     fill_color="YlOrRd",
-     legend_name=indicator
- ).add_to(m)
-
- #st_folium(m, width=900, height=500)
-
- folium.GeoJson(
-     geojson,
-     name="NAME_1"
- ).add_to(m)
-
- 
-
- # Enhanced GeoJson (Tooltip + Highlight)
- folium.GeoJson(
-    geojson,
-    name="Counties",
-    style_function=lambda x: {
-        "fillColor": "transparent",
-        "color": "black",
-        "weight": 0.5
-    },
-    highlight_function=lambda x: {
-        "fillColor": "#ffff00",
-        "color": "black",
-        "weight": 2,
-        "fillOpacity": 0.5
-    },
-    tooltip=folium.GeoJsonTooltip(
-        fields=["NAME_1", indicator],
-        aliases=["County:", "Value:"],
-        sticky=True
-    )
- ).add_to(m)
-
- 
- 
- #Render the map
- #st_folium(m, width=900, height=500)
- # Add markers with detailed info
- #import numpy as np
-
- def get_centroid(feature):
-    coords = feature["geometry"]["coordinates"]
-
-    # Handle MultiPolygon
-    if feature["geometry"]["type"] == "MultiPolygon":
-        coords = coords[0][0]
-    else:  # Polygon
-        coords = coords[0]
-
-    lons = [point[0] for point in coords]
-    lats = [point[1] for point in coords]
-
-    return [np.mean(lats), np.mean(lons)]
-
- centroid_lookup = {}
-
- for feature in geojson["features"]:
-    county_name = feature["properties"]["NAME_1"].strip()
-    centroid_lookup[county_name] = get_centroid(feature)
-    
- for _, row in df_year.iterrows():
-    county = row["County"]
-
- if county in centroid_lookup:
-        folium.Marker(
-            location=centroid_lookup[county],
-            popup=f"""
-            <b>{county}</b><br>
-            Income: {row['Household_Income']:,}<br>
-            Poverty: {row['Poverty_Rate']:.2f}<br>
-            Agriculture: {row['Agricultural_Output']:,}<br>
-            Education: {row['Education_Level']:.2f}
-            """
-        ).add_to(m)
-     
- marker_cluster = MarkerCluster().add_to(m)
-
- min_val = df_year[indicator].min()
- max_val = df_year[indicator].max()
-
- def scale_radius(value):
-    return 5 + 15 * ((value - min_val) / (max_val - min_val + 1e-6))
-
- for _, row in df_year.iterrows():
-    county = row["County"]
-    value = row[indicator]
-
-    if county in centroid_lookup:
-        color = colormap(value)
-
-        folium.CircleMarker(
-            location=centroid_lookup[county],
-            radius=scale_radius(value),
-            color=color,
-            fill=True,
-            fill_color=color,
-            fill_opacity=0.7,
-            popup=f"""
-            <b>{county}</b><br>
-            {indicator}: {value}
-            """
-        ).add_to(marker_cluster)
-        #colormap.add_to(m)
- folium.LayerControl().add_to(m)
- map_data = st_folium(m, width=900, height=500)
- 
- if map_data and map_data.get("last_object_clicked"):
-    clicked = map_data["last_object_clicked"].get("properties", {}).get("NAME_1")
-
-    if clicked:
-        clicked_clean = clicked.strip()
-
-        if clicked_clean in df_year["County"].values:
-            st.session_state.selected_county = clicked_clean
-            st.rerun()
-        
- st.info("Darker regions indicate higher values of the selected indicator.")
- st.success("Learning Insight: Spatial disparities highlight regional inequalities.")
-
- # Click interaction feedback
- st.subheader("Selected County Insights")
-
- county_list = df_year["County"].tolist()
-
-# --- 1. HANDLE MAP CLICK FIRST ---
- # --- HANDLE MAP CLICK ---
- if map_data and map_data.get("last_object_clicked"):
-    clicked = map_data["last_object_clicked"].get("properties", {}).get("NAME_1")
-
-    if clicked:
-        clicked_clean = clicked.strip()
-
-        if clicked_clean in df_year["County"].values:
-            st.session_state.selected_county = clicked_clean
-
-# --- 2. INITIALIZE STATE SAFELY ---
- if "selected_county" not in st.session_state:
-    st.session_state.selected_county = county_list[0]
-
-# --- 3. ENSURE VALID VALUE ---
- if st.session_state.selected_county not in county_list:
-    st.session_state.selected_county = county_list[0]
-
-# --- 4. DROPDOWN (SYNCED) ---
- selected = st.selectbox(
-    "Select County",
-    county_list,
-    index=county_list.index(st.session_state.selected_county)
- )
-
-# --- 5. SYNC BACK ---
- st.session_state.selected_county = selected
-
-# --- 6. USE SINGLE SOURCE ---
- county_data = df_year[df_year["County"] == st.session_state.selected_county]
-
- st.write(f"### 📊 County Statistics for {st.session_state.selected_county}")
- st.write(county_data)
-# -------------------------
-# Data Analysis
-# -------------------------
-with tab4:
-    #elif module == "📈 Data Analysis":
-  st.header("⚙️ Policy Simulation")
-
-  policy = st.selectbox("Policy", ["Agriculture", "Education", "Jobs"])
-  intensity = st.slider("Intensity", 0, 50, 10)
-
-  df_sim = df_year.copy()
-
-  if policy == "Agriculture":
-    df_sim["Agricultural_Output"] *= (1 + intensity/100)
-
-  elif policy == "Education":
-    df_sim["Education_Level"] *= (1 + intensity/100)
-
-  elif policy == "Jobs":
-    df_sim["Unemployment_Rate"] *= (1 - intensity/100)
-
-  st.bar_chart(df_sim.set_index("County")[indicator])
-  play = st.checkbox("▶️ Play Time Animation")
-
-  if play:
-    import time
-    for y in years:
-        st.session_state["year"] = y
-        time.sleep(0.5)
-        st.rerun()
-  
-  st.bar_chart(df.set_index("County")[indicator])
-  
-  st.markdown("### Insights")
-
-  st.write(df.sort_values(indicator, ascending=False).head(3))
-   
-  st.success("Learning Insight: Spatial disparities highlight regional inequalities.")
-  county_list = df["County"].tolist()
-
-    # Ensure valid selection
-  #county_list = df["County"].tolist()
-
-  selected = st.session_state.get("selected_county", county_list[0])
-
-  # Ensure it's valid
-  if selected not in county_list:
-    selected = county_list[0]
-    st.session_state.selected_county = selected
-  
-
-  selected = st.selectbox(
-    "Select County for Details",
-    county_list,
-    index=county_list.index(selected)
-  )
-
-  # Sync
-  st.session_state.selected_county = selected
-
-  county_data = df[df["County"] == selected]
-
-  selected = st.session_state.selected_county
-
-  trend_data = df[df["County"] == selected]
-
-  st.line_chart(
-    trend_data.set_index("Year")[indicator]
-  )  
-  
-  if not county_data.empty:
-    row = county_data.iloc[0]
-
-    col1, col2, col3 = st.columns(3)
-
-    with col1:
-        card("💰 Income", f"<h3>KES {int(row['Household_Income']):,}</h3>")
-
-    with col2:
-        card("📉 Poverty", f"<h3>{row['Poverty_Rate']*100:.1f}%</h3>")
-
-    with col3:
-        card("🌾 Agriculture", f"<h3>{int(row['Agricultural_Output']):,}tons</h3>")
-
-        st.dataframe(county_data)
-
-        csv = county_data.to_csv(index=False).encode("utf-8")
-
-        st.download_button(
-            "📥 Download County Data",
-            csv,
-            f"{selected}.csv",
-            "text/csv"
-       )
-  else:
-        st.warning("No data available")
 # -------------------------
 # Policy Simulation
 # -------------------------
