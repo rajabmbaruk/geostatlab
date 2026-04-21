@@ -848,9 +848,18 @@ with tab5:
     #elif module == "🏛️ Policy Simulation":
   st.header("⚙️ Policy Simulation")
 
-  policy = st.selectbox("Policy", ["Agriculture", "Education", "Jobs"])
-  intensity = st.slider("Intensity", 0, 50, 10)
-
+  policy = st.selectbox(
+    "Policy",
+    ["Agriculture", "Education", "Jobs"],
+    key="policy_select"
+  )
+  intensity = st.slider(
+    "Intensity",
+    0,
+    50,
+    10,
+    key="policy_intensity_slider"
+  )
   df_sim = df_year.copy()
 
   if policy == "Agriculture":
