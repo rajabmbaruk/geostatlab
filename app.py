@@ -227,7 +227,7 @@ with tab3:
 # -------------------------
 # INTERACTIVE MAP
 # -------------------------
-with tab3:
+#with tab3:
     #elif module == "🗺️ Interactive Map":
  st.header("Kenya Spatial Analysis")
  
