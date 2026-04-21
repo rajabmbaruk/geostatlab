@@ -62,10 +62,7 @@ tab0, tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs([
 ])
 if "active_tab" not in st.session_state:
     st.session_state.active_tab = "Home"
-county_list = sorted(df_year["County"].unique())
 
-if "selected_county" not in st.session_state:
-    st.session_state.selected_county = county_list[0]
 
 if "year" not in st.session_state:
     st.session_state.year = df["Year"].max()
