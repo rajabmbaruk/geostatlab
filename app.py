@@ -478,7 +478,8 @@ with tab3:
         min_value=int(min(years)),
         max_value=int(max(years)),
         value=int(max(years)),
-        step=1
+        step=1,
+        key="year_slider"
     )
     df_year = df[df["Year"] == selected_year]
         
