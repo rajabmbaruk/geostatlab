@@ -430,17 +430,42 @@ with tab3:
  #Render the map
  #st_folium(m, width=900, height=500)
  # Add markers with detailed info
+ import numpy as np
+
+ def get_centroid(feature):
+    coords = feature["geometry"]["coordinates"]
+
+    # Handle MultiPolygon
+    if feature["geometry"]["type"] == "MultiPolygon":
+        coords = coords[0][0]
+    else:  # Polygon
+        coords = coords[0]
+
+    lons = [point[0] for point in coords]
+    lats = [point[1] for point in coords]
+
+    return [np.mean(lats), np.mean(lons)]
+
+ centroid_lookup = {}
+
+ for feature in geojson["features"]:
+    county_name = feature["properties"]["NAME_1"].strip()
+    centroid_lookup[county_name] = get_centroid(feature)
+    
  for _, row in df.iterrows():
-     folium.Marker(
-         location=[-0.5 + hash(row["County"]) % 5, 36 + hash(row["County"]) % 5],
-         popup=f"""
-         <b>{row['County']}</b><br>
-         Income: {row['Household_Income']}<br>
-         Poverty: {row['Poverty_Rate']}<br>
-         Agriculture: {row['Agricultural_Output']}<br>
-         Education: {row['Education_Level']}
-         """
-     ).add_to(m)
+    county = row["County"]
+
+ if county in centroid_lookup:
+        folium.Marker(
+            location=centroid_lookup[county],
+            popup=f"""
+            <b>{county}</b><br>
+            Income: {row['Household_Income']:,}<br>
+            Poverty: {row['Poverty_Rate']:.2f}<br>
+            Agriculture: {row['Agricultural_Output']:,}<br>
+            Education: {row['Education_Level']:.2f}
+            """
+        ).add_to(m)
 
  #colormap.add_to(m)
 
