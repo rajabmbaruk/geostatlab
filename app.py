@@ -8,6 +8,7 @@ import json
 import numpy as np
 import branca.colormap as cm
 import io
+from folium.plugins import MarkerCluster
 
 st.set_page_config(
     page_title="GeoStatLab",
@@ -42,7 +43,57 @@ def load_geojson():
 geojson = load_geojson()
 df = load_data()
 
+years = list(range(2018, 2025))  # 2018–2024
 
+expanded_data = []
+
+for _, row in df.iterrows():
+    base_income = row["Household_Income"]
+    base_poverty = row["Poverty_Rate"]
+    base_agri = row["Agricultural_Output"]
+    base_edu = row["Education_Level"]
+    base_unemp = row["Unemployment_Rate"]
+
+    for i, year in enumerate(years):
+
+        new_row = row.copy()
+
+        # --- Simulate realistic trends ---
+        new_row["Year"] = year
+
+        # Income grows ~3–7% yearly
+        new_row["Household_Income"] = base_income * (1 + 0.04 * i + np.random.uniform(-0.01, 0.02))
+
+        # Poverty reduces slowly
+        new_row["Poverty_Rate"] = max(0, base_poverty * (1 - 0.02 * i + np.random.uniform(-0.01, 0.01)))
+
+        # Agriculture fluctuates
+        new_row["Agricultural_Output"] = base_agri * (1 + np.random.uniform(-0.1, 0.1))
+
+        # Education improves gradually
+        new_row["Education_Level"] = min(1, base_edu * (1 + 0.015 * i))
+
+        # Unemployment fluctuates slightly
+        new_row["Unemployment_Rate"] = max(0, base_unemp * (1 + np.random.uniform(-0.05, 0.05)))
+
+        expanded_data.append(new_row)
+
+# Replace dataset
+df = pd.DataFrame(expanded_data)
+df = df.sort_values(["County", "Year"])
+growth_factor = np.random.uniform(0.8, 1.2)
+
+new_row["Household_Income"] *= growth_factor
+if row["County"] in ["Nairobi", "Kiambu"]:
+    new_row["Household_Income"] *= 1.2
+csv = df.to_csv(index=False).encode("utf-8")
+
+st.download_button(
+    "📥 Download Multi-Year Dataset",
+    csv,
+    "geostatlab_panel_data.csv",
+    "text/csv"
+)
 # -------------------------
 # UI HEADER
 # -------------------------
@@ -65,6 +116,22 @@ st.markdown("""
 h1, h2, h3 {
     color: #1f4e79;
 }
+def style_function(feature):
+    county = feature["properties"]["NAME_1"]
+
+    if county == st.session_state.selected_county:
+        return {
+            "fillColor": "#ffcc00",
+            "color": "black",
+            "weight": 3,
+            "fillOpacity": 0.7
+        }
+    else:
+        return {
+            "fillColor": "transparent",
+            "color": "black",
+            "weight": 0.5
+        }
 </style>
 """, unsafe_allow_html=True)
 
@@ -256,89 +323,23 @@ with tab2:
  elif sampling_method == "Systematic":
      st.info("Systematic sampling selects every k-th unit from the population.")
 # -------------------------
-# Data Analysis
-# -------------------------
-with tab4:
-    #elif module == "📈 Data Analysis":
-  st.header("Data Analysis")
-  
-  indicator_map = {
-   "Household Income (KES)": "Household_Income",
-       "Poverty Rate (%)": "Poverty_Rate",
-       "Agricultural Output (%)":"Agricultural_Output",
-       "Education Level":"Education_Level", 
-       "Unemployment Rate (%)": "Unemployment_Rate"
-  }
-  
-  selected_label = st.selectbox("Select Indicator", list(indicator_map.keys()))
-  indicator = indicator_map[selected_label]
-  
-  
-  st.bar_chart(df.set_index("County")[indicator])
-  
-  st.markdown("### Insights")
-
-  st.write(df.sort_values(indicator, ascending=False).head(3))
-   
-  st.success("Learning Insight: Spatial disparities highlight regional inequalities.")
-  county_list = df["County"].tolist()
-
-    # Ensure valid selection
-  #county_list = df["County"].tolist()
-
-  selected = st.session_state.get("selected_county", county_list[0])
-
-  # Ensure it's valid
-  if selected not in county_list:
-    selected = county_list[0]
-    st.session_state.selected_county = selected
-  
-
-  selected = st.selectbox(
-    "Select County for Details",
-    county_list,
-    index=county_list.index(selected)
-  )
-
-  # Sync
-  st.session_state.selected_county = selected
-
-  county_data = df[df["County"] == selected]
-
-  if not county_data.empty:
-    row = county_data.iloc[0]
-
-    col1, col2, col3 = st.columns(3)
-
-    with col1:
-        card("💰 Income", f"<h3>KES {int(row['Household_Income']):,}</h3>")
-
-    with col2:
-        card("📉 Poverty", f"<h3>{row['Poverty_Rate']*100:.1f}%</h3>")
-
-    with col3:
-        card("🌾 Agriculture", f"<h3>{int(row['Agricultural_Output']):,}tons</h3>")
-
-        st.dataframe(county_data)
-
-        csv = county_data.to_csv(index=False).encode("utf-8")
-
-        st.download_button(
-            "📥 Download County Data",
-            csv,
-            f"{selected}.csv",
-            "text/csv"
-       )
-  else:
-        st.warning("No data available")
-# -------------------------
 # INTERACTIVE MAP
 # -------------------------
 with tab3:
     #elif module == "🗺️ Interactive Map":
  st.header("Kenya Spatial Analysis")
+ 
+ years = sorted(df["Year"].unique())
 
-
+ selected_year = st.slider(
+    "📅 Select Year",
+    min_value=int(min(years)),
+    max_value=int(max(years)),
+    value=int(max(years)),
+    step=1
+ )
+ df_year = df[df["Year"] == selected_year]
+    
  indicator_map = {
  "Poverty Rate (%)": "Poverty_Rate",
  "Household Income (KES)": "Household_Income",
@@ -432,7 +433,7 @@ with tab3:
  #Render the map
  #st_folium(m, width=900, height=500)
  # Add markers with detailed info
- import numpy as np
+ #import numpy as np
 
  def get_centroid(feature):
     coords = feature["geometry"]["coordinates"]
@@ -469,18 +470,40 @@ with tab3:
             """
         ).add_to(m)
      
- folium.CircleMarker(
-    location=centroid_lookup[county],
-    radius=8,
-    color="blue",
-    fill=True,
-    fill_opacity=0.7,
-    popup=...
- ).add_to(m)
- #colormap.add_to(m)
+ marker_cluster = MarkerCluster().add_to(m)
 
+ min_val = df[indicator].min()
+ max_val = df[indicator].max()
+
+ def scale_radius(value):
+    return 5 + 15 * ((value - min_val) / (max_val - min_val + 1e-6))
+    
+ for _, row in df.iterrows():
+    county = row["County"]
+    value = row[indicator]
+
+    if county in centroid_lookup:
+        folium.CircleMarker(
+            location=centroid_lookup[county],
+            radius=scale_radius(value),
+            color=color,
+            fill=True,
+            fill_opacity=0.6,
+            popup=f"{county}"
+            <b>{county}</b><br>
+            {indicator}: {value}
+            
+        ).add_to(marker_cluster)
+        #colormap.add_to(m)
+ folium.LayerControl().add_to(m)
  map_data = st_folium(m, width=900, height=500)
+ 
+ if map_data and map_data.get("last_object_clicked"):
+    clicked = map_data["last_object_clicked"].get("popup")
 
+    if clicked and clicked in df["County"].values:
+        st.session_state.selected_county = clicked
+        
  st.info("Darker regions indicate higher values of the selected indicator.")
  st.success("Learning Insight: Spatial disparities highlight regional inequalities.")
 
@@ -523,6 +546,98 @@ with tab3:
 
  st.write(f"### 📊 County Statistics for {st.session_state.selected_county}")
  st.write(county_data)
+# -------------------------
+# Data Analysis
+# -------------------------
+with tab4:
+    #elif module == "📈 Data Analysis":
+  st.header("Data Analysis")
+  
+  indicator_map = {
+   "Household Income (KES)": "Household_Income",
+       "Poverty Rate (%)": "Poverty_Rate",
+       "Agricultural Output (%)":"Agricultural_Output",
+       "Education Level":"Education_Level", 
+       "Unemployment Rate (%)": "Unemployment_Rate"
+  }
+  
+  selected_label = st.selectbox("Select Indicator", list(indicator_map.keys()))
+  indicator = indicator_map[selected_label]
+  
+  play = st.checkbox("▶️ Play Time Animation")
+
+  if play:
+    import time
+    for y in years:
+        st.session_state["year"] = y
+        time.sleep(0.5)
+        st.rerun()
+  
+  st.bar_chart(df.set_index("County")[indicator])
+  
+  st.markdown("### Insights")
+
+  st.write(df.sort_values(indicator, ascending=False).head(3))
+   
+  st.success("Learning Insight: Spatial disparities highlight regional inequalities.")
+  county_list = df["County"].tolist()
+
+    # Ensure valid selection
+  #county_list = df["County"].tolist()
+
+  selected = st.session_state.get("selected_county", county_list[0])
+
+  # Ensure it's valid
+  if selected not in county_list:
+    selected = county_list[0]
+    st.session_state.selected_county = selected
+  
+
+  selected = st.selectbox(
+    "Select County for Details",
+    county_list,
+    index=county_list.index(selected)
+  )
+
+  # Sync
+  st.session_state.selected_county = selected
+
+  county_data = df[df["County"] == selected]
+
+  selected = st.session_state.selected_county
+
+  trend_data = df[df["County"] == selected]
+
+  st.line_chart(
+    trend_data.set_index("Year")[indicator]
+  )  
+  
+  if not county_data.empty:
+    row = county_data.iloc[0]
+
+    col1, col2, col3 = st.columns(3)
+
+    with col1:
+        card("💰 Income", f"<h3>KES {int(row['Household_Income']):,}</h3>")
+
+    with col2:
+        card("📉 Poverty", f"<h3>{row['Poverty_Rate']*100:.1f}%</h3>")
+
+    with col3:
+        card("🌾 Agriculture", f"<h3>{int(row['Agricultural_Output']):,}tons</h3>")
+
+        st.dataframe(county_data)
+
+        csv = county_data.to_csv(index=False).encode("utf-8")
+
+        st.download_button(
+            "📥 Download County Data",
+            csv,
+            f"{selected}.csv",
+            "text/csv"
+       )
+  else:
+        st.warning("No data available")
 # -------------------------
 # Policy Simulation
 # -------------------------
