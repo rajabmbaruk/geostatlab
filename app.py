@@ -685,6 +685,7 @@ with tab3:
     selected = st.selectbox(
         "Select County",
         county_list,
+        key="map_county_select",
         index=county_list.index(st.session_state.selected_county)
     )
     
