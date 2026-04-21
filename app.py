@@ -589,6 +589,39 @@ with tab5:
         df_sim["Unemployment_Rate"] *= (1 - intensity/100)
 
     st.bar_chart(df_sim.set_index("County")["Poverty_Rate"])
+# -------------------------
+# Policy Simulation
+# -------------------------
+#with tab5:
+    #elif module == "🏛️ Policy Simulation":
+  st.header("⚙️ Policy Simulation")
+
+  policy = st.selectbox("Policy", ["Agriculture", "Education", "Jobs"])
+  intensity = st.slider("Intensity", 0, 50, 10)
+
+  df_sim = df_year.copy()
+
+  if policy == "Agriculture":
+    df_sim["Agricultural_Output"] *= (1 + intensity/100)
+
+  elif policy == "Education":
+    df_sim["Education_Level"] *= (1 + intensity/100)
+
+  elif policy == "Jobs":
+    df_sim["Unemployment_Rate"] *= (1 - intensity/100)
+
+  st.bar_chart(df_sim.set_index("County")[indicator])
+  
+  csv_sim = df_sim.to_csv(index=False).encode("utf-8")
+
+  st.download_button(
+        "📥 Download Simulation",
+        csv_sim,
+        "simulation.csv",
+        "text/csv"
+
+  )
+  st.success("Policy simulation demonstrates data-driven decision making")
     
 
 
@@ -872,39 +905,6 @@ with tab2:
  
  elif sampling_method == "Systematic":
      st.info("Systematic sampling selects every k-th unit from the population.")
-# -------------------------
-# Policy Simulation
-# -------------------------
-with tab5:
-    #elif module == "🏛️ Policy Simulation":
-  st.header("⚙️ Policy Simulation")
-
-  policy = st.selectbox("Policy", ["Agriculture", "Education", "Jobs"])
-  intensity = st.slider("Intensity", 0, 50, 10)
-
-  df_sim = df_year.copy()
-
-  if policy == "Agriculture":
-    df_sim["Agricultural_Output"] *= (1 + intensity/100)
-
-  elif policy == "Education":
-    df_sim["Education_Level"] *= (1 + intensity/100)
-
-  elif policy == "Jobs":
-    df_sim["Unemployment_Rate"] *= (1 - intensity/100)
-
-  st.bar_chart(df_sim.set_index("County")[indicator])
-  
-  csv_sim = df_sim.to_csv(index=False).encode("utf-8")
-
-  st.download_button(
-        "📥 Download Simulation",
-        csv_sim,
-        "simulation.csv",
-        "text/csv"
-
-  )
-  st.success("Policy simulation demonstrates data-driven decision making")
 
 with tab6:
     st.header("Guided Story Mode")
