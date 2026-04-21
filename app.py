@@ -572,23 +572,23 @@ with tab4:
 # Policy Simulation
 #------------------------
 with tab5:
-    st.header("Policy Simulation")
+  st.header("Policy Simulation")
 
-    df_year = df[df["Year"] == st.session_state.year]
+  df_year = df[df["Year"] == st.session_state.year]
 
-    policy = st.selectbox("Policy", ["Agriculture", "Education", "Jobs"])
-    intensity = st.slider("Intensity", 0, 50, 10)
+  policy = st.selectbox("Policy", ["Agriculture", "Education", "Jobs"])
+  intensity = st.slider("Intensity", 0, 50, 10)
 
-    df_sim = df_year.copy()
+  df_sim = df_year.copy()
 
-    if policy == "Agriculture":
+  if policy == "Agriculture":
         df_sim["Agricultural_Output"] *= (1 + intensity/100)
-    elif policy == "Education":
+  elif policy == "Education":
         df_sim["Education_Level"] *= (1 + intensity/100)
-    elif policy == "Jobs":
+  elif policy == "Jobs":
         df_sim["Unemployment_Rate"] *= (1 - intensity/100)
 
-    st.bar_chart(df_sim.set_index("County")["Poverty_Rate"])
+  st.bar_chart(df_sim.set_index("County")["Poverty_Rate"])
 # -------------------------
 # Policy Simulation
 # -------------------------
