@@ -823,7 +823,13 @@ with tab5:
     ["Agriculture", "Education", "Jobs"],
     key="policy_select"
   )
-  intensity = st.slider("Intensity", 0, 50, 10)
+  intensity = st.slider(
+    "Intensity",
+    0,
+    50,
+    10,
+    key="policy_intensity_slider"
+  )
 
   df_sim = df_year.copy()
 
