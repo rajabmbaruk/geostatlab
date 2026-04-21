@@ -818,7 +818,7 @@ with tab5:
 
   df_year = df[df["Year"] == st.session_state.year]
 
-  policy = st.selectbox(key="map_county_select"("Policy", ["Agriculture", "Education", "Jobs"]))
+  policy = st.selectbox(key="policy_select"("Policy", ["Agriculture", "Education", "Jobs"]))
   intensity = st.slider("Intensity", 0, 50, 10)
 
   df_sim = df_year.copy()
