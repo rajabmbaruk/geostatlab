@@ -229,41 +229,41 @@ with tab3:
 # -------------------------
 #with tab3:
     #elif module == "🗺️ Interactive Map":
-     st.header("Kenya Spatial Analysis")
+    st.header("Kenya Spatial Analysis")
      
-     years = sorted(df["Year"].unique())
+    years = sorted(df["Year"].unique())
     
-     selected_year = st.slider(
+    selected_year = st.slider(
         "📅 Select Year",
         min_value=int(min(years)),
         max_value=int(max(years)),
         value=int(max(years)),
         step=1
-     )
-     df_year = df[df["Year"] == selected_year]
+    )
+    df_year = df[df["Year"] == selected_year]
         
-     indicator_map = {
+    indicator_map = {
      "Poverty Rate (%)": "Poverty_Rate",
      "Household Income (KES)": "Household_Income",
      "Unemployment Rate (%)": "Unemployment_Rate",
      "Agricultural Output (%)": "Agricultural_Output",
       "Education Level":   "Education_Level"
-     }
+    }
     
-     selected_label = st.selectbox("Select Indicator", list(indicator_map.keys()))
-     indicator = indicator_map[selected_label]
+    selected_label = st.selectbox("Select Indicator", list(indicator_map.keys()))
+    indicator = indicator_map[selected_label]
     
      # Clean dataset county names (important for matching)
      
-     df_year["County"] = df_year["County"].str.strip()
+    df_year["County"] = df_year["County"].str.strip()
      
-     if "selected_county" not in st.session_state:
+    if "selected_county" not in st.session_state:
        st.session_state.selected_county = df_year["County"].iloc[0]
         
      # Create lookup from dataframe
-     data_lookup = df_year.set_index("County")[indicator].to_dict()
+    data_lookup = df_year.set_index("County")[indicator].to_dict()
     
-     def format_value(indicator, value):
+    def format_value(indicator, value):
          if indicator == "Household_Income":
              return f"KES {value:,.0f}"
          elif indicator == "Poverty_Rate":
@@ -276,40 +276,40 @@ with tab3:
              return str(value)
              
      # Inject values into GeoJSON
-     for feature in geojson["features"]:
+    for feature in geojson["features"]:
          county_name = feature["properties"]["NAME_1"]
          raw_value = data_lookup.get(county_name, 0)
     
          feature["properties"][indicator] = format_value(indicator, raw_value)        
     
      # Create color scale
-     min_val = df_year[indicator].min()
-     max_val = df_year[indicator].max()
-     colormap = cm.linear.YlOrRd_09.scale(min_val, max_val)
-     colormap.caption = indicator
+    min_val = df_year[indicator].min()
+    max_val = df_year[indicator].max()
+    colormap = cm.linear.YlOrRd_09.scale(min_val, max_val)
+    colormap.caption = indicator
     
-     m = folium.Map(location=[0.5, 37.8], zoom_start=6)
+    m = folium.Map(location=[0.5, 37.8], zoom_start=6)
     
-     folium.Choropleth(
+    folium.Choropleth(
          geo_data=geojson,
          data=df_year,
          columns=["County", indicator],
          key_on="feature.properties.NAME_1",  # adjust if needed
          fill_color="YlOrRd",
          legend_name=indicator
-     ).add_to(m)
+    ).add_to(m)
     
      #st_folium(m, width=900, height=500)
     
-     folium.GeoJson(
+    folium.GeoJson(
          geojson,
          name="NAME_1"
-     ).add_to(m)
+    ).add_to(m)
     
      
     
      # Enhanced GeoJson (Tooltip + Highlight)
-     folium.GeoJson(
+    folium.GeoJson(
         geojson,
         name="Counties",
         style_function=lambda x: {
@@ -323,12 +323,12 @@ with tab3:
             "weight": 2,
             "fillOpacity": 0.5
         },
-        tooltip=folium.GeoJsonTooltip(
+    tooltip=folium.GeoJsonTooltip(
             fields=["NAME_1", indicator],
             aliases=["County:", "Value:"],
             sticky=True
         )
-     ).add_to(m)
+    ).add_to(m)
     
      
      
@@ -337,7 +337,7 @@ with tab3:
      # Add markers with detailed info
      #import numpy as np
     
-     def get_centroid(feature):
+    def get_centroid(feature):
         coords = feature["geometry"]["coordinates"]
     
         # Handle MultiPolygon
@@ -351,16 +351,16 @@ with tab3:
     
         return [np.mean(lats), np.mean(lons)]
     
-     centroid_lookup = {}
+    centroid_lookup = {}
     
-     for feature in geojson["features"]:
+    for feature in geojson["features"]:
         county_name = feature["properties"]["NAME_1"].strip()
         centroid_lookup[county_name] = get_centroid(feature)
         
-     for _, row in df_year.iterrows():
+    for _, row in df_year.iterrows():
         county = row["County"]
     
-     if county in centroid_lookup:
+    if county in centroid_lookup:
             folium.Marker(
                 location=centroid_lookup[county],
                 popup=f"""
@@ -372,15 +372,15 @@ with tab3:
                 """
             ).add_to(m)
          
-     marker_cluster = MarkerCluster().add_to(m)
+    marker_cluster = MarkerCluster().add_to(m)
     
-     min_val = df_year[indicator].min()
-     max_val = df_year[indicator].max()
+    min_val = df_year[indicator].min()
+    max_val = df_year[indicator].max()
     
-     def scale_radius(value):
+    def scale_radius(value):
         return 5 + 15 * ((value - min_val) / (max_val - min_val + 1e-6))
     
-     for _, row in df_year.iterrows():
+    for _, row in df_year.iterrows():
         county = row["County"]
         value = row[indicator]
     
@@ -400,10 +400,10 @@ with tab3:
                 """
             ).add_to(marker_cluster)
             #colormap.add_to(m)
-     folium.LayerControl().add_to(m)
-     map_data = st_folium(m, width=900, height=500)
+    folium.LayerControl().add_to(m)
+    map_data = st_folium(m, width=900, height=500)
      
-     if map_data and map_data.get("last_object_clicked"):
+    if map_data and map_data.get("last_object_clicked"):
         clicked = map_data["last_object_clicked"].get("properties", {}).get("NAME_1")
     
         if clicked:
@@ -413,17 +413,17 @@ with tab3:
                 st.session_state.selected_county = clicked_clean
                 st.rerun()
             
-     st.info("Darker regions indicate higher values of the selected indicator.")
-     st.success("Learning Insight: Spatial disparities highlight regional inequalities.")
+    st.info("Darker regions indicate higher values of the selected indicator.")
+    st.success("Learning Insight: Spatial disparities highlight regional inequalities.")
     
      # Click interaction feedback
-     st.subheader("Selected County Insights")
+    st.subheader("Selected County Insights")
     
-     county_list = df_year["County"].tolist()
+    county_list = df_year["County"].tolist()
     
     # --- 1. HANDLE MAP CLICK FIRST ---
      # --- HANDLE MAP CLICK ---
-     if map_data and map_data.get("last_object_clicked"):
+    if map_data and map_data.get("last_object_clicked"):
         clicked = map_data["last_object_clicked"].get("properties", {}).get("NAME_1")
     
         if clicked:
@@ -433,28 +433,28 @@ with tab3:
                 st.session_state.selected_county = clicked_clean
     
     # --- 2. INITIALIZE STATE SAFELY ---
-     if "selected_county" not in st.session_state:
+    if "selected_county" not in st.session_state:
         st.session_state.selected_county = county_list[0]
     
     # --- 3. ENSURE VALID VALUE ---
-     if st.session_state.selected_county not in county_list:
+    if st.session_state.selected_county not in county_list:
         st.session_state.selected_county = county_list[0]
     
     # --- 4. DROPDOWN (SYNCED) ---
-     selected = st.selectbox(
+    selected = st.selectbox(
         "Select County",
         county_list,
         index=county_list.index(st.session_state.selected_county)
-     )
+    )
     
     # --- 5. SYNC BACK ---
-     st.session_state.selected_county = selected
+    st.session_state.selected_county = selected
     
     # --- 6. USE SINGLE SOURCE ---
-     county_data = df_year[df_year["County"] == st.session_state.selected_county]
+    county_data = df_year[df_year["County"] == st.session_state.selected_county]
     
-     st.write(f"### 📊 County Statistics for {st.session_state.selected_county}")
-     st.write(county_data)
+    st.write(f"### 📊 County Statistics for {st.session_state.selected_county}")
+    st.write(county_data)
 #------------------------
 #Data Analyis
 #----------------------------
