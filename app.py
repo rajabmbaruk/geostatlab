@@ -851,14 +851,14 @@ with tab5:
   policy = st.selectbox(
     "Policy",
     ["Agriculture", "Education", "Jobs"],
-    key="policy_select"
+    key="policy_select2"
   )
   intensity = st.slider(
     "Intensity",
     0,
     50,
     10,
-    key="policy_intensity_slider"
+    key="policy_intensity_slider2"
   )
   df_sim = df_year.copy()
 
