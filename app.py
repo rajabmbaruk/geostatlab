@@ -10,6 +10,249 @@ from folium.plugins import MarkerCluster
 st.set_page_config(page_title="GeoStatLab", page_icon="📊", layout="wide")
 
 # -------------------------
+# UI HEADER
+# -------------------------
+# Style
+st.markdown("""
+<style>
+.main {
+    background-color: #f4f6f9;
+}
+.block-container {
+    padding-top: 2rem;
+}
+.card {
+    background-color: grey;
+    padding: 1.2rem;
+    border-radius: 12px;
+    box-shadow: 0px 4px 12px rgba(0,0,0,0.08);
+    margin-bottom: 1rem;
+}
+h1, h2, h3 {
+    color: #1f4e79;
+}
+</style>
+""", unsafe_allow_html=True)
+
+# Re-usable Card Wrapper
+def card(title, content):
+    st.markdown(f"""
+    <div class="card">
+        <h4>{title}</h4>
+        {content}
+    </div>
+    """, unsafe_allow_html=True)
+
+# Header
+st.markdown("""
+# 🌍 GeoStatLab  
+### *Spatial Statistics & Policy Simulation Platform*
+""")
+st.markdown("""---""")
+# Sidebar
+
+tab0, tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs([
+    "🏠 Home",
+    "📊 Dataset Overview",
+    "🧪 Survey Simulation",
+    "🗺️ Spatial Map",
+    "📈 Data Analysis",
+    "⚙️ Policy Simulation",
+    "📖 Story Mode"
+])
+if "active_tab" not in st.session_state:
+    st.session_state.active_tab = "Home"
+county_list = sorted(df["County"].unique())
+
+if "selected_county" not in st.session_state:
+    st.session_state.selected_county = county_list[0]
+
+if "year" not in st.session_state:
+    st.session_state.year = df["Year"].max()
+# -------------------------
+# Learning Guide
+# -------------------------
+with tab0:
+    st.title("🌍 GeoStatLab")
+    st.subheader("Spatial Statistics & Policy Simulation Platform")
+
+    st.markdown("""
+    ### 📘 Learning Guide
+
+    Welcome to **GeoStatLab**, an interactive platform designed to help users explore the integration of **statistics, geospatial data, and policy simulation**.
+
+    This tool is inspired by the work of national statistical systems such as the Kenya National Bureau of Statistics (KNBS), and aims to support learning, decision-making, and data-driven policy design.
+    """)
+
+    st.markdown("---")
+
+    st.markdown("### 🧭 How to Use This Tool")
+
+    st.markdown("""
+    **1️⃣ Dataset Overview**
+    - Explore socio-economic indicators across counties  
+    - Understand the structure of official statistics  
+
+    **2️⃣ Spatial Map**
+    - Visualize geographic patterns  
+    - Hover to view indicators  
+    - Click a county to interact with the dashboard  
+
+    **3️⃣ Data Analysis**
+    - View detailed statistics for selected counties  
+    - Compare indicators across regions  
+
+    **4️⃣ Policy Simulation**
+    - Adjust policy variables (e.g. agriculture investment)  
+    - Observe simulated impact on poverty and production  
+
+    **5️⃣ Story Mode**
+    - Follow a guided learning journey from data → insights → policy  
+    """)
+
+    st.markdown("---")
+
+    st.markdown("### 🎯 Learning Objectives")
+
+    col1, col2 = st.columns(2)
+
+    with col1:
+        st.markdown("""
+        - Understand spatial distribution of socio-economic indicators  
+        - Interpret official statistics  
+        - Explore relationships between variables  
+        """)
+
+    with col2:
+        st.markdown("""
+        - Apply data to policy scenarios  
+        - Strengthen evidence-based decision making  
+        - Build intuition in geospatial analytics  
+        """)
+
+    st.markdown("---")
+
+    st.markdown("### 🚀 Quick Start")
+
+    st.info("""
+    👉 Go to the **🗺️ Spatial Map** tab  
+    👉 Click on any county  
+    👉 Then explore **📈 Data Analysis** and **⚙️ Policy Simulation**
+    """)
+    st.success("💡 Tip: The selected county will update across all modules automatically.")
+    
+    st.markdown("## 📘 Learning Guide")
+
+    with st.expander("📊 Dataset Overview"):
+        st.write("Explore indicators across counties")
+
+    with st.expander("🗺️ Spatial Map"):
+        st.write("Interact with geospatial data")
+
+    st.markdown("---")
+    st.caption("Developed as part of CATCON 9 – ISPRS 2026 | GeoStatLab Prototype")
+# -------------------------
+# Dataset Overview
+# -------------------------
+with tab1:
+    #elif module == "📊 Dataset Overview":
+ st.header("Dataset Overview")
+
+ 
+ st.dataframe(df)
+ csv_full = df.to_csv(index=False).encode("utf-8")
+
+ st.download_button(
+        "📥 Download Dataset",
+        csv_full,
+        "dataset.csv",
+        "text/csv"
+ )
+
+ st.subheader("Key Indicators")
+ st.write("Population Mean:", int(df["Population"].mean()))
+ st.write("Average Income (KES)", int(df["Household_Income"].mean()))
+ st.write("Average Poverty Rate (%)", round(df["Poverty_Rate"].mean(), 2))
+
+
+# -------------------------
+# Survey Simulation
+# -------------------------
+with tab2:
+    #elif module == "🧪 Survey Simulation":
+ st.header("Survey Simulation")
+
+
+ sample_size = st.slider("Sample Size", 5, len(df), 10)
+
+ sampling_method = st.selectbox(
+     "Select Sampling Method",
+     ["Simple Random", "Stratified", "Cluster", "Systematic"]
+     )
+
+ 
+ sample_size = min(sample_size, len(df))  # safety check
+     
+ if sampling_method == "Simple Random":
+         sample = df.sample(n=sample_size, replace=False)
+     
+ elif sampling_method == "Stratified":
+         sample = df.groupby("County", group_keys=False).apply(
+             lambda x: x.sample(min(len(x), max(1, sample_size // df["County"].nunique())))
+         )
+     
+ elif sampling_method == "Cluster":
+         clusters = np.random.choice(
+             df["County"].unique(),
+             size=min(3, df["County"].nunique()),
+             replace=False
+         )
+         sample = df[df["County"].isin(clusters)]
+     
+ elif sampling_method == "Systematic":
+         k = max(1, len(df) // sample_size)
+         sample = df.iloc[::k].head(sample_size)
+     
+ st.dataframe(sample)  
+ st.write("Sample Population Mean:", int(sample["Population"].mean()))
+ st.write("Sample Average Income (KES)", int(sample["Household_Income"].mean()))
+ st.write("Sample Poverty Rate (%)", round(sample["Poverty_Rate"].mean(), 2))
+
+ st.info("Compare this with full dataset to understand sampling bias")
+ st.success("Learning Insight: Spatial disparities highlight regional inequalities.")
+ if sampling_method == "Stratified":
+     st.info("Stratified sampling ensures representation across regions.")
+
+ elif sampling_method == "Cluster":
+     st.info("Cluster sampling is cost-effective for large geographic surveys.")
+ 
+ elif sampling_method == "Systematic":
+     st.info("Systematic sampling selects every k-th unit from the population.")
+
+with tab6:
+    st.header("Guided Story Mode")
+
+    step = st.radio("Step", [
+        "1. Dataset",
+        "2. Map",
+        "3. Analysis",
+        "4. Policy"
+    ])
+
+    if step == "1. Dataset":
+        st.write("Explore national statistics")
+
+    elif step == "2. Map":
+        st.write("Understand spatial patterns")
+
+    elif step == "3. Analysis":
+        st.write(f"Current county: {st.session_state.selected_county}")
+
+    elif step == "4. Policy":
+        st.write("Simulate interventions")
+
+
+# -------------------------
 # LOAD DATA
 # -------------------------
 @st.cache_data
@@ -686,244 +929,3 @@ st.download_button(
     "geostatlab_panel_data.csv",
     "text/csv"
 )
-# -------------------------
-# UI HEADER
-# -------------------------
-# Style
-st.markdown("""
-<style>
-.main {
-    background-color: #f4f6f9;
-}
-.block-container {
-    padding-top: 2rem;
-}
-.card {
-    background-color: grey;
-    padding: 1.2rem;
-    border-radius: 12px;
-    box-shadow: 0px 4px 12px rgba(0,0,0,0.08);
-    margin-bottom: 1rem;
-}
-h1, h2, h3 {
-    color: #1f4e79;
-}
-</style>
-""", unsafe_allow_html=True)
-
-# Re-usable Card Wrapper
-def card(title, content):
-    st.markdown(f"""
-    <div class="card">
-        <h4>{title}</h4>
-        {content}
-    </div>
-    """, unsafe_allow_html=True)
-
-# Header
-st.markdown("""
-# 🌍 GeoStatLab  
-### *Spatial Statistics & Policy Simulation Platform*
-""")
-st.markdown("""---""")
-# Sidebar
-
-tab0, tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs([
-    "🏠 Home",
-    "📊 Dataset Overview",
-    "🧪 Survey Simulation",
-    "🗺️ Spatial Map",
-    "📈 Data Analysis",
-    "⚙️ Policy Simulation",
-    "📖 Story Mode"
-])
-if "active_tab" not in st.session_state:
-    st.session_state.active_tab = "Home"
-county_list = sorted(df["County"].unique())
-
-if "selected_county" not in st.session_state:
-    st.session_state.selected_county = county_list[0]
-
-if "year" not in st.session_state:
-    st.session_state.year = df["Year"].max()
-# -------------------------
-# Learning Guide
-# -------------------------
-with tab0:
-    st.title("🌍 GeoStatLab")
-    st.subheader("Spatial Statistics & Policy Simulation Platform")
-
-    st.markdown("""
-    ### 📘 Learning Guide
-
-    Welcome to **GeoStatLab**, an interactive platform designed to help users explore the integration of **statistics, geospatial data, and policy simulation**.
-
-    This tool is inspired by the work of national statistical systems such as the Kenya National Bureau of Statistics (KNBS), and aims to support learning, decision-making, and data-driven policy design.
-    """)
-
-    st.markdown("---")
-
-    st.markdown("### 🧭 How to Use This Tool")
-
-    st.markdown("""
-    **1️⃣ Dataset Overview**
-    - Explore socio-economic indicators across counties  
-    - Understand the structure of official statistics  
-
-    **2️⃣ Spatial Map**
-    - Visualize geographic patterns  
-    - Hover to view indicators  
-    - Click a county to interact with the dashboard  
-
-    **3️⃣ Data Analysis**
-    - View detailed statistics for selected counties  
-    - Compare indicators across regions  
-
-    **4️⃣ Policy Simulation**
-    - Adjust policy variables (e.g. agriculture investment)  
-    - Observe simulated impact on poverty and production  
-
-    **5️⃣ Story Mode**
-    - Follow a guided learning journey from data → insights → policy  
-    """)
-
-    st.markdown("---")
-
-    st.markdown("### 🎯 Learning Objectives")
-
-    col1, col2 = st.columns(2)
-
-    with col1:
-        st.markdown("""
-        - Understand spatial distribution of socio-economic indicators  
-        - Interpret official statistics  
-        - Explore relationships between variables  
-        """)
-
-    with col2:
-        st.markdown("""
-        - Apply data to policy scenarios  
-        - Strengthen evidence-based decision making  
-        - Build intuition in geospatial analytics  
-        """)
-
-    st.markdown("---")
-
-    st.markdown("### 🚀 Quick Start")
-
-    st.info("""
-    👉 Go to the **🗺️ Spatial Map** tab  
-    👉 Click on any county  
-    👉 Then explore **📈 Data Analysis** and **⚙️ Policy Simulation**
-    """)
-    st.success("💡 Tip: The selected county will update across all modules automatically.")
-    
-    st.markdown("## 📘 Learning Guide")
-
-    with st.expander("📊 Dataset Overview"):
-        st.write("Explore indicators across counties")
-
-    with st.expander("🗺️ Spatial Map"):
-        st.write("Interact with geospatial data")
-
-    st.markdown("---")
-    st.caption("Developed as part of CATCON 9 – ISPRS 2026 | GeoStatLab Prototype")
-# -------------------------
-# Dataset Overview
-# -------------------------
-with tab1:
-    #elif module == "📊 Dataset Overview":
- st.header("Dataset Overview")
-
- 
- st.dataframe(df)
- csv_full = df.to_csv(index=False).encode("utf-8")
-
- st.download_button(
-        "📥 Download Dataset",
-        csv_full,
-        "dataset.csv",
-        "text/csv"
- )
-
- st.subheader("Key Indicators")
- st.write("Population Mean:", int(df["Population"].mean()))
- st.write("Average Income (KES)", int(df["Household_Income"].mean()))
- st.write("Average Poverty Rate (%)", round(df["Poverty_Rate"].mean(), 2))
-
-
-# -------------------------
-# Survey Simulation
-# -------------------------
-with tab2:
-    #elif module == "🧪 Survey Simulation":
- st.header("Survey Simulation")
-
-
- sample_size = st.slider("Sample Size", 5, len(df), 10)
-
- sampling_method = st.selectbox(
-     "Select Sampling Method",
-     ["Simple Random", "Stratified", "Cluster", "Systematic"]
-     )
-
- 
- sample_size = min(sample_size, len(df))  # safety check
-     
- if sampling_method == "Simple Random":
-         sample = df.sample(n=sample_size, replace=False)
-     
- elif sampling_method == "Stratified":
-         sample = df.groupby("County", group_keys=False).apply(
-             lambda x: x.sample(min(len(x), max(1, sample_size // df["County"].nunique())))
-         )
-     
- elif sampling_method == "Cluster":
-         clusters = np.random.choice(
-             df["County"].unique(),
-             size=min(3, df["County"].nunique()),
-             replace=False
-         )
-         sample = df[df["County"].isin(clusters)]
-     
- elif sampling_method == "Systematic":
-         k = max(1, len(df) // sample_size)
-         sample = df.iloc[::k].head(sample_size)
-     
- st.dataframe(sample)  
- st.write("Sample Population Mean:", int(sample["Population"].mean()))
- st.write("Sample Average Income (KES)", int(sample["Household_Income"].mean()))
- st.write("Sample Poverty Rate (%)", round(sample["Poverty_Rate"].mean(), 2))
-
- st.info("Compare this with full dataset to understand sampling bias")
- st.success("Learning Insight: Spatial disparities highlight regional inequalities.")
- if sampling_method == "Stratified":
-     st.info("Stratified sampling ensures representation across regions.")
-
- elif sampling_method == "Cluster":
-     st.info("Cluster sampling is cost-effective for large geographic surveys.")
- 
- elif sampling_method == "Systematic":
-     st.info("Systematic sampling selects every k-th unit from the population.")
-
-with tab6:
-    st.header("Guided Story Mode")
-
-    step = st.radio("Step", [
-        "1. Dataset",
-        "2. Map",
-        "3. Analysis",
-        "4. Policy"
-    ])
-
-    if step == "1. Dataset":
-        st.write("Explore national statistics")
-
-    elif step == "2. Map":
-        st.write("Understand spatial patterns")
-
-    elif step == "3. Analysis":
-        st.write(f"Current county: {st.session_state.selected_county}")
-
-    elif step == "4. Policy":
-        st.write("Simulate interventions")
