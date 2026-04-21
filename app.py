@@ -426,6 +426,8 @@ with tab3:
         sticky=True
     )
  ).add_to(m)
+
+ 
  
  #Render the map
  #st_folium(m, width=900, height=500)
@@ -466,7 +468,15 @@ with tab3:
             Education: {row['Education_Level']:.2f}
             """
         ).add_to(m)
-
+     
+ folium.CircleMarker(
+    location=centroid_lookup[county],
+    radius=8,
+    color="blue",
+    fill=True,
+    fill_opacity=0.7,
+    popup=...
+ ).add_to(m)
  #colormap.add_to(m)
 
  map_data = st_folium(m, width=900, height=500)
