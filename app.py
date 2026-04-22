@@ -8,7 +8,7 @@ import branca.colormap as cm
 from folium.plugins import MarkerCluster
 import plotly.express as px
 
-# -------------------------
+# ------------------------
 # CONFIG
 # -------------------------
 st.set_page_config(page_title="GeoStatLab", layout="wide")
