@@ -10,7 +10,7 @@ import plotly.express as px
 
 # ------------------------
 # CONFIG
-# -------------------------
+# ------------------------
 st.set_page_config(page_title="GeoStatLab", layout="wide")
 
 # -------------------------
