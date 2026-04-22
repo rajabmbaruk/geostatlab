@@ -439,19 +439,30 @@ with tab3:
     labels = list(indicator_map.keys())
     indicators = list(indicator_map.values())
 
-    selected_label = st.selectbox(
-        "Indicator (Map 1)",
-        labels,
+    # -------------------------
+# INDICATOR SELECTION (SIDE-BY-SIDE)
+# -------------------------
+col_ind1, col_ind2 = st.columns(2)
+
+with col_ind1:
+    label1 = st.selectbox(
+        "Indicator - Map 1",
+        list(indicator_map.keys()),
         key="indicator_map1"
     )
-    indicator1 = indicator_map[selected_label]
+    indicator1 = indicator_map[label1]
+
+with col_ind2:
+    label2 = st.selectbox(
+        "Indicator - Map 2",
+        list(indicator_map.keys()),
+        index=1,  # default different from map 1
+        key="indicator_map2"
+    )
+    indicator2 = indicator_map[label2]
 
     # auto-rotate second indicator when playing
-    if st.session_state.playing:
-        st.session_state.indicator_index = (
-            st.session_state.indicator_index + 1
-        ) % len(indicators)
-
+    
     indicator2 = indicators[st.session_state.indicator_index]
 
     st.caption(f"🗓️ Year: {st.session_state.year}")
@@ -469,11 +480,11 @@ with tab3:
     col_map1, col_map2 = st.columns(2)
 
     with col_map1:
-        st.subheader(f"Map 1: {selected_label}")
+        st.subheader(f"Map 1: {label1}")
         map_data1 = st_folium(map1, width=500, height=500, key="map1")
-
+    
     with col_map2:
-        st.subheader(f"Map 2: {indicator2}")
+        st.subheader(f"Map 2: {label2}")
         map_data2 = st_folium(map2, width=500, height=500, key="map2")
 
     # -------------------------
