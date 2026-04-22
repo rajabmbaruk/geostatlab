@@ -8,9 +8,9 @@ import branca.colormap as cm
 from folium.plugins import MarkerCluster
 import plotly.express as px
 
-# ------------------------
+# -------------------------
 # CONFIG
-# ------------------------
+# -------------------------
 st.set_page_config(page_title="GeoStatLab", layout="wide")
 
 # -------------------------
@@ -39,13 +39,11 @@ for _, row in df_base.iterrows():
     for i, year in enumerate(years):
         r = row.copy()
         r["Year"] = year
-
         r["Household_Income"] *= (1 + 0.05 * i)
         r["Poverty_Rate"] *= (1 - 0.02 * i)
         r["Agricultural_Output"] *= (1 + np.random.uniform(-0.1, 0.1))
         r["Education_Level"] = min(1, r["Education_Level"] * (1 + 0.015 * i))
         r["Unemployment_Rate"] *= (1 + np.random.uniform(-0.05, 0.05))
-
         panel.append(r)
 
 df = pd.DataFrame(panel).sort_values(["County", "Year"])
@@ -67,7 +65,6 @@ if "selected_county" not in st.session_state:
 # -------------------------
 def build_map(data, indicator):
     m = folium.Map(location=[0.5, 37.8], zoom_start=6)
-
     folium.Choropleth(
         geo_data=geojson,
         data=data,
@@ -76,7 +73,6 @@ def build_map(data, indicator):
         fill_color="YlOrRd",
         legend_name=indicator
     ).add_to(m)
-
     return m
 
 # -------------------------
@@ -85,212 +81,175 @@ def build_map(data, indicator):
 st.title("🌍 GeoStatLab – Policy Intelligence Dashboard")
 
 # -------------------------
-# CONTROLS
+# TABS
 # -------------------------
-colA, colB, colC = st.columns([1,1,2])
-
-with colA:
-    if st.button("▶️ Play", key="play_btn"):
-        st.session_state.playing = True
-
-with colB:
-    if st.button("⏹ Stop", key="stop_btn"):
-        st.session_state.playing = False
-
-# Auto-play
-if st.session_state.playing:
-    idx = years.index(st.session_state.year)
-    st.session_state.year = years[(idx + 1) % len(years)]
-    time.sleep(0.5)
-    st.rerun()
-
-# Year slider
-selected_year = st.slider(
-    "📅 Year",
-    min_value=min(years),
-    max_value=max(years),
-    value=st.session_state.year,
-    key="year_slider_main"
-)
-
-st.session_state.year = selected_year
-df_year = df[df["Year"] == selected_year]
+tab0, tab1, tab2, tab3, tab4, tab5 = st.tabs([
+    "🏠 Home",
+    "📊 Dataset",
+    "🧪 Survey",
+    "🗺️ Maps",
+    "📈 Analysis",
+    "⚙️ Policy"
+])
 
 # -------------------------
-# INDICATORS
+# HOME
 # -------------------------
-indicator_map = {
-    "Income": "Household_Income",
-    "Poverty": "Poverty_Rate",
-    "Agriculture": "Agricultural_Output",
-    "Education": "Education_Level",
-    "Unemployment": "Unemployment_Rate"
-}
+with tab0:
+    st.header("Welcome to GeoStatLab")
+    st.info("Explore spatial statistics, simulate policy, and analyze impact.")
 
-col1, col2 = st.columns(2)
+# -------------------------
+# DATASET
+# -------------------------
+with tab1:
+    st.header("Dataset Overview")
+    st.dataframe(df)
+    st.download_button("Download", df.to_csv(index=False), "dataset.csv")
 
-with col1:
-    indicator_left = st.selectbox(
-        "Baseline Indicator",
-        list(indicator_map.keys()),
-        key="indicator_left"
+# -------------------------
+# SURVEY
+# -------------------------
+with tab2:
+    st.header("Survey Simulation")
+
+    size = st.slider("Sample Size", 5, len(df), 20, key="sample_size")
+    method = st.selectbox("Method", ["Random", "Stratified"], key="sampling_method")
+
+    if method == "Random":
+        sample = df.sample(size)
+    else:
+        sample = df.groupby("County").sample(1)
+
+    st.dataframe(sample)
+
+# -------------------------
+# MAPS (MAIN FEATURE)
+# -------------------------
+with tab3:
+    st.header("🗺️ Spatial Policy Dashboard")
+
+    colA, colB = st.columns(2)
+
+    with colA:
+        if st.button("▶️ Play", key="play_maps"):
+            st.session_state.playing = True
+    with colB:
+        if st.button("⏹ Stop", key="stop_maps"):
+            st.session_state.playing = False
+
+    if st.session_state.playing:
+        idx = years.index(st.session_state.year)
+        st.session_state.year = years[(idx + 1) % len(years)]
+        time.sleep(0.5)
+        st.rerun()
+
+    year = st.slider(
+        "Year",
+        min(years),
+        max(years),
+        st.session_state.year,
+        key="year_slider_maps"
     )
 
-with col2:
-    indicator_right = st.selectbox(
-        "Policy Indicator",
-        list(indicator_map.keys()),
-        key="indicator_right"
+    st.session_state.year = year
+    df_year = df[df["Year"] == year]
+
+    indicator_map = {
+        "Income": "Household_Income",
+        "Poverty": "Poverty_Rate",
+        "Agriculture": "Agricultural_Output"
+    }
+
+    col1, col2 = st.columns(2)
+
+    ind_left = indicator_map[
+        st.selectbox("Baseline Indicator", list(indicator_map.keys()), key="ind_left")
+    ]
+
+    ind_right = indicator_map[
+        st.selectbox("Policy Indicator", list(indicator_map.keys()), key="ind_right")
+    ]
+
+    # POLICY
+    policy = st.selectbox("Policy", ["Agriculture", "Education", "Jobs"], key="policy_main")
+    intensity = st.slider("Intensity", 0, 50, 10, key="intensity_main")
+
+    df_policy = df_year.copy()
+
+    if policy == "Agriculture":
+        df_policy["Agricultural_Output"] *= (1 + intensity/100)
+    elif policy == "Education":
+        df_policy["Education_Level"] *= (1 + intensity/100)
+    elif policy == "Jobs":
+        df_policy["Unemployment_Rate"] *= (1 - intensity/100)
+
+    # MAPS SIDE BY SIDE
+    colL, colR = st.columns(2)
+
+    with colL:
+        st.subheader("Baseline")
+        st_folium(build_map(df_year, ind_left), height=400, key="map_left")
+
+    with colR:
+        st.subheader("Policy")
+        st_folium(build_map(df_policy, ind_right), height=400, key="map_right")
+
+    # DIFFERENCE MAP
+    st.subheader("Impact Heatmap")
+
+    df_diff = df_policy.copy()
+    df_diff[ind_right] = df_policy[ind_right] - df_year[ind_right]
+
+    st_folium(build_map(df_diff, ind_right), height=450, key="map_diff")
+
+# -------------------------
+# ANALYSIS
+# -------------------------
+with tab4:
+    st.header("📊 Ranking Analysis")
+
+    indicator = "Household_Income"
+
+    df_year = df[df["Year"] == st.session_state.year]
+    df_year["Rank"] = df_year[indicator].rank(ascending=False)
+
+    df_rank = df_year[["County", "Rank"]]
+
+    fig = px.bar(df_rank, x="County", y="Rank", title="County Ranking")
+    st.plotly_chart(fig, use_container_width=True)
+
+# -------------------------
+# POLICY (ADVANCED)
+# -------------------------
+with tab5:
+    st.header("⚙️ Policy Intelligence")
+
+    df_year = df[df["Year"] == st.session_state.year]
+    df_policy = df_year.copy()
+
+    policy = st.selectbox("Policy Type", ["Agriculture", "Education", "Jobs"], key="policy_adv")
+    intensity = st.slider("Intensity %", 0, 50, 10, key="intensity_adv")
+
+    if policy == "Agriculture":
+        df_policy["Agricultural_Output"] *= (1 + intensity/100)
+
+    df_year["Rank"] = df_year["Household_Income"].rank(ascending=False)
+    df_policy["Rank"] = df_policy["Household_Income"].rank(ascending=False)
+
+    df_rank = df_year.merge(df_policy, on="County", suffixes=("_Before", "_After"))
+    df_rank["Change"] = df_rank["Rank_After"] - df_rank["Rank_Before"]
+
+    df_rank["Color"] = df_rank["Change"].apply(
+        lambda x: "Improved" if x < 0 else "Declined"
     )
 
-ind_left = indicator_map[indicator_left]
-ind_right = indicator_map[indicator_right]
+    fig = px.bar(
+        df_rank,
+        x="County",
+        y="Change",
+        color="Color",
+        title="Rank Change After Policy"
+    )
 
-# -------------------------
-# POLICY SIMULATION
-# -------------------------
-policy = st.selectbox(
-    "Policy",
-    ["Agriculture", "Education", "Jobs"],
-    key="policy_select_unique"
-)
-
-intensity = st.slider(
-    "Intensity (%)",
-    0, 50, 10,
-    key="policy_intensity_unique"
-)
-
-df_policy = df_year.copy()
-
-if policy == "Agriculture":
-    df_policy["Agricultural_Output"] *= (1 + intensity/100)
-    df_policy["Poverty_Rate"] *= (1 - intensity/200)
-
-elif policy == "Education":
-    df_policy["Education_Level"] *= (1 + intensity/100)
-    df_policy["Poverty_Rate"] *= (1 - intensity/300)
-
-elif policy == "Jobs":
-    df_policy["Unemployment_Rate"] *= (1 - intensity/100)
-    df_policy["Household_Income"] *= (1 + intensity/150)
-
-# -------------------------
-# SIDE-BY-SIDE MAPS
-# -------------------------
-st.subheader("🗺️ Before vs After Policy Maps")
-
-colL, colR = st.columns(2)
-
-with colL:
-    st.markdown("### Baseline")
-    m1 = build_map(df_year, ind_left)
-    st_folium(m1, height=450, key="map_left")
-
-with colR:
-    st.markdown("### Policy Scenario")
-    m2 = build_map(df_policy, ind_right)
-    st_folium(m2, height=450, key="map_right")
-
-# -------------------------
-# DIFFERENCE HEATMAP
-# -------------------------
-st.subheader("🔥 Policy Impact Heatmap")
-
-df_diff = df_policy.copy()
-df_diff["Impact"] = df_policy[ind_right] - df_year[ind_right]
-
-m_diff = build_map(df_diff.rename(columns={"Impact": ind_right}), ind_right)
-st_folium(m_diff, height=500, key="map_diff")
-
-# -------------------------
-# RANKING ANALYSIS
-# -------------------------
-st.subheader("📊 County Ranking Analysis")
-
-df_year["Rank"] = df_year[ind_left].rank(ascending=False)
-df_policy["Rank"] = df_policy[ind_right].rank(ascending=False)
-
-df_rank = df_year[["County", "Rank"]].merge(
-    df_policy[["County", "Rank"]],
-    on="County",
-    suffixes=("_Before", "_After")
-)
-
-df_rank["Rank_Change"] = df_rank["Rank_After"] - df_rank["Rank_Before"]
-
-# -------------------------
-# PLOTLY VISUAL
-# -------------------------
-df_rank["Color"] = df_rank["Rank_Change"].apply(
-    lambda x: "Improved" if x < 0 else ("Declined" if x > 0 else "No Change")
-)
-
-color_map = {"Improved": "green", "Declined": "red", "No Change": "gray"}
-
-fig = px.bar(
-    df_rank,
-    x="County",
-    y="Rank_Change",
-    color="Color",
-    color_discrete_map=color_map,
-    hover_data=["Rank_Before", "Rank_After"],
-    title="Rank Change by County"
-)
-
-st.plotly_chart(fig, use_container_width=True)
-
-# -------------------------
-# ANIMATION
-# -------------------------
-st.subheader("🎬 Rank Change Over Time")
-
-df_anim = df.copy()
-
-df_anim["Rank"] = df_anim.groupby("Year")[ind_left].rank(ascending=False)
-
-fig_anim = px.bar(
-    df_anim,
-    x="County",
-    y="Rank",
-    animation_frame="Year",
-    color="Rank",
-    title="Ranking Evolution"
-)
-
-st.plotly_chart(fig_anim, use_container_width=True)
-
-# -------------------------
-# COUNTY DETAIL PANEL
-# -------------------------
-st.subheader("📍 County Insights")
-
-county_list = sorted(df_year["County"].unique())
-
-selected = st.selectbox(
-    "Select County",
-    county_list,
-    index=county_list.index(st.session_state.selected_county),
-    key="county_select_main"
-)
-
-st.session_state.selected_county = selected
-
-county_data = df[df["County"] == selected]
-
-st.line_chart(
-    county_data.set_index("Year")[ind_left]
-)
-
-st.dataframe(county_data)
-
-# -------------------------
-# DOWNLOADS
-# -------------------------
-st.download_button(
-    "📥 Download Dataset",
-    df.to_csv(index=False).encode("utf-8"),
-    "geostatlab_full.csv"
-)
-
-st.success("✅ Full KNBS-grade policy dashboard loaded successfully.")
+    st.plotly_chart(fig, use_container_width=True)
