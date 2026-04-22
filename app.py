@@ -98,7 +98,119 @@ tab0, tab1, tab2, tab3, tab4, tab5 = st.tabs([
 with tab0:
     st.header("Welcome to GeoStatLab")
     st.info("Explore spatial statistics, simulate policy, and analyze impact.")
+with tab0:
+    st.title("🌍 GeoStatLab")
+    st.subheader("Spatial Statistics & Policy Simulation Platform")
 
+    st.markdown("""
+    ### 📘 Learning Guide
+
+    Welcome to **GeoStatLab**, an interactive platform designed to explore the integration of  
+    **statistics, geospatial data, and policy simulation**.
+
+    This platform is inspired by national statistical systems such as the  
+    Kenya National Bureau of Statistics (KNBS) and supports:
+    
+    - Evidence-based decision making  
+    - Spatial data analysis  
+    - Policy impact simulation  
+    """)
+
+    st.markdown("---")
+
+    # -------------------------
+    # HOW TO USE
+    # -------------------------
+    st.markdown("### 🧭 How to Use This Tool")
+
+    st.markdown("""
+    **1️⃣ Dataset**
+    - Explore socio-economic indicators across counties  
+    - Understand structure of official statistics  
+
+    **2️⃣ Survey Simulation**
+    - Learn sampling techniques (random, stratified)  
+    - Compare sample vs population statistics  
+
+    **3️⃣ Maps**
+    - Visualize spatial patterns  
+    - Compare baseline vs policy scenarios  
+    - Use time animation  
+
+    **4️⃣ Analysis**
+    - Examine rankings and trends  
+    - Identify regional disparities  
+
+    **5️⃣ Policy**
+    - Simulate interventions  
+    - Analyze impact on counties  
+    - Track ranking changes  
+    """)
+
+    st.markdown("---")
+
+    # -------------------------
+    # OBJECTIVES
+    # -------------------------
+    st.markdown("### 🎯 Learning Objectives")
+
+    col1, col2 = st.columns(2)
+
+    with col1:
+        st.markdown("""
+        - Understand spatial distribution of socio-economic indicators  
+        - Interpret official statistics  
+        - Analyze relationships between variables  
+        """)
+
+    with col2:
+        st.markdown("""
+        - Apply data to policy scenarios  
+        - Strengthen evidence-based decision making  
+        - Build intuition in geospatial analytics  
+        """)
+
+    st.markdown("---")
+
+    # -------------------------
+    # QUICK START
+    # -------------------------
+    st.markdown("### 🚀 Quick Start")
+
+    st.info("""
+    👉 Go to the **🗺️ Maps** tab  
+    👉 Select a year and indicator  
+    👉 Compare baseline vs policy maps  
+    👉 Explore **📈 Analysis** and **⚙️ Policy** tabs  
+    """)
+
+    st.success("💡 Tip: Your selected year and county will update across all modules automatically.")
+
+    st.markdown("---")
+
+    # -------------------------
+    # EXPANDABLE GUIDE
+    # -------------------------
+    st.markdown("### 📚 Module Guide")
+
+    with st.expander("📊 Dataset"):
+        st.write("Explore full national dataset and download for analysis.")
+
+    with st.expander("🧪 Survey Simulation"):
+        st.write("Understand sampling methods and bias.")
+
+    with st.expander("🗺️ Maps"):
+        st.write("Visualize spatial distribution and policy impact.")
+
+    with st.expander("📈 Analysis"):
+        st.write("Examine rankings, trends, and disparities.")
+
+    with st.expander("⚙️ Policy"):
+        st.write("Simulate interventions and compare outcomes.")
+
+    st.markdown("---")
+
+    st.caption("Developed for CATCON 9 – ISPRS 2026 | GeoStatLab Prototype")
 # -------------------------
 # DATASET
 # -------------------------
