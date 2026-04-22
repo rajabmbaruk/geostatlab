@@ -14,6 +14,79 @@ import plotly.express as px
 st.set_page_config(page_title="GeoStatLab", layout="wide")
 
 # -------------------------
+# ONBOARDING STATE
+# -------------------------
+if "onboarding_step" not in st.session_state:
+    st.session_state.onboarding_step = 0
+
+if "show_onboarding" not in st.session_state:
+    st.session_state.show_onboarding = True
+
+onboarding_steps = [
+    {
+        "title": "👋 Welcome to GeoStatLab",
+        "content": """
+This platform helps you explore **statistics, maps, and policy simulation**.
+
+You’ll learn how data drives decision-making in national statistical systems.
+"""
+    },
+    {
+        "title": "🗺️ Step 1: Explore Maps",
+        "content": """
+Go to the **Maps tab**.
+
+- Select a year  
+- Choose indicators  
+- Compare **baseline vs policy maps**
+"""
+    },
+    {
+        "title": "📊 Step 2: Analyze Data",
+        "content": """
+Open the **Analysis tab**.
+
+- View county rankings  
+- Identify top & bottom performers  
+- Track disparities
+"""
+    },
+    {
+        "title": "⚙️ Step 3: Simulate Policy",
+        "content": """
+Go to the **Policy tab**.
+
+- Apply a policy (e.g. agriculture, education)  
+- Adjust intensity  
+- Observe impact on rankings
+"""
+    },
+    {
+        "title": "🎯 You're Ready!",
+        "content": """
+You can now:
+
+✅ Explore data  
+✅ Run simulations  
+✅ Generate insights  
+
+Use the Maps tab to start.
+"""
+    }
+]
+tab_map = {
+    1: 3,  # Maps
+    2: 4,  # Analysis
+    3: 5   # Policy
+}
+
+if st.session_state.show_onboarding:
+    step = st.session_state.onboarding_step
+    if step in tab_map:
+        st.info(f"👉 Switch to tab #{tab_map[step]} to continue")
+
+
+# -------------------------
 # LOAD DATA
 # -------------------------
 @st.cache_data
@@ -79,6 +152,40 @@ def build_map(data, indicator):
 # HEADER
 # -------------------------
 st.title("🌍 GeoStatLab – Policy Intelligence Dashboard")
+if st.session_state.show_onboarding:
+
+    step = st.session_state.onboarding_step
+    current = onboarding_steps[step]
+
+    st.markdown("---")
+
+    with st.container():
+        st.markdown(f"## {current['title']}")
+        st.markdown(current["content"])
+
+        col1, col2, col3, col4 = st.columns(4)
+
+        with col1:
+            if st.button("⬅ Back", disabled=(step == 0)):
+                st.session_state.onboarding_step -= 1
+
+        with col2:
+            if st.button("Next ➡"):
+                if step < len(onboarding_steps) - 1:
+                    st.session_state.onboarding_step += 1
+                else:
+                    st.session_state.show_onboarding = False
+
+        with col3:
+            if st.button("⏭ Skip"):
+                st.session_state.show_onboarding = False
+
+        with col4:
+            if st.button("🔄 Restart"):
+                st.session_state.onboarding_step = 0
+                st.session_state.show_onboarding = True
+
+    st.markdown("---")
 
 # -------------------------
 # TABS
@@ -95,12 +202,13 @@ tab0, tab1, tab2, tab3, tab4, tab5 = st.tabs([
 # -------------------------
 # HOME
 # -------------------------
+
 with tab0:
     st.header("Welcome to GeoStatLab")
     st.info("Explore spatial statistics, simulate policy, and analyze impact.")
-with tab0:
-    st.title("🌍 GeoStatLab")
-    st.subheader("Spatial Statistics & Policy Simulation Platform")
+    if st.button("🎓 Start Guided Tour"):
+        st.session_state.show_onboarding = True
+        st.session_state.onboarding_step = 0
 
     st.markdown("""
     ### 📘 Learning Guide
