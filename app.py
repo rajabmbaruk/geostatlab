@@ -331,7 +331,7 @@ st.markdown("---")
 st.markdown("## 🚀 Quick Start")
 
 col1, col2, col3 = st.columns(3)
- with col1:
+with col1:
      if st.button("🗺️ Open Maps"):
         switch_tab(3)
 with col2:
