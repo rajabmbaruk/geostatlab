@@ -832,17 +832,152 @@ with tab3:
 # ANALYSIS
 # -------------------------
 with tab4:
-    st.header("📊 Ranking Analysis")
+    st.header("📊 Ranking Analysis Dashboard")
 
-    indicator = "Household_Income"
+    # -------------------------
+    # CONTROLS
+    # -------------------------
+    col1, col2 = st.columns(2)
 
-    df_year = df[df["Year"] == st.session_state.year]
-    df_year["Rank"] = df_year[indicator].rank(ascending=False)
+    with col1:
+        indicator = st.selectbox(
+            "Select Indicator",
+            ["Household_Income", "Poverty_Rate",
+             "Agricultural_Output", "Education_Level",
+             "Unemployment_Rate"],
+            key="rank_indicator"
+        )
 
-    df_rank = df_year[["County", "Rank"]]
+    with col2:
+        year = st.selectbox(
+            "Select Year",
+            sorted(df["Year"].unique()),
+            index=len(df["Year"].unique()) - 1,
+            key="rank_year"
+        )
 
-    fig = px.bar(df_rank, x="County", y="Rank", title="County Ranking")
+    df_year = df[df["Year"] == year].copy()
+
+    # -------------------------
+    # RANK CALCULATION
+    # -------------------------
+    ascending = True if indicator in ["Poverty_Rate", "Unemployment_Rate"] else False
+
+    df_year["Rank"] = df_year[indicator].rank(
+        ascending=ascending,
+        method="min"
+    )
+
+    df_year = df_year.sort_values("Rank")
+
+    # -------------------------
+    # COLOR LOGIC
+    # -------------------------
+    df_year["Category"] = df_year["Rank"].apply(
+        lambda x: "Top Performers" if x <= 10 else "Others"
+    )
+
+    # -------------------------
+    # INTERACTIVE BAR CHART
+    # -------------------------
+    fig = px.bar(
+        df_year,
+        x="County",
+        y="Rank",
+        color="Category",
+        title=f"{indicator} Ranking ({year})",
+        hover_data=[indicator],
+    )
+
+    fig.update_layout(
+        xaxis_tickangle=-45,
+        yaxis_title="Rank (Lower is Better)",
+        height=500
+    )
+
     st.plotly_chart(fig, use_container_width=True)
+
+    # -------------------------
+    # TOP / BOTTOM TABLES
+    # -------------------------
+    st.markdown("### 🏆 Top & Bottom Counties")
+
+    col1, col2 = st.columns(2)
+
+    with col1:
+        st.markdown("#### 🔝 Top Performers")
+        st.dataframe(df_year.head(5))
+
+    with col2:
+        st.markdown("#### 🔻 Bottom Performers")
+        st.dataframe(df_year.tail(5))
+
+    st.markdown("---")
+
+    # -------------------------
+    # RANK CHANGE (TIME COMPARISON)
+    # -------------------------
+    st.subheader("🔄 Rank Change Over Time")
+
+    col1, col2 = st.columns(2)
+
+    with col1:
+        year1 = st.selectbox("From Year", sorted(df["Year"].unique()), key="year1")
+
+    with col2:
+        year2 = st.selectbox("To Year", sorted(df["Year"].unique()), key="year2")
+
+    df1 = df[df["Year"] == year1].copy()
+    df2 = df[df["Year"] == year2].copy()
+
+    df1["Rank"] = df1[indicator].rank(ascending=ascending)
+    df2["Rank"] = df2[indicator].rank(ascending=ascending)
+
+    df_compare = df1[["County", "Rank"]].merge(
+        df2[["County", "Rank"]],
+        on="County",
+        suffixes=("_Start", "_End")
+    )
+
+    df_compare["Rank_Change"] = df_compare["Rank_Start"] - df_compare["Rank_End"]
+
+    # -------------------------
+    # COLOR-CODED CHANGE
+    # -------------------------
+    df_compare["Trend"] = df_compare["Rank_Change"].apply(
+        lambda x: "Improved" if x > 0 else ("Declined" if x < 0 else "No Change")
+    )
+
+    fig2 = px.bar(
+        df_compare,
+        x="County",
+        y="Rank_Change",
+        color="Trend",
+        title=f"Ranking Change ({year1} → {year2})",
+        hover_data=["Rank_Start", "Rank_End"]
+    )
+
+    fig2.update_layout(
+        xaxis_tickangle=-45,
+        height=500
+    )
+
+    st.plotly_chart(fig2, use_container_width=True)
+
+    # -------------------------
+    # INSIGHTS
+    # -------------------------
+    st.subheader("💡 Insights")
+
+    top_gainer = df_compare.sort_values("Rank_Change", ascending=False).iloc[0]["County"]
+    top_loser = df_compare.sort_values("Rank_Change").iloc[0]["County"]
+
+    st.success(f"📈 Most Improved County: {top_gainer}")
+    st.error(f"📉 Most Declined County: {top_loser}")
+
+    st.info("Use Policy Simulation tab to understand drivers of these changes.")
+
+
 
 # -------------------------
 # POLICY (ADVANCED)
