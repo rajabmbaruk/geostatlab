@@ -895,7 +895,7 @@ with tab4:
         height=700
     )
 
-    st.plotly_chart(fig, use_container_width=True)
+    st.plotly_chart(fig, use_container_width=True, key="policy_rank_chart")
 
     # -------------------------
     # TOP / BOTTOM INSIGHTS
@@ -941,7 +941,7 @@ with tab4:
             hover_data=["Rank", "Rank_prev"]
         )
 
-        st.plotly_chart(fig2, use_container_width=True)
+        st.plotly_chart(fig2, use_container_width=True, key="policy_diff_chart")
 
     # -------------------------
     # COUNTY DRILLDOWN
