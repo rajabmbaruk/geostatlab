@@ -1153,4 +1153,7 @@ with tab5:
         "policy_results.csv",
         "text/csv"
     )
-    plotly_chart(fig, use_container_width=True)
+    st.plotly_chart(fig, use_container_width=True)
+
+
+
