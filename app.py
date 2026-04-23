@@ -964,33 +964,192 @@ with tab4:
 # POLICY (ADVANCED)
 # -------------------------
 with tab5:
-    st.header("⚙️ Policy Intelligence")
+    st.header("⚙️ Policy Intelligence Dashboard")
 
-    df_year = df[df["Year"] == st.session_state.year]
-    df_policy = df_year.copy()
+    # -------------------------
+    # SELECT YEAR & DATA
+    # -------------------------
+    year = st.session_state.year
+    df_before = df[df["Year"] == year].copy()
+    df_after = df_before.copy()
 
-    policy = st.selectbox("Policy Type", ["Agriculture", "Education", "Jobs"], key="policy_adv")
-    intensity = st.slider("Intensity %", 0, 50, 10, key="intensity_adv")
+    # -------------------------
+    # POLICY CONTROLS
+    # -------------------------
+    col1, col2 = st.columns(2)
 
-    if policy == "Agriculture":
-        df_policy["Agricultural_Output"] *= (1 + intensity/100)
+    with col1:
+        policy = st.selectbox(
+            "Policy Type",
+            ["Agriculture Boost", "Education Investment", "Employment Program"],
+            key="policy_adv"
+        )
 
-    df_year["Rank"] = df_year["Household_Income"].rank(ascending=False)
-    df_policy["Rank"] = df_policy["Household_Income"].rank(ascending=False)
+    with col2:
+        intensity = st.slider(
+            "Intensity (%)",
+            0, 50, 10,
+            key="intensity_adv"
+        )
 
-    df_rank = df_year.merge(df_policy, on="County", suffixes=("_Before", "_After"))
-    df_rank["Change"] = df_rank["Rank_After"] - df_rank["Rank_Before"]
+    # -------------------------
+    # APPLY POLICY LOGIC
+    # -------------------------
+    if policy == "Agriculture Boost":
+        df_after["Agricultural_Output"] *= (1 + intensity/100)
+        df_after["Household_Income"] *= (1 + intensity/200)
 
-    df_rank["Color"] = df_rank["Change"].apply(
-        lambda x: "Improved" if x < 0 else "Declined"
+    elif policy == "Education Investment":
+        df_after["Education_Level"] *= (1 + intensity/100)
+        df_after["Household_Income"] *= (1 + intensity/300)
+
+    elif policy == "Employment Program":
+        df_after["Unemployment_Rate"] *= (1 - intensity/100)
+        df_after["Household_Income"] *= (1 + intensity/150)
+
+    # -------------------------
+    # INDICATOR SELECTION
+    # -------------------------
+    indicator_map = {
+        "Household Income": ("Household_Income", False),
+        "Poverty Rate": ("Poverty_Rate", True),
+        "Unemployment Rate": ("Unemployment_Rate", True),
+        "Agricultural Output": ("Agricultural_Output", False),
+        "Education Level": ("Education_Level", False)
+    }
+
+    label = st.selectbox(
+        "Evaluation Indicator",
+        list(indicator_map.keys()),
+        key="policy_indicator"
     )
+
+    indicator, ascending = indicator_map[label]
+
+    # -------------------------
+    # RANK BEFORE / AFTER
+    # -------------------------
+    df_before["Rank_Before"] = df_before[indicator].rank(ascending=ascending, method="min")
+    df_after["Rank_After"] = df_after[indicator].rank(ascending=ascending, method="min")
+
+    df_rank = df_before[["County", indicator, "Rank_Before"]].merge(
+        df_after[["County", indicator, "Rank_After"]],
+        on="County",
+        suffixes=("_Before", "_After")
+    )
+
+    df_rank["Rank_Change"] = df_rank["Rank_Before"] - df_rank["Rank_After"]
+
+    # -------------------------
+    # CLASSIFY IMPACT
+    # -------------------------
+    def classify(change):
+        if change > 0:
+            return "Improved"
+        elif change < 0:
+            return "Declined"
+        else:
+            return "No Change"
+
+    df_rank["Impact"] = df_rank["Rank_Change"].apply(classify)
+
+    # -------------------------
+    # VISUAL: RANK CHANGE
+    # -------------------------
+    import plotly.express as px
 
     fig = px.bar(
-        df_rank,
-        x="County",
-        y="Change",
-        color="Color",
-        title="Rank Change After Policy"
+        df_rank.sort_values("Rank_Change"),
+        x="Rank_Change",
+        y="County",
+        orientation="h",
+        color="Impact",
+        color_discrete_map={
+            "Improved": "green",
+            "Declined": "red",
+            "No Change": "gray"
+        },
+        title=f"📊 Rank Change After {policy} ({year})",
+        hover_data=["Rank_Before", "Rank_After"]
     )
 
+    fig.update_layout(height=700)
+
     st.plotly_chart(fig, use_container_width=True)
+
+    # -------------------------
+    # SUMMARY METRICS
+    # -------------------------
+    st.markdown("### 📌 Policy Impact Summary")
+
+    col1, col2, col3 = st.columns(3)
+
+    with col1:
+        st.metric(
+            "Counties Improved",
+            int((df_rank["Impact"] == "Improved").sum())
+        )
+
+    with col2:
+        st.metric(
+            "Counties Declined",
+            int((df_rank["Impact"] == "Declined").sum())
+        )
+
+    with col3:
+        st.metric(
+            "No Change",
+            int((df_rank["Impact"] == "No Change").sum())
+        )
+
+    # -------------------------
+    # TOP WINNERS / LOSERS
+    # -------------------------
+    st.markdown("### 🏆 Winners & Losers")
+
+    col1, col2 = st.columns(2)
+
+    with col1:
+        st.success("Top 5 Improved")
+        st.dataframe(
+            df_rank.sort_values("Rank_Change", ascending=False).head(5)
+        )
+
+    with col2:
+        st.error("Top 5 Declined")
+        st.dataframe(
+            df_rank.sort_values("Rank_Change").head(5)
+        )
+
+    # -------------------------
+    # DIFFERENCE VIEW (HEATMAP STYLE)
+    # -------------------------
+    st.markdown("### 🌡️ Indicator Change (Before vs After)")
+
+    df_rank["Indicator_Change"] = (
+        df_rank[f"{indicator}_After"] - df_rank[f"{indicator}_Before"]
+    )
+
+    fig2 = px.bar(
+        df_rank.sort_values("Indicator_Change"),
+        x="Indicator_Change",
+        y="County",
+        orientation="h",
+        color="Indicator_Change",
+        color_continuous_scale="RdYlGn",
+        title=f"{label} Change After Policy"
+    )
+
+    st.plotly_chart(fig2, use_container_width=True)
+
+    # -------------------------
+    # DOWNLOAD RESULTS
+    # -------------------------
+    csv = df_rank.to_csv(index=False).encode("utf-8")
+
+    st.download_button(
+        "📥 Download Policy Results",
+        csv,
+        "policy_results.csv",
+        "text/csv"
+    )plotly_chart(fig, use_container_width=True)
