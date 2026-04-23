@@ -8,6 +8,18 @@ import branca.colormap as cm
 from folium.plugins import MarkerCluster
 import plotly.express as px
 
+# GLOBAL YEAR CONTROL (top of app)
+st.sidebar.markdown("## 📅 Global Year")
+
+global_year = st.sidebar.slider(
+    "Select Year",
+    min(years),
+    max(years),
+    st.session_state.year,
+    key="global_year"
+)
+
+st.session_state.year = global_year
 # -------------------------
 # CONFIG
 # -------------------------
@@ -74,16 +86,15 @@ Use the Maps tab to start.
 """
     }
 ]
-tab_map = {
-    1: 3,  # Maps
-    2: 4,  # Analysis
-    3: 5   # Policy
-}
-
 if st.session_state.show_onboarding:
     step = st.session_state.onboarding_step
-    if step in tab_map:
-        st.info(f"👉 Switch to tab #{tab_map[step]} to continue")
+
+    if step == 1:
+        switch_tab(3)
+    elif step == 2:
+        switch_tab(4)
+    elif step == 3:
+        switch_tab(5)
 
 
 # -------------------------
@@ -132,6 +143,17 @@ if "playing" not in st.session_state:
 
 if "selected_county" not in st.session_state:
     st.session_state.selected_county = df["County"].iloc[0]
+
+# -------------------------
+# GLOBAL NAV STATE (NEW)
+# -------------------------
+if "active_tab" not in st.session_state:
+    st.session_state.active_tab = 0
+
+def switch_tab(index):
+    st.session_state.active_tab = index
+
+
 
 # -------------------------
 # MAP BUILDER
@@ -309,36 +331,39 @@ st.markdown("---")
 st.markdown("## 🚀 Quick Start")
 
 col1, col2, col3 = st.columns(3)
-
-with col1:
-    if st.button("🗺️ Open Maps"):
-        st.session_state.onboarding_step = 1
-
+ with col1:
+     if st.button("🗺️ Open Maps"):
+        switch_tab(3)
 with col2:
     if st.button("📈 Go to Analysis"):
-        st.session_state.onboarding_step = 2
-
+        switch_tab(4)
 with col3:
     if st.button("⚙️ Run Policy Simulation"):
-        st.session_state.onboarding_step = 3
+        switch_tab(5)
 
+def role_guard(required_role):
+    if st.session_state.role != required_role:
+        st.warning(f"🔒 This module is optimized for {required_role} role")
 # -------------------------
 # TABS
 # -------------------------
-tab0, tab1, tab2, tab3, tab4, tab5 = st.tabs([
+tab_labels = [
     "🏠 Home",
     "📊 Dataset",
     "🧪 Survey",
     "🗺️ Maps",
     "📈 Analysis",
     "⚙️ Policy"
-])
+]
 
+tabs = st.tabs(tab_labels)
 # -------------------------
 # HOME
 # -------------------------
 
 with tab0:
+    if "global_indicator" not in st.session_state:
+        st.session_state.global_indicator = "Household_Income"
     st.header("Welcome to GeoStatLab")
     st.info("Explore spatial statistics, simulate policy, and analyze impact.")
     if st.button("🎓 Start Guided Tour"):
@@ -463,8 +488,11 @@ st.caption("GeoStatLab | KNBS-style Policy Intelligence Dashboard")
 # DATASET
 # -------------------------
 with tab1:
+    if "global_indicator" not in st.session_state:
+        st.session_state.global_indicator = "Household_Income"
     st.header("📊 Dataset Overview")
-
+#with tabs[1]:
+ #   role_guard("Analyst")
     # -------------------------
     # FILTERS (TOP BAR)
     # -------------------------
@@ -605,6 +633,8 @@ with tab1:
 # SURVEY
 # -------------------------
 with tab2:
+    if "global_indicator" not in st.session_state:
+        st.session_state.global_indicator = "Household_Income"
     st.header("🧪 Survey Simulation Lab")
 
     # -------------------------
@@ -752,6 +782,8 @@ with tab2:
 # MAPS (MAIN FEATURE)
 # -------------------------
 with tab3:
+    if "global_indicator" not in st.session_state:
+        st.session_state.global_indicator = "Household_Income"
     st.header("🗺️ Spatial Policy Dashboard")
 
     colA, colB = st.columns(2)
@@ -832,6 +864,8 @@ with tab3:
 # ANALYSIS
 # -------------------------
 with tab4:
+    if "global_indicator" not in st.session_state:
+        st.session_state.global_indicator = "Household_Income"
     st.header("📊 County Ranking Analysis")
 
     # -------------------------
@@ -964,6 +998,8 @@ with tab4:
 # POLICY (ADVANCED)
 # -------------------------
 with tab5:
+    if "global_indicator" not in st.session_state:
+        st.session_state.global_indicator = "Household_Income"
     st.header("⚙️ Policy Intelligence Dashboard")
 
     # -------------------------
@@ -1156,7 +1192,7 @@ with tab5:
     st.plotly_chart(
     fig,
     use_container_width=True,
-    key=f"plotly_{st.session_state.year}_{hash(str(fig))}"
+    key=f"policy_chart_{st.session_state.year}"
 )
 
 
