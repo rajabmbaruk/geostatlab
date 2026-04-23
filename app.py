@@ -1153,7 +1153,11 @@ with tab5:
         "policy_results.csv",
         "text/csv"
     )
-    st.plotly_chart(fig, use_container_width=True)
+    st.plotly_chart(
+    fig,
+    use_container_width=True,
+    key=f"plotly_{st.session_state.year}_{hash(str(fig))}"
+)
 
 
 
