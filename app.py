@@ -605,17 +605,148 @@ with tab1:
 # SURVEY
 # -------------------------
 with tab2:
-    st.header("Survey Simulation")
+    st.header("🧪 Survey Simulation Lab")
 
-    size = st.slider("Sample Size", 5, len(df), 20, key="sample_size")
-    method = st.selectbox("Method", ["Random", "Stratified"], key="sampling_method")
+    # -------------------------
+    # CONTROLS
+    # -------------------------
+    col1, col2, col3 = st.columns(3)
 
-    if method == "Random":
-        sample = df.sample(size)
-    else:
-        sample = df.groupby("County").sample(1)
+    with col1:
+        size = st.slider(
+            "Sample Size",
+            min_value=5,
+            max_value=len(df),
+            value=20,
+            key="sample_size"
+        )
 
+    with col2:
+        method = st.selectbox(
+            "Sampling Method",
+            ["Simple Random", "Stratified", "Cluster", "Systematic"],
+            key="sampling_method"
+        )
+
+    with col3:
+        indicator = st.selectbox(
+            "Indicator",
+            ["Household_Income", "Poverty_Rate", "Agricultural_Output"],
+            key="sampling_indicator"
+        )
+
+    # -------------------------
+    # SAMPLING LOGIC
+    # -------------------------
+    size = min(size, len(df))
+
+    if method == "Simple Random":
+        sample = df.sample(n=size, replace=False)
+
+    elif method == "Stratified":
+        sample = df.groupby("County", group_keys=False).apply(
+            lambda x: x.sample(min(len(x), max(1, size // df["County"].nunique())))
+        )
+
+    elif method == "Cluster":
+        clusters = np.random.choice(
+            df["County"].unique(),
+            size=min(3, df["County"].nunique()),
+            replace=False
+        )
+        sample = df[df["County"].isin(clusters)]
+
+    elif method == "Systematic":
+        k = max(1, len(df) // size)
+        sample = df.iloc[::k].head(size)
+
+    st.markdown("---")
+
+    # -------------------------
+    # DISPLAY SAMPLE
+    # -------------------------
+    st.subheader("📋 Sample Data")
     st.dataframe(sample)
+
+    # -------------------------
+    # COMPARISON METRICS
+    # -------------------------
+    st.subheader("📊 Sample vs Population")
+
+    col1, col2 = st.columns(2)
+
+    pop_mean = df[indicator].mean()
+    sample_mean = sample[indicator].mean()
+
+    with col1:
+        st.metric(
+            "Population Mean",
+            f"{pop_mean:,.2f}"
+        )
+
+    with col2:
+        st.metric(
+            "Sample Mean",
+            f"{sample_mean:,.2f}",
+            delta=f"{sample_mean - pop_mean:,.2f}"
+        )
+
+    # -------------------------
+    # VISUAL COMPARISON
+    # -------------------------
+    st.subheader("📈 Distribution Comparison")
+
+    chart_df = pd.DataFrame({
+        "Type": ["Population", "Sample"],
+        "Mean": [pop_mean, sample_mean]
+    })
+
+    st.bar_chart(chart_df.set_index("Type"))
+
+    # -------------------------
+    # BIAS INSIGHT
+    # -------------------------
+    st.subheader("💡 Sampling Insight")
+
+    diff = abs(sample_mean - pop_mean)
+
+    if diff < 0.05 * pop_mean:
+        st.success("✅ Sample is representative of the population.")
+    elif diff < 0.15 * pop_mean:
+        st.warning("⚠️ Moderate sampling bias detected.")
+    else:
+        st.error("❌ High sampling bias — consider better sampling method.")
+
+    # -------------------------
+    # EDUCATIONAL NOTES
+    # -------------------------
+    st.markdown("### 📘 Method Explanation")
+
+    if method == "Simple Random":
+        st.info("Each unit has equal probability of selection.")
+
+    elif method == "Stratified":
+        st.info("Ensures representation across counties (strata).")
+
+    elif method == "Cluster":
+        st.info("Selects groups (counties) instead of individuals.")
+
+    elif method == "Systematic":
+        st.info("Selects every k-th observation from the dataset.")
+
+    # -------------------------
+    # DOWNLOAD SAMPLE
+    # -------------------------
+    csv = sample.to_csv(index=False).encode("utf-8")
+
+    st.download_button(
+        "📥 Download Sample",
+        csv,
+        "sample_data.csv",
+        "text/csv"
+    )
+
+
 
 # -------------------------
 # MAPS (MAIN FEATURE)
