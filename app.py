@@ -463,9 +463,143 @@ st.caption("GeoStatLab | KNBS-style Policy Intelligence Dashboard")
 # DATASET
 # -------------------------
 with tab1:
-    st.header("Dataset Overview")
-    st.dataframe(df)
-    st.download_button("Download", df.to_csv(index=False), "dataset.csv")
+    st.header("📊 Dataset Overview")
+
+    # -------------------------
+    # FILTERS (TOP BAR)
+    # -------------------------
+    col1, col2, col3 = st.columns(3)
+
+    with col1:
+        selected_year = st.selectbox(
+            "📅 Select Year",
+            sorted(df["Year"].unique()),
+            key="dataset_year"
+        )
+
+    with col2:
+        counties = sorted(df["County"].unique())
+        selected_counties = st.multiselect(
+            "🏞️ Select Counties",
+            counties,
+            default=counties[:5]
+        )
+
+    with col3:
+        indicator = st.selectbox(
+            "📌 Focus Indicator",
+            ["Household_Income", "Poverty_Rate", "Agricultural_Output",
+             "Education_Level", "Unemployment_Rate"]
+        )
+
+    df_filtered = df[
+        (df["Year"] == selected_year) &
+        (df["County"].isin(selected_counties))
+    ]
+
+    st.markdown("---")
+
+    # -------------------------
+    # KPI CARDS
+    # -------------------------
+    st.subheader("📌 Key Indicators")
+
+    col1, col2, col3, col4 = st.columns(4)
+
+    col1.metric(
+        "👥 Population",
+        f"{int(df_filtered['Population'].mean()):,}"
+    )
+
+    col2.metric(
+        "💰 Avg Income",
+        f"KES {int(df_filtered['Household_Income'].mean()):,}"
+    )
+
+    col3.metric(
+        "📉 Poverty Rate",
+        f"{df_filtered['Poverty_Rate'].mean()*100:.1f}%"
+    )
+
+    col4.metric(
+        "📊 Unemployment",
+        f"{df_filtered['Unemployment_Rate'].mean()*100:.1f}%"
+    )
+
+    st.markdown("---")
+
+    # -------------------------
+    # DISTRIBUTION ANALYSIS
+    # -------------------------
+    st.subheader("📊 Indicator Distribution")
+
+    st.bar_chart(
+        df_filtered.set_index("County")[indicator]
+    )
+
+    # -------------------------
+    # TOP & BOTTOM COUNTIES
+    # -------------------------
+    st.subheader("🏆 Top & Bottom Performers")
+
+    col1, col2 = st.columns(2)
+
+    with col1:
+        st.markdown("### 🔝 Top Counties")
+        st.dataframe(
+            df_filtered.sort_values(indicator, ascending=False).head(5)
+        )
+
+    with col2:
+        st.markdown("### 🔻 Bottom Counties")
+        st.dataframe(
+            df_filtered.sort_values(indicator, ascending=True).head(5)
+        )
+
+    st.markdown("---")
+
+    # -------------------------
+    # TREND ANALYSIS
+    # -------------------------
+    st.subheader("📈 Trends Over Time")
+
+    trend_df = df[df["County"].isin(selected_counties)]
+
+    st.line_chart(
+        trend_df.groupby("Year")[indicator].mean()
+    )
+
+    st.markdown("---")
+
+    # -------------------------
+    # DATA TABLE (EXPANDABLE)
+    # -------------------------
+    with st.expander("📂 View Full Dataset"):
+        st.dataframe(df_filtered)
+
+        csv = df_filtered.to_csv(index=False).encode("utf-8")
+
+        st.download_button(
+            "📥 Download Filtered Dataset",
+            csv,
+            f"dataset_{selected_year}.csv",
+            "text/csv"
+        )
+
+    # -------------------------
+    # INSIGHTS PANEL
+    # -------------------------
+    st.subheader("💡 Key Insights")
+
+    top_county = df_filtered.sort_values(indicator, ascending=False).iloc[0]["County"]
+    bottom_county = df_filtered.sort_values(indicator, ascending=True).iloc[0]["County"]
+
+    st.success(f"Highest {indicator}: {top_county}")
+    st.warning(f"Lowest {indicator}: {bottom_county}")
+
+    st.info("Use the Maps tab to visualize these disparities spatially.")
+
+
 
 # -------------------------
 # SURVEY
