@@ -453,7 +453,12 @@ with tab0:
 
     st.markdown("---")
 
-    st.caption("Developed for CATCON 9 – ISPRS 2026 | GeoStatLab Prototype")
+# -------------------------
+# FOOTER
+# -------------------------
+st.markdown("---")
+st.caption("GeoStatLab | KNBS-style Policy Intelligence Dashboard")
+
 # -------------------------
 # DATASET
 # -------------------------
