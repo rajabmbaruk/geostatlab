@@ -147,45 +147,180 @@ def build_map(data, indicator):
         legend_name=indicator
     ).add_to(m)
     return m
+# -------------------------
+# USER ROLE (NEW)
+# -------------------------
+if "role" not in st.session_state:
+    st.session_state.role = "Analyst"
 
+with st.sidebar:
+    st.markdown("## 👤 User Role")
+    role = st.radio(
+        "Select Role",
+        ["Analyst", "Policy Maker"],
+        index=0
+    )
+    st.session_state.role = role
+
+# -------------------------
+# FIRST-TIME USER TRIGGER
+# -------------------------
+if "first_visit" not in st.session_state:
+    st.session_state.first_visit = True
+    st.session_state.show_onboarding = True
+    st.session_state.onboarding_step = 0
+
+# -------------------------
+# ONBOARDING STEPS
+# -------------------------
+steps = [
+    ("👋 Welcome", "Explore statistics, maps, and policy simulation."),
+    ("🗺️ Maps", "Compare baseline vs policy maps."),
+    ("📊 Analysis", "Track rankings and disparities."),
+    ("⚙️ Policy", "Simulate interventions and impacts."),
+    ("🎯 Ready", "Start exploring GeoStatLab.")
+]
+
+# -------------------------
+# SIDEBAR PROGRESS TRACKER
+# -------------------------
+with st.sidebar:
+    st.markdown("## 📚 Learning Progress")
+
+    progress = st.session_state.get("onboarding_step", 0) / (len(steps)-1)
+
+    st.progress(progress)
+
+    for i, (title, _) in enumerate(steps):
+        if i == st.session_state.onboarding_step:
+            st.markdown(f"👉 **{title}**")
+        else:
+            st.markdown(f"• {title}")
+
+    st.markdown("---")
 # -------------------------
 # HEADER
 # -------------------------
 st.title("🌍 GeoStatLab – Policy Intelligence Dashboard")
-if st.session_state.show_onboarding:
+# -------------------------
+# FLOATING MODAL (SIMULATED)
+# -------------------------
+if st.session_state.get("show_onboarding", False):
 
     step = st.session_state.onboarding_step
-    current = onboarding_steps[step]
-
-    st.markdown("---")
+    title, content = steps[step]
 
     with st.container():
-        st.markdown(f"## {current['title']}")
-        st.markdown(current["content"])
+        st.markdown(
+            f"""
+            <div style="
+                position: fixed;
+                top: 20%;
+                left: 25%;
+                width: 50%;
+                background-color: white;
+                padding: 25px;
+                border-radius: 12px;
+                box-shadow: 0px 8px 30px rgba(0,0,0,0.2);
+                z-index: 9999;
+            ">
+                <h3>{title}</h3>
+                <p>{content}</p>
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
 
-        col1, col2, col3, col4 = st.columns(4)
+    col1, col2, col3, col4 = st.columns(4)
 
-        with col1:
-            if st.button("⬅ Back", disabled=(step == 0)):
-                st.session_state.onboarding_step -= 1
+    with col1:
+        if st.button("⬅ Back", disabled=(step == 0)):
+            st.session_state.onboarding_step -= 1
 
-        with col2:
-            if st.button("Next ➡"):
-                if step < len(onboarding_steps) - 1:
-                    st.session_state.onboarding_step += 1
-                else:
-                    st.session_state.show_onboarding = False
-
-        with col3:
-            if st.button("⏭ Skip"):
+    with col2:
+        if st.button("Next ➡"):
+            if step < len(steps) - 1:
+                st.session_state.onboarding_step += 1
+            else:
                 st.session_state.show_onboarding = False
+                st.session_state.first_visit = False
 
-        with col4:
-            if st.button("🔄 Restart"):
-                st.session_state.onboarding_step = 0
-                st.session_state.show_onboarding = True
+    with col3:
+        if st.button("⏭ Skip"):
+            st.session_state.show_onboarding = False
+            st.session_state.first_visit = False
 
-    st.markdown("---")
+    with col4:
+        if st.button("🔄 Restart"):
+            st.session_state.onboarding_step = 0
+            st.session_state.show_onboarding = True
+
+# -------------------------
+# TOOLTIP GUIDANCE
+# -------------------------
+st.markdown("## 🧭 Navigation Guide")
+
+col1, col2, col3 = st.columns(3)
+
+with col1:
+    st.info("🗺️ Maps → Explore spatial patterns")
+
+with col2:
+    st.info("📈 Analysis → Rankings & trends")
+
+with col3:
+    st.info("⚙️ Policy → Simulate interventions")
+
+# -------------------------
+# ROLE-BASED DASHBOARD CONTENT
+# -------------------------
+st.markdown("---")
+
+if st.session_state.role == "Analyst":
+
+    st.subheader("📊 Analyst View")
+
+    st.markdown("""
+    Focus:
+    - Data exploration  
+    - Statistical analysis  
+    - Trend evaluation  
+    """)
+
+    st.success("Tip: Use Analysis tab for deep insights")
+
+elif st.session_state.role == "Policy Maker":
+
+    st.subheader("🏛️ Policy Maker View")
+
+    st.markdown("""
+    Focus:
+    - Policy scenarios  
+    - Impact comparison  
+    - Decision insights  
+    """)
+
+    st.warning("Tip: Start with Policy tab to simulate interventions")
+
+# -------------------------
+# QUICK START ACTIONS
+# -------------------------
+st.markdown("---")
+st.markdown("## 🚀 Quick Start")
+
+col1, col2, col3 = st.columns(3)
+
+with col1:
+    if st.button("🗺️ Open Maps"):
+        st.session_state.onboarding_step = 1
+
+with col2:
+    if st.button("📈 Go to Analysis"):
+        st.session_state.onboarding_step = 2
+
+with col3:
+    if st.button("⚙️ Run Policy Simulation"):
+        st.session_state.onboarding_step = 3
 
 # -------------------------
 # TABS
