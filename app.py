@@ -1,4 +1,4 @@
-init_state(years)   # MUST be first
+init_state()   # MUST be first
 import streamlit as st
 
 from data.loader import load_data, load_geojson
