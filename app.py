@@ -3,16 +3,12 @@ import streamlit as st
 from data.loader import load_data, load_geojson
 from core.state import init_state
 from ui.home import show_home
+
 from ui.sidebar import sidebar_nav
 
-# INIT
-years = list(range(2018, 2025))
-try:
-    init_state(years)
-except Exception as e:
-    import traceback
-    st.error(f"State init failed:\n{traceback.format_exc()}")
-    st.stop()
+init_state()   # MUST be first
+
+page = sidebar_nav()
 
 df = load_data()
 geojson = load_geojson()
