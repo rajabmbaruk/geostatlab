@@ -36,9 +36,10 @@ elif page == "Maps":
     geojson = load_geojson()
         
     show_maps(
-            df=df,
-            geojson=geojson,
-            year=st.session_state.year
+        df=df,
+        geojson=geojson,
+        year=st.session_state.year,
+        indicator=st.session_state.global_indicator
     )
 
 elif page == "Analysis":
