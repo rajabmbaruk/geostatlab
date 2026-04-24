@@ -31,7 +31,7 @@ from data.processor import build_panel
 
 from ui.sidebar import sidebar_nav
 
-from state import init_state
+from core.state import init_state
 init_state()
 import sys
 import os
