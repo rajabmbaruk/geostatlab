@@ -377,121 +377,102 @@ tabs = st.tabs(tab_labels)
 # -------------------------
 
 with tabs[0]:
-    if "global_indicator" not in st.session_state:
-        st.session_state.global_indicator = "Household_Income"
-    st.header("Welcome to GeoStatLab")
-    st.info("Explore spatial statistics, simulate policy, and analyze impact.")
-    if st.button("🎓 Start Guided Tour"):
-        st.session_state.show_onboarding = True
-        st.session_state.onboarding_step = 0
+    st.header("🌍 GeoStatLab")
 
+    st.markdown("### Interactive Spatial Statistics & Policy Simulation Platform")
+
+    # -------------------------
+    # HERO METRICS (WOW FACTOR)
+    # -------------------------
+    col1, col2, col3 = st.columns(3)
+
+    col1.metric("📊 Counties", "47")
+    col2.metric("📅 Years Covered", "2018–2024")
+    col3.metric("🧠 Modules", "5 + Quiz")
+
+    st.markdown("---")
+
+    # -------------------------
+    # INTRODUCTION (SHORT + POWERFUL)
+    # -------------------------
     st.markdown("""
-    ### 📘 Learning Guide
+    ### 🎯 What is GeoStatLab?
 
-    Welcome to **GeoStatLab**, an interactive platform designed to explore the integration of  
-    **statistics, geospatial data, and policy simulation**.
+    GeoStatLab is an interactive learning platform that combines:
 
-    This platform is inspired by national statistical systems such as the  
-    Kenya National Bureau of Statistics (KNBS) and supports:
-    
-    - Evidence-based decision making  
-    - Spatial data analysis  
-    - Policy impact simulation  
+    - 🗺️ Spatial data visualization  
+    - 📊 Statistical analysis  
+    - ⚙️ Policy simulation  
+    - 🧪 Sampling experiments  
+    - 🧠 Learning assessment  
+
+    It is designed to help learners understand **how data drives real-world decisions in governance and development.**
     """)
 
     st.markdown("---")
 
     # -------------------------
-    # HOW TO USE
+    # "START HERE" SECTION (IMPORTANT FOR JUDGES)
     # -------------------------
-    st.markdown("### 🧭 How to Use This Tool")
+    st.markdown("### 🚀 Start Here")
 
-    st.markdown("""
-    **1️⃣ Dataset**
-    - Explore socio-economic indicators across counties  
-    - Understand structure of official statistics  
-
-    **2️⃣ Survey Simulation**
-    - Learn sampling techniques (random, stratified)  
-    - Compare sample vs population statistics  
-
-    **3️⃣ Maps**
-    - Visualize spatial patterns  
-    - Compare baseline vs policy scenarios  
-    - Use time animation  
-
-    **4️⃣ Analysis**
-    - Examine rankings and trends  
-    - Identify regional disparities  
-
-    **5️⃣ Policy**
-    - Simulate interventions  
-    - Analyze impact on counties  
-    - Track ranking changes  
-    """)
-
-    st.markdown("---")
-
-    # -------------------------
-    # OBJECTIVES
-    # -------------------------
-    st.markdown("### 🎯 Learning Objectives")
-
-    col1, col2 = st.columns(2)
+    col1, col2, col3 = st.columns(3)
 
     with col1:
-        st.markdown("""
-        - Understand spatial distribution of socio-economic indicators  
-        - Interpret official statistics  
-        - Analyze relationships between variables  
-        """)
+        if st.button("🗺️ Explore Maps"):
+            switch_tab(3)
 
     with col2:
-        st.markdown("""
-        - Apply data to policy scenarios  
-        - Strengthen evidence-based decision making  
-        - Build intuition in geospatial analytics  
-        """)
+        if st.button("📊 Analyze Data"):
+            switch_tab(4)
+
+    with col3:
+        if st.button("⚙️ Simulate Policy"):
+            switch_tab(5)
 
     st.markdown("---")
 
     # -------------------------
-    # QUICK START
+    # LEARNING PATH (VISUAL FLOW)
     # -------------------------
-    st.markdown("### 🚀 Quick Start")
+    st.markdown("### 🧭 Learning Path")
 
-    st.info("""
-    👉 Go to the **🗺️ Maps** tab  
-    👉 Select a year and indicator  
-    👉 Compare baseline vs policy maps  
-    👉 Explore **📈 Analysis** and **⚙️ Policy** tabs  
+    st.info("1️⃣ Explore Data → 2️⃣ Analyze Trends → 3️⃣ Simulate Policy → 4️⃣ Test Knowledge")
+
+    st.markdown("---")
+
+    # -------------------------
+    # ROLE CONTEXT (SIMPLIFIED)
+    # -------------------------
+    role = st.session_state.role
+
+    if role == "Analyst":
+        st.success("📊 You are in Analyst Mode: Focus on trends, data exploration, and insights.")
+    else:
+        st.warning("🏛️ You are in Policy Maker Mode: Focus on interventions and impact evaluation.")
+
+    st.markdown("---")
+
+    # -------------------------
+    # WHY THIS TOOL (CATCON SECTION)
+    # -------------------------
+    st.markdown("### 💡 Why GeoStatLab Matters")
+
+    st.markdown("""
+    - Makes abstract statistics **interactive and visual**
+    - Bridges gap between **data and policy decisions**
+    - Helps learners understand **regional inequality**
+    - Supports **evidence-based decision making**
     """)
 
-    st.success("💡 Tip: Your selected year and county will update across all modules automatically.")
-
     st.markdown("---")
 
     # -------------------------
-    # EXPANDABLE GUIDE
+    # FINAL CALL TO ACTION
     # -------------------------
-    st.markdown("### 📚 Module Guide")
+    st.markdown("### 🎓 Ready to begin?")
 
-    with st.expander("📊 Dataset"):
-        st.write("Explore full national dataset and download for analysis.")
-
-    with st.expander("🧪 Survey Simulation"):
-        st.write("Understand sampling methods and bias.")
-
-    with st.expander("🗺️ Maps"):
-        st.write("Visualize spatial distribution and policy impact.")
-
-    with st.expander("📈 Analysis"):
-        st.write("Examine rankings, trends, and disparities.")
-
-    with st.expander("⚙️ Policy"):
-        st.write("Simulate interventions and compare outcomes.")
-
-    st.markdown("---")
+    st.success("Use the navigation buttons above or sidebar to start your learning journey.")
 
 # -------------------------
 # FOOTER
