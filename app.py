@@ -8,9 +8,20 @@ import branca.colormap as cm
 from folium.plugins import MarkerCluster
 import plotly.express as px
 
+st.markdown("""
+<style>
+.main {
+    background-color: #f8fafc;
+}
+h1, h2, h3 {
+    color: #0f172a;
+}
+</style>
+""", unsafe_allow_html=True)
+
 # GLOBAL YEAR CONTROL (top of app)
 st.sidebar.markdown("## 📅 Global Year")
-
+years = list(range(2018, 2025))
 global_year = st.sidebar.slider(
     "Select Year",
     min(years),
@@ -18,13 +29,16 @@ global_year = st.sidebar.slider(
     st.session_state.year,
     key="global_year"
 )
-
+if "year" not in st.session_state:
+    st.session_state.year = 2024
 st.session_state.year = global_year
 # -------------------------
 # CONFIG
 # -------------------------
 st.set_page_config(page_title="GeoStatLab", layout="wide")
 
+def switch_tab(index):
+    st.session_state.active_tab = index
 # -------------------------
 # ONBOARDING STATE
 # -------------------------
@@ -150,8 +164,7 @@ if "selected_county" not in st.session_state:
 if "active_tab" not in st.session_state:
     st.session_state.active_tab = 0
 
-def switch_tab(index):
-    st.session_state.active_tab = index
+
 
 
 
@@ -353,7 +366,8 @@ tab_labels = [
     "🧪 Survey",
     "🗺️ Maps",
     "📈 Analysis",
-    "⚙️ Policy"
+    "⚙️ Policy",
+    "🧠 Quiz"
 ]
 
 tabs = st.tabs(tab_labels)
@@ -361,7 +375,7 @@ tabs = st.tabs(tab_labels)
 # HOME
 # -------------------------
 
-with tab0:
+with tabs[0]:
     if "global_indicator" not in st.session_state:
         st.session_state.global_indicator = "Household_Income"
     st.header("Welcome to GeoStatLab")
@@ -487,7 +501,7 @@ st.caption("GeoStatLab | KNBS-style Policy Intelligence Dashboard")
 # -------------------------
 # DATASET
 # -------------------------
-with tab1:
+with tabs[1]:
     if "global_indicator" not in st.session_state:
         st.session_state.global_indicator = "Household_Income"
     st.header("📊 Dataset Overview")
@@ -632,7 +646,7 @@ with tab1:
 # -------------------------
 # SURVEY
 # -------------------------
-with tab2:
+with tabs[2]:
     if "global_indicator" not in st.session_state:
         st.session_state.global_indicator = "Household_Income"
     st.header("🧪 Survey Simulation Lab")
@@ -781,7 +795,7 @@ with tab2:
 # -------------------------
 # MAPS (MAIN FEATURE)
 # -------------------------
-with tab3:
+with tabs[3]:
     if "global_indicator" not in st.session_state:
         st.session_state.global_indicator = "Household_Income"
     st.header("🗺️ Spatial Policy Dashboard")
@@ -863,7 +877,44 @@ with tab3:
 # -------------------------
 # ANALYSIS
 # -------------------------
-with tab4:
+with tabs[4]:
+    def generate_insights(df, indicator):
+    top = df.sort_values(indicator, ascending=False).iloc[0]
+    bottom = df.sort_values(indicator, ascending=True).iloc[0]
+
+    insight = f"""
+    🔍 **AI Insights**
+
+    • {top['County']} leads in {indicator}, suggesting strong performance drivers.  
+    • {bottom['County']} ranks lowest, indicating potential need for intervention.  
+
+    • Regional disparity remains significant.  
+    • Targeted policy could reduce inequality.
+    """
+    return insight
+
+def smart_insights(df):
+    insights = []
+
+    if df["Education_Level"].mean() > 0.6:
+        insights.append("Higher education levels correlate with improved outcomes.")
+
+    if df["Poverty_Rate"].mean() > 0.3:
+        insights.append("High poverty persists — targeted policies are needed.")
+
+    if df["Unemployment_Rate"].mean() < 0.1:
+        insights.append("Employment programs appear effective.")
+
+    return insights
+
+
+for i in smart_insights(df_year):
+    st.info(i)
+
+
+
+st.markdown(generate_insights(df_year, indicator))
+
     if "global_indicator" not in st.session_state:
         st.session_state.global_indicator = "Household_Income"
     st.header("📊 County Ranking Analysis")
@@ -997,7 +1048,7 @@ with tab4:
 # -------------------------
 # POLICY (ADVANCED)
 # -------------------------
-with tab5:
+with tabs[5]:
     if "global_indicator" not in st.session_state:
         st.session_state.global_indicator = "Household_Income"
     st.header("⚙️ Policy Intelligence Dashboard")
@@ -1194,6 +1245,45 @@ with tab5:
     use_container_width=True,
     key=f"policy_chart_{st.session_state.year}"
 )
+with tabs[6]:
+    st.header("🧠 Assessment & Quiz")
+
+    score = 0
+
+    q1 = st.radio(
+        "1. Which sampling method ensures representation across counties?",
+        ["Simple Random", "Stratified", "Cluster", "Systematic"]
+    )
+
+    if q1 == "Stratified":
+        score += 1
+
+    q2 = st.radio(
+        "2. If a policy reduces unemployment, what should happen?",
+        ["Increase", "Decrease", "Stay same"]
+    )
+
+    if q2 == "Decrease":
+        score += 1
+
+    q3 = st.radio(
+        "3. Which map best shows regional inequality?",
+        ["Bar chart", "Choropleth map", "Line chart"]
+    )
+
+    if q3 == "Choropleth map":
+        score += 1
+
+    if st.button("Submit Quiz"):
+        st.success(f"Your Score: {score}/3")
+
+        if score == 3:
+            st.balloons()
+        elif score == 2:
+            st.info("Good job! Review one concept.")
+        else:
+            st.warning("Revise the modules and try again.")
+
 
 
 
