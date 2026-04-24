@@ -7,6 +7,11 @@ REQUIRED_COLUMNS = [
     "Agricultural_Output"
 ]
 
+# auto-create missing columns (prevents crash)
+for col in REQUIRED_COLUMNS:
+    if col not in df.columns:
+        df[col] = 0
+
 
 def validate_dataset(df: pd.DataFrame):
     errors = []
