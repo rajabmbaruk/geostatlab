@@ -879,19 +879,19 @@ with tabs[3]:
 # -------------------------
 with tabs[4]:
     def generate_insights(df, indicator):
-    top = df.sort_values(indicator, ascending=False).iloc[0]
-    bottom = df.sort_values(indicator, ascending=True).iloc[0]
-
-    insight = f"""
-    🔍 **AI Insights**
-
-    • {top['County']} leads in {indicator}, suggesting strong performance drivers.  
-    • {bottom['County']} ranks lowest, indicating potential need for intervention.  
-
-    • Regional disparity remains significant.  
-    • Targeted policy could reduce inequality.
-    """
-    return insight
+        top = df.sort_values(indicator, ascending=False).iloc[0]
+        bottom = df.sort_values(indicator, ascending=True).iloc[0]
+    
+        insight = f"""
+        🔍 **AI Insights**
+    
+        • {top['County']} leads in {indicator}, suggesting strong performance drivers.  
+        • {bottom['County']} ranks lowest, indicating potential need for intervention.  
+    
+        • Regional disparity remains significant.  
+        • Targeted policy could reduce inequality.
+        """
+        return insight
 
 def smart_insights(df):
     insights = []
