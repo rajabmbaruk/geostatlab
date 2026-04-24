@@ -13,9 +13,17 @@ for col in REQUIRED_COLUMNS:
         df[col] = 0
 
 
-def validate_dataset(df: pd.DataFrame):
-    errors = []
+def validate_dataset(df):
+    df.columns = df.columns.str.strip()
 
+    missing = [c for c in REQUIRED_COLUMNS if c not in df.columns]
+
+    if missing:
+        raise ValueError(
+            "DATASET SCHEMA INVALID\n"
+            f"Missing columns: {missing}\n"
+            f"Available: {list(df.columns)}"
+        )
     # -------------------------
     # 1. Normalize columns (CRITICAL FIX)
     # -------------------------
@@ -29,12 +37,12 @@ def validate_dataset(df: pd.DataFrame):
     if missing_cols:
         raise ValueError(
             f"""
-❌ DATA VALIDATION FAILED
-Missing columns: {missing_cols}
-
-👉 Actual columns found:
-{list(df.columns)}
-"""
+            ❌ DATA VALIDATION FAILED
+            Missing columns: {missing_cols}
+            
+            👉 Actual columns found:
+            {list(df.columns)}
+            """
         )
 
     # -------------------------
@@ -46,13 +54,13 @@ Missing columns: {missing_cols}
     except KeyError as e:
         raise ValueError(
             f"""
-❌ DUPLICATE CHECK FAILED
-
-Reason: {e}
-
-👉 Columns available:
-{list(df.columns)}
-"""
+            ❌ DUPLICATE CHECK FAILED
+            
+            Reason: {e}
+            
+            👉 Columns available:
+            {list(df.columns)}
+            """
         )
 
     # -------------------------
