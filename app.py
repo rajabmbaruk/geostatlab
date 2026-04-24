@@ -2,7 +2,12 @@
 import streamlit as st
 
 from data.loader import load_data, load_geojson
-from core.state import init_state
+try:
+    from core.state import init_state
+except ImportError:
+    import sys
+    sys.path.append(".")
+    from core.state import init_state
 from ui.home import show_home
 
 from ui.sidebar import sidebar_nav
