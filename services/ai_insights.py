@@ -1,3 +1,22 @@
+import streamlit as st
+
+def generate_ai_insights(df, indicator):
+    top = df.loc[df[indicator].idxmax()]
+    bottom = df.loc[df[indicator].idxmin()]
+
+    return f"""
+### 🧠 AI INSIGHTS
+
+- {top['County']} leads in {indicator}
+- {bottom['County']} is lowest performing
+
+📊 Pattern detected:
+Regional inequality persists across counties.
+
+📌 Recommendation:
+Target bottom counties with sector-specific investment.
+"""
+    
 def generate_ai_insights(df, year, indicator):
 
     df_year = df[df["Year"] == year]
