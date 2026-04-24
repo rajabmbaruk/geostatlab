@@ -1,32 +1,17 @@
 import streamlit as st
 
-PAGES = ["Home", "Dataset", "Survey", "Maps", "Analysis", "Policy", "Quiz"]
+NAV_ITEMS = ["Home", "Dataset", "Survey", "Maps", "Analysis", "Policy", "Quiz"]
 
 def sidebar_nav():
-    st.sidebar.title("🧭 Navigation")
+    st.sidebar.title("🧭 GeoStatLab")
 
-    # safe default
-    current = st.session_state.get("active_page", "Home")
-
-    # IMPORTANT: NEVER reuse radio across reruns without stable key logic
     selected = st.sidebar.radio(
-        "Go to",
-        PAGES,
-        index=PAGES.index(current),
-        key="__nav_radio__"   # 🔥 SINGLE GLOBAL UNIQUE KEY
+        "Navigate",
+        NAV_ITEMS,
+        key="nav_main"   # single global key
     )
 
-    st.session_state.active_page = selected
+    st.sidebar.markdown("---")
+    st.sidebar.caption("KNBS-style Analytics Engine")
 
     return selected
-
-st.sidebar.markdown("## 🎤 Demo Mode")
-
-if st.sidebar.button("▶ Enter Presentation Mode"):
-    toggle_presentation()
-
-if st.session_state.get("presentation_mode", False):
-    st.sidebar.success("Presentation Mode ON")
-    
-page = sidebar_nav()
-st.session_state.active_tab = page
