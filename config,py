@@ -1,0 +1,2 @@
+YEARS = list(range(2018, 2025))
+DEFAULT_YEAR = 2024
