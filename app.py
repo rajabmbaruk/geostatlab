@@ -81,7 +81,7 @@ if st.session_state.get("presentation_mode", False):
 
 # INIT
 years = list(range(2018, 2025))
-init_state()
+init_state(years)
 
 st.set_page_config(page_title="GeoStatLab", layout="wide")
 
