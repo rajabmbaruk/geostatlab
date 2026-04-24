@@ -1,4 +1,4 @@
-
+init_state()
 import streamlit as st
 
 from data.loader import load_data, load_geojson
