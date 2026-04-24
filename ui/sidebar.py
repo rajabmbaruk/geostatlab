@@ -6,7 +6,8 @@ def sidebar_nav():
 
     page = st.sidebar.radio(
         "Navigate",
-        ["Home", "Dataset", "Survey", "Maps", "Analysis", "Policy", "Quiz"]
+        ["Home", "Dataset", "Survey", "Maps", "Analysis", "Policy", "Quiz"],
+        key="main_navigation"
     )
 
     st.sidebar.markdown("---")
