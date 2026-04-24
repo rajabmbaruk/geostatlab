@@ -6,7 +6,7 @@ from state import init_state
 from ui.sidebar import sidebar_nav
 
 
-if st.session_state.presentation_mode:
+if st.session_state.get("presentation_mode", False):
 
     story = get_story(df, st.session_state.year)
     step = st.session_state.slide_index
