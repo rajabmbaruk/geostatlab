@@ -19,5 +19,5 @@ st.sidebar.markdown("## 🎤 Demo Mode")
 if st.sidebar.button("▶ Enter Presentation Mode"):
     toggle_presentation()
 
-if st.session_state.presentation_mode:
+if st.session_state.get("presentation_mode", False):
     st.sidebar.success("Presentation Mode ON")
