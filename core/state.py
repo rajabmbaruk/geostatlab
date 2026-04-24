@@ -15,7 +15,7 @@ def init_state():
             st.session_state[key] = value            
 
     if "active_tab" not in st.session_state:
-        st.session_state.active_tab = 0
+        st.session_state.active_tab = "Home"
         
     if "year" not in st.session_state:
         st.session_state.year = max(years)
