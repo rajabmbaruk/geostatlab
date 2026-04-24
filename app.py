@@ -2,7 +2,7 @@ import streamlit as st
 
 from data.loader import load_data, load_geojson
 from data.processor import build_panel
-from state import init_state
+
 from ui.sidebar import sidebar_nav
 
 from state import init_state
