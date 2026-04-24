@@ -54,7 +54,7 @@ elif page == "Analysis":
 
 elif page == "Policy":
     from ui.policy import show_policy
-    show_policy(df)
+    show_policy(df, st.session_state.year)
 
 elif page == "Quiz":
     from ui.quiz import show_quiz
