@@ -16,19 +16,16 @@ geojson = load_geojson()
 page = sidebar_nav()
 
 if page == "Home":
-    home.show(df)
-
+    show_home(df)
 elif page == "Dataset":
-    dataset.show(df)
-
+    show_dataset(df)
+elif page == "Survey":
+    show_survey(df)
 elif page == "Maps":
-    maps.show(df, geojson)
-
+    show_maps(df)
 elif page == "Analysis":
-    analysis.show(df)
-
+    show_analysis(df)
 elif page == "Policy":
-    policy.show(df)
-
+    show_policy(df)
 elif page == "Quiz":
-    quiz.show(df)
+    show_quiz(df)
