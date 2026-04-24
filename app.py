@@ -1,10 +1,15 @@
 import streamlit as st
+
 from core.state import init_state
+from data.loader import load_data, load_geojson
 from ui.sidebar import sidebar_nav
-from data.loader import load_data
+from ui.dataset import show_dataset
 
 # INIT FIRST (CRITICAL)
 init_state()
+
+df = load_data()
+geojson = load_geojson()
 
 # LOAD DATA
 df = load_data()
