@@ -27,3 +27,6 @@ if st.sidebar.button("▶ Enter Presentation Mode"):
 
 if st.session_state.get("presentation_mode", False):
     st.sidebar.success("Presentation Mode ON")
+    
+page = sidebar_nav()
+st.session_state.active_tab = page
