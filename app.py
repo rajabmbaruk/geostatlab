@@ -35,11 +35,11 @@ elif page == "Maps":
         
     geojson = load_geojson()
         
-        show_maps(
+    show_maps(
             df=df,
             geojson=geojson,
             year=st.session_state.year
-        )
+    )
 
 elif page == "Analysis":
     from ui.analysis import show_analysis
