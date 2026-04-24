@@ -4,8 +4,7 @@ def sidebar_nav():
 
     st.sidebar.title("🌍 GeoStatLab")
 
-    page = st.sidebar.radio(
-        "Navigate",
+    page = st.sidebar.radio( "Navigate",
         ["Home", "Dataset", "Survey", "Maps", "Analysis", "Policy", "Quiz"],
         key="main_navigation"
     )
