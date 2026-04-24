@@ -7,7 +7,12 @@ from ui.sidebar import sidebar_nav
 
 # INIT
 years = list(range(2018, 2025))
-init_state(years)
+try:
+    init_state(years)
+except Exception as e:
+    import traceback
+    st.error(f"State init failed:\n{traceback.format_exc()}")
+    st.stop()
 
 df = load_data()
 geojson = load_geojson()
