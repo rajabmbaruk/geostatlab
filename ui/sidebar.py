@@ -1,18 +1,23 @@
 import streamlit as st
 
+PAGES = ["Home", "Dataset", "Survey", "Maps", "Analysis", "Policy", "Quiz"]
+
 def sidebar_nav():
-    with st.sidebar:
-        st.title("GeoStatLab")
+    st.sidebar.title("🧭 Navigation")
 
-        nav_key = f"main_nav_{st.session_state.get('presentation_mode', False)}"
+    # IMPORTANT: single source of truth
+    if "active_page" not in st.session_state:
+        st.session_state.active_page = "Home"
 
-        page = st.radio(
-            "Navigate",
-            ["Home", "Dataset", "Survey", "Maps", "Analysis", "Policy", "Quiz"],
-            key=get_nav_key()
-        )
+    selected = st.sidebar.radio(
+        "Go to",
+        PAGES,
+        index=PAGES.index(st.session_state.active_page),
+        key="main_nav_radio"   # 🔥 MUST be unique
+    )
 
-    return page
+    st.session_state.active_page = selected
+    return selected
 
 st.sidebar.markdown("## 🎤 Demo Mode")
 
