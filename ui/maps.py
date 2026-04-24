@@ -4,6 +4,8 @@ from streamlit_folium import st_folium
 
 
 def build_map(df, column, geojson):
+    import folium
+
     m = folium.Map(location=[0.5, 37.8], zoom_start=6)
 
     folium.Choropleth(
