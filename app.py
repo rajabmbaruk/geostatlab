@@ -31,8 +31,11 @@ global_year = st.sidebar.slider(
     st.session_state.year,
     key="global_year"
 )
-
+if "page" not in st.session_state:
+    st.session_state.page = "Home"
+    
 st.session_state.year = global_year
+
 # -------------------------
 # CONFIG
 # -------------------------
@@ -361,119 +364,49 @@ def role_guard(required_role):
 # -------------------------
 # TABS
 # -------------------------
-tab_labels = [
-    "🏠 Home",
-    "📊 Dataset",
-    "🧪 Survey",
-    "🗺️ Maps",
-    "📈 Analysis",
-    "⚙️ Policy",
-    "🧠 Quiz"
-]
+with st.sidebar:
+    st.title("📍 Navigation")
 
-tabs = st.tabs(tab_labels)
+    page = st.radio(
+        "Go to",
+        [
+            "🏠 Home",
+            "📊 Dataset",
+            "🧪 Survey",
+            "🗺️ Maps",
+            "📈 Analysis",
+            "⚙️ Policy",
+            "🧠 Quiz"
+        ]
+    )
+
+    st.session_state.page = page
 # -------------------------
 # HOME
 # -------------------------
-
-with tabs[0]:
+if st.session_state.page == "🏠 Home":
     st.header("🌍 GeoStatLab")
 
-    st.markdown("### Interactive Spatial Statistics & Policy Simulation Platform")
+    st.markdown("Interactive Spatial Statistics & Policy Simulation Platform")
 
-    # -------------------------
-    # HERO METRICS (WOW FACTOR)
-    # -------------------------
     col1, col2, col3 = st.columns(3)
-
     col1.metric("📊 Counties", "47")
-    col2.metric("📅 Years Covered", "2018–2024")
+    col2.metric("📅 Years", "2018–2024")
     col3.metric("🧠 Modules", "5 + Quiz")
 
     st.markdown("---")
 
-    # -------------------------
-    # INTRODUCTION (SHORT + POWERFUL)
-    # -------------------------
     st.markdown("""
     ### 🎯 What is GeoStatLab?
 
-    GeoStatLab is an interactive learning platform that combines:
-
-    - 🗺️ Spatial data visualization  
-    - 📊 Statistical analysis  
-    - ⚙️ Policy simulation  
-    - 🧪 Sampling experiments  
-    - 🧠 Learning assessment  
-
-    It is designed to help learners understand **how data drives real-world decisions in governance and development.**
+    A learning platform for:
+    - Spatial data analysis  
+    - Policy simulation  
+    - Statistical reasoning  
     """)
 
-    st.markdown("---")
-
-    # -------------------------
-    # "START HERE" SECTION (IMPORTANT FOR JUDGES)
-    # -------------------------
-    st.markdown("### 🚀 Start Here")
-
-    col1, col2, col3 = st.columns(3)
-
-    with col1:
-        if st.button("🗺️ Explore Maps"):
-            switch_tab(3)
-
-    with col2:
-        if st.button("📊 Analyze Data"):
-            switch_tab(4)
-
-    with col3:
-        if st.button("⚙️ Simulate Policy"):
-            switch_tab(5)
-
-    st.markdown("---")
-
-    # -------------------------
-    # LEARNING PATH (VISUAL FLOW)
-    # -------------------------
-    st.markdown("### 🧭 Learning Path")
-
-    st.info("1️⃣ Explore Data → 2️⃣ Analyze Trends → 3️⃣ Simulate Policy → 4️⃣ Test Knowledge")
-
-    st.markdown("---")
-
-    # -------------------------
-    # ROLE CONTEXT (SIMPLIFIED)
-    # -------------------------
-    role = st.session_state.role
-
-    if role == "Analyst":
-        st.success("📊 You are in Analyst Mode: Focus on trends, data exploration, and insights.")
-    else:
-        st.warning("🏛️ You are in Policy Maker Mode: Focus on interventions and impact evaluation.")
-
-    st.markdown("---")
-
-    # -------------------------
-    # WHY THIS TOOL (CATCON SECTION)
-    # -------------------------
-    st.markdown("### 💡 Why GeoStatLab Matters")
-
-    st.markdown("""
-    - Makes abstract statistics **interactive and visual**
-    - Bridges gap between **data and policy decisions**
-    - Helps learners understand **regional inequality**
-    - Supports **evidence-based decision making**
-    """)
-
-    st.markdown("---")
-
-    # -------------------------
-    # FINAL CALL TO ACTION
-    # -------------------------
-    st.markdown("### 🎓 Ready to begin?")
-
-    st.success("Use the navigation buttons above or sidebar to start your learning journey.")
-
+    st.success("Use the sidebar to navigate through modules.")
+    
 # -------------------------
 # FOOTER
 # -------------------------
@@ -483,9 +416,7 @@ st.caption("GeoStatLab | KNBS-style Policy Intelligence Dashboard")
 # -------------------------
 # DATASET
 # -------------------------
-with tabs[1]:
-    if "global_indicator" not in st.session_state:
-        st.session_state.global_indicator = "Household_Income"
+if st.session_state.page == "📊 Dataset":
     st.header("📊 Dataset Overview")
 #with tabs[1]:
  #   role_guard("Analyst")
@@ -628,9 +559,7 @@ with tabs[1]:
 # -------------------------
 # SURVEY
 # -------------------------
-with tabs[2]:
-    if "global_indicator" not in st.session_state:
-        st.session_state.global_indicator = "Household_Income"
+if st.session_state.page == "🧪 Survey":
     st.header("🧪 Survey Simulation Lab")
 
     # -------------------------
@@ -777,9 +706,7 @@ with tabs[2]:
 # -------------------------
 # MAPS (MAIN FEATURE)
 # -------------------------
-with tabs[3]:
-    if "global_indicator" not in st.session_state:
-        st.session_state.global_indicator = "Household_Income"
+if st.session_state.page == "🗺️ Maps":
     st.header("🗺️ Spatial Policy Dashboard")
 
     colA, colB = st.columns(2)
@@ -859,7 +786,9 @@ with tabs[3]:
 # -------------------------
 # ANALYSIS
 # -------------------------
-with tabs[4]:
+if st.session_state.page == "📈 Analysis":
+    
+    
     def generate_insights(df, indicator):
         top = df.sort_values(indicator, ascending=False).iloc[0]
         bottom = df.sort_values(indicator, ascending=True).iloc[0]
@@ -1030,9 +959,7 @@ if "global_indicator" not in st.session_state:
 # -------------------------
 # POLICY (ADVANCED)
 # -------------------------
-with tabs[5]:
-    if "global_indicator" not in st.session_state:
-        st.session_state.global_indicator = "Household_Income"
+if st.session_state.page == "⚙️ Policy":
     st.header("⚙️ Policy Intelligence Dashboard")
 
     # -------------------------
@@ -1227,13 +1154,13 @@ with tabs[5]:
     use_container_width=True,
     key=f"policy_chart_{st.session_state.year}"
 )
-with tabs[6]:
+if st.session_state.page == "🧠 Quiz":
     st.header("🧠 Assessment & Quiz")
 
     score = 0
 
     q1 = st.radio(
-        "1. Which sampling method ensures representation across counties?",
+        "Which method ensures representation across counties?",
         ["Simple Random", "Stratified", "Cluster", "Systematic"]
     )
 
@@ -1241,7 +1168,7 @@ with tabs[6]:
         score += 1
 
     q2 = st.radio(
-        "2. If a policy reduces unemployment, what should happen?",
+        "If unemployment decreases, what happens?",
         ["Increase", "Decrease", "Stay same"]
     )
 
@@ -1249,7 +1176,7 @@ with tabs[6]:
         score += 1
 
     q3 = st.radio(
-        "3. Which map best shows regional inequality?",
+        "Best map for inequality?",
         ["Bar chart", "Choropleth map", "Line chart"]
     )
 
@@ -1257,15 +1184,4 @@ with tabs[6]:
         score += 1
 
     if st.button("Submit Quiz"):
-        st.success(f"Your Score: {score}/3")
-
-        if score == 3:
-            st.balloons()
-        elif score == 2:
-            st.info("Good job! Review one concept.")
-        else:
-            st.warning("Revise the modules and try again.")
-
-
-
-
+        st.success(f"Score: {score}/3")
