@@ -6,7 +6,9 @@ from core.state import init_state
 from ui.home import show_home
 
 from ui.sidebar import sidebar_nav
+from core.state import init_state
 
+init_state()
 
 
 page = sidebar_nav()
