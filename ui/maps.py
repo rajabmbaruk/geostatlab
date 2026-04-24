@@ -55,23 +55,19 @@ def show_maps(df, geojson=None):
     # -------------------------
     # MAP BUILDER
     # -------------------------
-    def build_map(data, column):
-        m = folium.Map(location=[0.5, 37.8], zoom_start=6)
+    def build_map(data, column, key_suffix=""):
+    m = folium.Map(location=[0.5, 37.8], zoom_start=6)
 
-        if geojson is None:
-            st.warning("GeoJSON missing — map borders disabled.")
-            return m
+    folium.Choropleth(
+        geo_data=geojson,
+        data=data,
+        columns=["County", column],
+        key_on="feature.properties.NAME_1",
+        fill_color="YlOrRd",
+        legend_name=column + key_suffix
+    ).add_to(m)
 
-        folium.Choropleth(
-            geo_data=geojson,
-            data=data,
-            columns=["County", column],
-            key_on="feature.properties.NAME_1",
-            fill_color="YlOrRd",
-            legend_name=column
-        ).add_to(m)
-
-        return m
+    return m
 
     # -------------------------
     # POLICY SIMULATION
