@@ -32,7 +32,7 @@ from data.processor import build_panel
 from ui.sidebar import sidebar_nav
 
 from core.state import init_state
-init_state()
+init_state(years)
 import sys
 import os
 
