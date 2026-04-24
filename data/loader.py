@@ -1,26 +1,38 @@
-from pathlib import Path
+# data/loader.py
 import pandas as pd
+import os
+from data.knbs_generator import generate_knbs_dataset
+from data.validator import validate_dataset
 
-from core.panel import generate_panel
-from core.validate import validate_dataset
+DATA_PATH = "data/geostatlab_data.csv"
 
-BASE = Path(__file__).resolve().parent.parent
 
 def load_data():
-    path = BASE / "assets" / "geostatlab_base.csv"
+    """
+    Loads dataset if available.
+    Otherwise generates KNBS-style synthetic panel data.
+    """
 
-    if not path.exists():
-        raise FileNotFoundError(f"Missing dataset: {path}")
+    if os.path.exists(DATA_PATH):
+        df = pd.read_csv(DATA_PATH)
+    else:
+        df = generate_knbs_dataset()
+        os.makedirs("data", exist_ok=True)
+        df.to_csv(DATA_PATH, index=False)
 
-    df_base = pd.read_csv(path)
-
-    # Generate panel
-    df = generate_panel(df_base)
-
-    # Validate
-    valid, messages = validate_dataset(df)
-
-    if not valid:
-        raise ValueError(f"Dataset validation failed: {messages}")
+    # Validate before returning
+    validate_dataset(df)
 
     return df
+
+
+def load_geojson():
+    path = "data/kenya_counties.geojson"
+
+    if not os.path.exists(path):
+        raise FileNotFoundError(
+            "Missing geojson file: kenya_counties.geojson"
+        )
+
+    with open(path, "r", encoding="utf-8") as f:
+        return json.load(f)
