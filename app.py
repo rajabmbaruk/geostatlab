@@ -1,3 +1,4 @@
+init_state(years)   # MUST be first
 import streamlit as st
 
 from data.loader import load_data, load_geojson
@@ -6,7 +7,7 @@ from ui.home import show_home
 
 from ui.sidebar import sidebar_nav
 
-init_state(years)   # MUST be first
+
 
 page = sidebar_nav()
 
