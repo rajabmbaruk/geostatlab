@@ -104,26 +104,30 @@ def quick_actions():
     st.markdown("---")
     st.markdown("## 🚀 Quick Start")
 
+    def go(page: str, role: str | None = None):
+        st.session_state.page = page
+        if role:
+            st.session_state.role = role
+        st.rerun()
+
     col1, col2, col3, col4 = st.columns(4)
 
     with col1:
-        if st.button("🗺️ Maps", key="home_maps"):
-            st.session_state.page = "🗺️ Maps"
+        if st.button("🗺️ Maps", key="home_maps", use_container_width=True):
+            go("🗺️ Maps")
 
     with col2:
-        if st.button("📈 Analysis", key="home_analysis"):
-            st.session_state.page = "📈 Analysis"
+        if st.button("📈 Analysis", key="home_analysis", use_container_width=True):
+            go("📈 Analysis")
 
     with col3:
-        if st.button("⚙️ Policy", key="home_policy"):
-            st.session_state.page = "⚙️ Policy"
+        if st.button("⚙️ Policy", key="home_policy", use_container_width=True):
+            go("⚙️ Policy", role="Policy Maker")
 
     with col4:
-        if st.button("🧭 Policy Maps", key="home_policy_maps"):
-            st.session_state.page = "🗺️ Maps"
-            st.session_state.role = "Policy Maker"
-
-
+        if st.button("🧭 Policy Maps", key="home_policy_maps", use_container_width=True):
+            go("🗺️ Maps", role="Policy Maker")
+            
 # -------------------------
 # POLICY MAPS PREVIEW
 # -------------------------
