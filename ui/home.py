@@ -131,7 +131,7 @@ def show_home(df=None):
 
     st.title("🌍 GeoStatLab – Policy Intelligence Dashboard")
 
-    role_selector()
+   
 
     st.markdown("Interactive Spatial Statistics & Policy Simulation Platform")
 
@@ -141,14 +141,7 @@ def show_home(df=None):
     col2.metric("📅 Years", "2018–2024")
     col3.metric("🧠 Modules", "5 + Quiz")
 
-    # ONBOARDING
-    onboarding()
-
-    # ROLE CONTENT
-    role_dashboard()
-
-    # QUICK ACTIONS
-    quick_actions()
+    
 
     st.markdown("---")
     st.caption("GeoStatLab | KNBS-style Policy Intelligence Dashboard")
