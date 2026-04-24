@@ -108,11 +108,19 @@ def show_maps(df, geojson=None):
 
     with col1:
         st.subheader("📍 Baseline")
-        st_folium(build_map(df_year, indicator), height=400)
+        st_folium(
+            build_map(df_year, indicator),
+            height=400,
+            key=f"baseline_map_{year}_{indicator}"
+        )
 
     with col2:
         st.subheader("📍 Policy Impact")
-        st_folium(build_map(df_policy, indicator), height=400)
+        st_folium(
+            build_map(df_policy, indicator),
+            height=400,
+            key=f"policy_map_{year}_{indicator}"
+        )
 
     # -------------------------
     # IMPACT ANALYSIS
