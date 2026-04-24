@@ -42,7 +42,7 @@ def show_analysis(df: pd.DataFrame):
         return
 
     if "Year" not in df.columns:
-        st.error("Missing required column: Year")
+        st.error("Missing Year column")
         return
 
     # FILTER DATA
