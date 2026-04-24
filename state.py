@@ -1,6 +1,13 @@
 import streamlit as st
+from config import DEFAULT_YEAR
 
-def init_state(years):
+def init_state():
+    if "year" not in st.session_state:
+        st.session_state.year = DEFAULT_YEAR
+
+    if "active_tab" not in st.session_state:
+        st.session_state.active_tab = 0
+        
     if "year" not in st.session_state:
         st.session_state.year = max(years)
 
