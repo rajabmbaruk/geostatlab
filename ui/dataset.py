@@ -1,7 +1,49 @@
 import streamlit as st
 import pandas as pd
 
+import streamlit as st
+import pandas as pd
+
 def show_dataset(df):
+
+    st.header("📊 Dataset Explorer")
+
+    if df is None or df.empty:
+        st.error("Dataset is empty or not loaded properly.")
+        return
+
+    # SAFETY CHECK (fix your crash)
+    if "Year" not in df.columns:
+        st.error("Column 'Year' missing. Check dataset schema.")
+        st.write(df.columns)
+        return
+
+    col1, col2 = st.columns(2)
+
+    with col1:
+        year = st.selectbox("Year", sorted(df["Year"].unique()))
+
+    with col2:
+        county = st.multiselect(
+            "County",
+            sorted(df["County"].unique())
+        )
+
+    filtered = df[df["Year"] == year]
+
+    if county:
+        filtered = filtered[filtered["County"].isin(county)]
+
+    st.dataframe(filtered, use_container_width=True)
+
+    st.download_button(
+        "Download Data",
+        filtered.to_csv(index=False),
+        "dataset.csv",
+        "text/csv"
+    )
+    
+def show_dataset1(df):
     st.title("📊 Dataset Explorer")
 
     # -------------------------
