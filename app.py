@@ -7,6 +7,10 @@ from ui.sidebar import sidebar_nav
 
 from state import init_state
 init_state()
+import sys
+import os
+
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 if st.session_state.get("presentation_mode", False):
 
