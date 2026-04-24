@@ -1,5 +1,5 @@
 import streamlit as st
-
+st.sidebar.toggle("🎤 Presentation Mode", key="presentation_mode")
 SLIDES = [
     ("GeoStatLab", "Policy intelligence using KNBS-style data"),
     ("Problem", "Data is fragmented and not spatially visualized"),
@@ -12,3 +12,9 @@ def next_slide():
 
 def current_slide():
     return SLIDES[st.session_state.slide_index]
+
+if st.session_state.presentation_mode:
+    import time
+    time.sleep(3)
+    st.session_state.slide_index += 1
+    st.rerun()
