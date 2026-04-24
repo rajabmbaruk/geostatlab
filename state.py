@@ -15,3 +15,19 @@ def get_year():
 
 def set_year(year):
     st.session_state.year = year
+
+
+def init_state():
+    defaults = {
+        "presentation_mode": False,
+        "year": 2024,
+        "active_tab": 0,
+        "playing": False,
+        "show_onboarding": False,
+        "onboarding_step": 0,
+    }
+
+    for k, v in defaults.items():
+        if k not in st.session_state:
+            st.session_state[k] = v
+
