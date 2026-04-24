@@ -1,28 +1,18 @@
 import streamlit as st
-try:
-    import config
-    DEFAULT_YEAR = config.DEFAULT_YEAR
-except Exception:
-    DEFAULT_YEAR = 2024
+DEFAULTS = {
+    "year": 2024,
+    "active_page": "Home",
+    "presentation_mode": False,
+    "slide_index": 0,
+    "playing": False,
+    "selected_county": None,
+}
 
-import streamlit as st
-
-def init_state(years):
-    defaults = {
-        "year": max(years),
-        "playing": False,
-        "active_tab": 0,
-        "role": "Analyst",
-        "show_onboarding": True,
-        "onboarding_step": 0,
-        "presentation_mode": False,
-        "slide_index": 0,
-    }
-
-    for key, value in defaults.items():
+def init_state():
+    """Safe idempotent initializer (NO arguments)."""
+    for key, value in DEFAULTS.items():
         if key not in st.session_state:
-            st.session_state[key] = value
-            
+            st.session_state[key] = value            
 
     if "active_tab" not in st.session_state:
         st.session_state.active_tab = 0
