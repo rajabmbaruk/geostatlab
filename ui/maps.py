@@ -17,6 +17,16 @@ def build_map(df, column, geojson):
 
     return m
 
+indicator = st.selectbox(
+    "Select Indicator",
+    [
+        "Household_Income",
+        "Poverty_Rate",
+        "Agricultural_Output",
+        "Education_Level",
+        "Unemployment_Rate"
+    ]
+)
 
 def show_maps(df, geojson, year, indicator):
     st.header("🗺️ Maps")
