@@ -8,6 +8,12 @@ from ui.dataset import show_dataset
 # INIT FIRST (CRITICAL)
 init_state()
 
+if "global_indicator" not in st.session_state:
+    st.session_state.global_indicator = "Household_Income"
+
+if "year" not in st.session_state:
+    st.session_state.year = 2024
+
 df = load_data()
 geojson = load_geojson()
 
