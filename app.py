@@ -915,8 +915,8 @@ for i in smart_insights(df_year):
 
 st.markdown(generate_insights(df_year, indicator))
 
-    if "global_indicator" not in st.session_state:
-        st.session_state.global_indicator = "Household_Income"
+if "global_indicator" not in st.session_state:
+    st.session_state.global_indicator = "Household_Income"
     st.header("📊 County Ranking Analysis")
 
     # -------------------------
