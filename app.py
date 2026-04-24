@@ -5,6 +5,8 @@ from data.processor import build_panel
 from state import init_state
 from ui.sidebar import sidebar_nav
 
+from state import init_state
+init_state()
 
 if st.session_state.get("presentation_mode", False):
 
