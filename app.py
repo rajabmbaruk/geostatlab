@@ -33,7 +33,7 @@ elif page == "Maps":
     from ui.maps import show_maps
     from data.loader import load_geojson
         
-        geojson = load_geojson()
+    geojson = load_geojson()
         
         show_maps(
             df=df,
