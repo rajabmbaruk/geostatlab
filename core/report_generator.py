@@ -1,9 +1,17 @@
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer
 from reportlab.lib.styles import getSampleStyleSheet
 from datetime import datetime
+import pandas as pd
 
+    
 def generate_report(df, year, indicator, insights, filename="GeoStatLab_Report.pdf"):
-
+    summary = {
+        "Year": year,
+        "Indicator": indicator,
+        "Mean": df[indicator].mean(),
+        "Max": df[indicator].max(),
+        "Min": df[indicator].min()
+    }
     doc = SimpleDocTemplate(filename)
     styles = getSampleStyleSheet()
     story = []
@@ -49,7 +57,7 @@ def generate_report(df, year, indicator, insights, filename="GeoStatLab_Report.p
             styles["Italic"]
         )
     )
-
+    return pd.DataFrame([summary])
     doc.build(story)
 
     return filename
