@@ -1,21 +1,16 @@
 import pandas as pd
-import os
+from pathlib import Path
 
-BASE_DIR = os.path.dirname(os.path.dirname(__file__))
+BASE = Path(__file__).resolve().parent.parent
+DATA_PATH = BASE / "assets" / "geostatlab_data.csv"
+GEO_PATH = BASE / "assets" / "kenya_counties.geojson"
 
 def load_data():
-    path = os.path.join(BASE_DIR, "data", "geostatlab_data.csv")
-    if not os.path.exists(path):
-        raise FileNotFoundError(f"Missing dataset: {path}")
-    return pd.read_csv(path)
+    if not DATA_PATH.exists():
+        raise FileNotFoundError(f"Missing dataset: {DATA_PATH}")
+    return pd.read_csv(DATA_PATH)
 
 def load_geojson():
-    path = os.path.join(BASE_DIR, "data", "kenya_counties.geojson")
-    if not os.path.exists(path):
-        raise FileNotFoundError(f"Missing geojson: {path}")
-    with open(path, "r", encoding="utf-8") as f:
-        return f.read()
-
-    with open(path, "r", encoding="utf-8") as f:
-        return json.load(f)
-        
+    if not GEO_PATH.exists():
+        raise FileNotFoundError(f"Missing geojson: {GEO_PATH}")
+    return GEO_PATH.read_text()
