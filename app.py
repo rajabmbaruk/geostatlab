@@ -15,7 +15,7 @@ df = load_data()
 geojson = load_geojson()
 
 # SIDEBAR ONLY NAV
-sidebar_nav()
+
 
 # ROUTER
 tabs = st.session_state.active_tab
