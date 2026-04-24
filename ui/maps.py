@@ -3,71 +3,41 @@ import folium
 from streamlit_folium import st_folium
 
 
-def show_maps(df, geojson=None):
-    """
-    GeoStatLab Map Module
-    Choropleth + policy comparison
-    """
-
-    st.header("🗺️ Spatial Analysis Dashboard")
-
-    # -------------------------
-    # VALIDATION
-    # -------------------------
-    if df is None or df.empty:
-        st.error("Dataset not loaded.")
-        return
-
-    required = ["County", "Year"]
-    for c in required:
-        if c not in df.columns:
-            st.error(f"Missing column: {c}")
-            return
-
-    # -------------------------
-    # YEAR FILTER
-    # -------------------------
-    year = st.slider(
-        "Select Year",
-        int(df["Year"].min()),
-        int(df["Year"].max()),
-        int(df["Year"].max()),
-        key="maps_year"
-    )
-
-    df_year = df[df["Year"] == year]
-
-    # -------------------------
-    # INDICATOR SELECTION
-    # -------------------------
-    indicator = st.selectbox(
-        "Select Indicator",
-        [
-            "Household_Income",
-            "Poverty_Rate",
-            "Agricultural_Output",
-            "Education_Level",
-            "Unemployment_Rate"
-        ],
-        key="maps_indicator"
-    )
-
-    # -------------------------
-    # MAP BUILDER
-    # -------------------------
-    def build_map(data, column, key_suffix=""):
+def build_map(df, column, geojson):
     m = folium.Map(location=[0.5, 37.8], zoom_start=6)
 
     folium.Choropleth(
         geo_data=geojson,
-        data=data,
+        data=df,
         columns=["County", column],
         key_on="feature.properties.NAME_1",
         fill_color="YlOrRd",
-        legend_name=column + key_suffix
+        legend_name=column
     ).add_to(m)
 
     return m
+
+
+def show_maps(df, geojson, year):
+    st.header("🗺️ Maps")
+
+    df_year = df[df["Year"] == year]
+
+    col1, col2 = st.columns(2)
+
+    with col1:
+        st.subheader("Baseline")
+        m1 = build_map(df_year, "Household_Income", geojson)
+        st_folium(m1, key=f"base_{year}")
+
+    with col2:
+        st.subheader("Policy")
+        df_policy = df_year.copy()
+        df_policy["Household_Income"] *= 1.1
+
+        m2 = build_map(df_policy, "Household_Income", geojson)
+        st_folium(m2, key=f"policy_{year}")
+        
 
     # -------------------------
     # POLICY SIMULATION
