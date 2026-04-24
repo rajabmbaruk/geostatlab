@@ -25,6 +25,14 @@ def load_data():
 
     return df
 
+    df.columns = df.columns.str.strip()
+    
+    # normalize naming (CRITICAL FIX)
+    df.columns = [
+        c.strip().title().replace(" ", "_")
+        for c in df.columns
+    ]
+
 
 def load_geojson():
     path = "data/kenya_counties.geojson"
