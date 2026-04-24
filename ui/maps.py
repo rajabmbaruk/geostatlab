@@ -18,7 +18,7 @@ def build_map(df, column, geojson):
     return m
 
 
-def show_maps(df, geojson, year):
+def show_maps(df, geojson, year, indicator):
     st.header("🗺️ Maps")
 
     df_year = df[df["Year"] == year]
