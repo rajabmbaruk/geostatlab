@@ -1,17 +1,17 @@
 import pandas as pd
-import json
-import os
-
 import os
 import json
 import streamlit as st
 
+def load_data():
+    path = os.path.join(os.path.dirname(__file__), "geostatlab_data.csv")
+    return pd.read_csv(path)
+
 def load_geojson():
-    base_dir = os.path.dirname(__file__)
-    path = os.path.join(base_dir, "kenya_counties.geojson")
+    path = os.path.join(os.path.dirname(__file__), "kenya_counties.geojson")
 
     if not os.path.exists(path):
-        st.error("GeoJSON file missing. Check deployment assets.")
+        st.error("Missing GeoJSON file")
         return {}
 
     with open(path, "r", encoding="utf-8") as f:
