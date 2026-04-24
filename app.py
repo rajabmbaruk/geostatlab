@@ -1,6 +1,27 @@
 import streamlit as st
 
 from data.loader import load_data, load_geojson
+from core.state import init_state
+from ui.home import show_home
+from ui.sidebar import sidebar_nav
+
+# INIT
+years = list(range(2018, 2025))
+init_state(years)
+
+df = load_data()
+geojson = load_geojson()
+
+# SIDEBAR ONLY NAV
+sidebar_nav()
+
+# ROUTER
+tabs = st.session_state.active_tab
+
+if tabs == 0:
+    show_home(df)
+
+from data.loader import load_data, load_geojson
 from data.processor import build_panel
 
 from ui.sidebar import sidebar_nav
