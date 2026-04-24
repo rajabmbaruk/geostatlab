@@ -6,7 +6,7 @@ from ui.home import show_home
 
 from ui.sidebar import sidebar_nav
 
-init_state()   # MUST be first
+init_state(years)   # MUST be first
 
 page = sidebar_nav()
 
