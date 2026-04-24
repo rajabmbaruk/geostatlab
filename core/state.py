@@ -43,18 +43,26 @@ def set_year(year):
     st.session_state.year = year
 
 
-def init_state():
+import streamlit as st
+
+def init_state(years):
+    default_year = max(years)
+
     defaults = {
-        "presentation_mode": False,
-        "year": 2024,
-        "active_tab": 0,
+        "year": default_year,
         "playing": False,
-        "show_onboarding": False,
+        "active_tab": 0,
+        "role": "Analyst",
+        "show_onboarding": True,
         "onboarding_step": 0,
+        "presentation_mode": False,
+        "slide_index": 0,
     }
 
-    for k, v in defaults.items():
-        if k not in st.session_state:
-            st.session_state[k] = v
+    for key, value in defaults.items():
+        if key not in st.session_state:
+            st.session_state[key] = value
+
+
 
 
