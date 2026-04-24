@@ -8,28 +8,22 @@ REQUIRED_COLUMNS = [
 ]
 
 
-def validate_dataset(df: pd.DataFrame):
-    """
-    Runs validation ONLY when called (NOT on import)
-    """
+def validate_dataset(df):
+    required = ["County", "Year"]
 
-    df.columns = df.columns.str.strip()
+    for col in required:
+        if col not in df.columns:
+            raise ValueError(f"Missing required column: {col}")
 
-    missing = [c for c in REQUIRED_COLUMNS if c not in df.columns]
+    # FIX: safe duplication check
+    if df.duplicated(subset=required).any():
+        raise ValueError("Duplicate County-Year records found")
 
-    if missing:
-        raise ValueError(
-            f"""
-❌ DATA VALIDATION FAILED
-
-Missing columns: {missing}
-
-Available columns:
-{list(df.columns)}
-"""
-        )
-
-    if df[["County", "Year"]].duplicated().any():
-        raise ValueError("Duplicate County-Year records detected")
+    # ensure types
+    if not df["Year"].dtype.kind in "i":
+        df["Year"] = df["Year"].astype(int)
 
     return True
+
+
+
