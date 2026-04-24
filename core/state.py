@@ -1,12 +1,14 @@
 import streamlit as st
-DEFAULTS = {
-    "year": 2024,
-    "active_page": "Home",
-    "presentation_mode": False,
-    "slide_index": 0,
-    "playing": False,
-    "selected_county": None,
-}
+defaults = {
+        "active_tab": "Home",
+        "year": 2024,
+        "presentation_mode": False,
+        "slide_index": 0,
+    }
+
+    for k, v in defaults.items():
+        if k not in st.session_state:
+            st.session_state[k] = v
 
 def init_state():
     """Safe idempotent initializer (NO arguments)."""
