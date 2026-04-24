@@ -3,9 +3,7 @@ import pandas as pd
 import folium
 from streamlit_folium import st_folium
 
-from ui.maps import show_analytics_panel
 
-show_analytics_panel(df)
 # -----------------------------
 # SAFE STATE ACCESS
 # -----------------------------
