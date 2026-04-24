@@ -1,12 +1,31 @@
 import streamlit as st
+import pandas as pd
 import folium
 from streamlit_folium import st_folium
 
 
-def build_map(df, column, geojson):
-    import folium
+# -----------------------------
+# SAFE STATE ACCESS
+# -----------------------------
+def get_state(key, default=None):
+    return st.session_state.get(key, default)
 
-    m = folium.Map(location=[0.5, 37.8], zoom_start=6)
+
+# -----------------------------
+# CORE MAP ENGINE
+# -----------------------------
+def build_map(df: pd.DataFrame, column: str, geojson: dict):
+    """
+    Creates a choropleth map (KNBS-style spatial visualization)
+    """
+
+    if geojson is None:
+        raise ValueError("GeoJSON data is required for map rendering.")
+
+    if column not in df.columns:
+        raise ValueError(f"Column '{column}' not found in dataset.")
+
+    m = folium.Map(location=[0.5, 37.8], zoom_start=6, tiles="cartodbpositron")
 
     folium.Choropleth(
         geo_data=geojson,
@@ -14,110 +33,103 @@ def build_map(df, column, geojson):
         columns=["County", column],
         key_on="feature.properties.NAME_1",
         fill_color="YlOrRd",
-        legend_name=column
+        fill_opacity=0.7,
+        line_opacity=0.2,
+        legend_name=column,
+        highlight=True
     ).add_to(m)
 
     return m
 
 
+# -----------------------------
+# MAIN UI FUNCTION
+# -----------------------------
+def show_maps(df: pd.DataFrame, geojson: dict, year: int, indicator: str):
+    """
+    Main maps dashboard (baseline vs policy simulation)
+    """
 
-def show_maps(df, geojson, year, indicator):
-    st.header("🗺️ Maps")
+    st.header("🗺️ Spatial Analysis Dashboard")
 
-    df_year = df[df["Year"] == year]
+    # -----------------------------
+    # VALIDATION
+    # -----------------------------
+    if df is None or df.empty:
+        st.error("Dataset is empty.")
+        return
 
+    if "Year" not in df.columns:
+        st.error("Missing required column: Year")
+        return
+
+    if "County" not in df.columns:
+        st.error("Missing required column: County")
+        return
+
+    # -----------------------------
+    # FILTER DATA
+    # -----------------------------
+    df_year = df[df["Year"] == year].copy()
+
+    if df_year.empty:
+        st.warning(f"No data available for year {year}")
+        return
+
+    # -----------------------------
+    # LAYOUT
+    # -----------------------------
     col1, col2 = st.columns(2)
 
-    indicator = st.selectbox(
-        "Select Indicator",
-        [
-            "Household_Income",
-            "Poverty_Rate",
-            "Agricultural_Output",
-            "Education_Level",
-            "Unemployment_Rate"
-        ]
-    )
-
+    # -----------------------------
+    # BASELINE MAP
+    # -----------------------------
     with col1:
-        st.subheader("Baseline")
-        m1 = build_map(df_year, "Household_Income", geojson)
-        st_folium(m1, key=f"base_{year}")
+        st.subheader("📍 Baseline Scenario")
 
+        try:
+            map_base = build_map(df_year, indicator, geojson)
+            st_folium(
+                map_base,
+                key=f"base_{year}_{indicator}"
+            )
+        except Exception as e:
+            st.error(f"Map error: {str(e)}")
+
+    # -----------------------------
+    # POLICY SIMULATION MAP
+    # -----------------------------
     with col2:
-        st.subheader("Policy")
+        st.subheader("📈 Policy Scenario")
+
         df_policy = df_year.copy()
-        df_policy["Household_Income"] *= 1.1
 
-        m2 = build_map(df_policy, "Household_Income", geojson)
-        st_folium(m2, key=f"policy_{year}")
-        
+        # simple simulation (placeholder logic)
+        if indicator in df_policy.columns and pd.api.types.is_numeric_dtype(df_policy[indicator]):
+            df_policy[indicator] = df_policy[indicator] * 1.1
 
-    # -------------------------
-    # POLICY SIMULATION
-    # -------------------------
-    st.subheader("⚙️ Policy Simulation")
+        try:
+            map_policy = build_map(df_policy, indicator, geojson)
+            st_folium(
+                map_policy,
+                key=f"policy_{year}_{indicator}"
+            )
+        except Exception as e:
+            st.error(f"Policy map error: {str(e)}")
 
-    policy = st.selectbox(
-        "Policy Type",
-        ["None", "Agriculture Boost", "Education Investment", "Jobs Program"],
-        key="maps_policy"
-    )
+    # -----------------------------
+    # INSIGHT PANEL
+    # -----------------------------
+    st.subheader("🧠 Spatial Insights")
 
-    intensity = st.slider(
-        "Intensity (%)",
-        0, 50, 10,
-        key="maps_intensity"
-    )
+    if indicator in df_year.columns:
+        base_mean = df_year[indicator].mean()
+        policy_mean = df_policy[indicator].mean()
 
-    df_policy = df_year.copy()
+        col1, col2 = st.columns(2)
 
-    if policy == "Agriculture Boost":
-        df_policy["Agricultural_Output"] *= (1 + intensity / 100)
+        col1.metric("Baseline Avg", f"{base_mean:.2f}")
+        col2.metric("Policy Avg", f"{policy_mean:.2f}", delta=f"{policy_mean - base_mean:.2f}")
 
-    elif policy == "Education Investment":
-        df_policy["Education_Level"] *= (1 + intensity / 100)
-
-    elif policy == "Jobs Program":
-        df_policy["Unemployment_Rate"] *= (1 - intensity / 100)
-
-    # -------------------------
-    # MAP DISPLAY
-    # -------------------------
-    col1, col2 = st.columns(2)
-
-    with col1:
-        st.subheader("📍 Baseline")
-        st_folium(
-            build_map(df_year, indicator),
-            height=400,
-            key=f"baseline_map_{year}_{indicator}"
-        )
-
-    with col2:
-        st.subheader("📍 Policy Impact")
-        st_folium(
-            build_map(df_policy, indicator),
-            height=400,
-            key=f"policy_map_{year}_{indicator}"
-        )
-
-    # -------------------------
-    # IMPACT ANALYSIS
-    # -------------------------
-    st.subheader("📊 Impact Summary")
-
-    diff = df_policy[indicator] - df_year[indicator]
-
-    summary = df_year.copy()
-    summary["Change"] = diff
-
-    col1, col2 = st.columns(2)
-
-    with col1:
-        st.success("Top Improvements")
-        st.dataframe(summary.sort_values("Change", ascending=False).head(5))
-
-    with col2:
-        st.error("Largest Declines")
-        st.dataframe(summary.sort_values("Change").head(5))
+    else:
+        st.info("Select a valid numeric indicator for analysis.")
