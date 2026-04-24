@@ -18,7 +18,9 @@ h1, h2, h3 {
 }
 </style>
 """, unsafe_allow_html=True)
-
+if "year" not in st.session_state:
+    st.session_state.year = 2024
+    
 # GLOBAL YEAR CONTROL (top of app)
 st.sidebar.markdown("## 📅 Global Year")
 years = list(range(2018, 2025))
@@ -29,8 +31,7 @@ global_year = st.sidebar.slider(
     st.session_state.year,
     key="global_year"
 )
-if "year" not in st.session_state:
-    st.session_state.year = 2024
+
 st.session_state.year = global_year
 # -------------------------
 # CONFIG
