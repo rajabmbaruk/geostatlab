@@ -1,5 +1,7 @@
 import streamlit as st
-from config import DEFAULT_YEAR
+import config
+
+DEFAULT_YEAR = config.DEFAULT_YEAR
 
 def init_state():
     if "year" not in st.session_state:
