@@ -1,14 +1,19 @@
+import streamlit as st
+
+DEFAULT_STATE = {
+    "year": 2024,
+    "active_page": "Home",
+    "role": "Analyst",
+    "presentation_mode": False,
+    "slide_index": 0
+}
+
 def init_state():
-    import streamlit as st
+    for key, value in DEFAULT_STATE.items():
+        if key not in st.session_state:
+            st.session_state[key] = value
 
-    defaults = {
-        "year": 2024,
-        "playing": False,
-        "presentation_mode": False,
-        "slide_index": 0,
-        "role": "Analyst"
-    }
 
-    for k, v in defaults.items():
-        if k not in st.session_state:
-            st.session_state[k] = v
+def set_page(page: str):
+    st.session_state.active_page = page
+
