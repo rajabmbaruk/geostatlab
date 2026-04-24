@@ -5,18 +5,19 @@ PAGES = ["Home", "Dataset", "Survey", "Maps", "Analysis", "Policy", "Quiz"]
 def sidebar_nav():
     st.sidebar.title("🧭 Navigation")
 
-    # IMPORTANT: single source of truth
-    if "active_page" not in st.session_state:
-        st.session_state.active_page = "Home"
+    # safe default
+    current = st.session_state.get("active_page", "Home")
 
+    # IMPORTANT: NEVER reuse radio across reruns without stable key logic
     selected = st.sidebar.radio(
         "Go to",
         PAGES,
-        index=PAGES.index(st.session_state.active_page),
-        key="main_nav_radio"   # 🔥 MUST be unique
+        index=PAGES.index(current),
+        key="__nav_radio__"   # 🔥 SINGLE GLOBAL UNIQUE KEY
     )
 
     st.session_state.active_page = selected
+
     return selected
 
 st.sidebar.markdown("## 🎤 Demo Mode")
