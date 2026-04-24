@@ -1,16 +1,16 @@
 import streamlit as st
 
 def sidebar_nav():
+    with st.sidebar:
+        st.title("GeoStatLab")
 
-    st.sidebar.title("🌍 GeoStatLab")
+        nav_key = f"main_nav_{st.session_state.get('presentation_mode', False)}"
 
-    page = st.sidebar.radio( "Navigate",
-        ["Home", "Dataset", "Survey", "Maps", "Analysis", "Policy", "Quiz"],
-        key=f"main_navigation_{st.session_state.get('role','default')}"
-    )
-
-    st.sidebar.markdown("---")
-    st.sidebar.info("KNBS-style Policy Intelligence System")
+        page = st.radio(
+            "Navigate",
+            ["Home", "Dataset", "Survey", "Maps", "Analysis", "Policy", "Quiz"],
+            key=nav_key
+        )
 
     return page
 
