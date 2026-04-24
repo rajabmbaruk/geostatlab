@@ -9,7 +9,7 @@ def sidebar_nav():
         page = st.radio(
             "Navigate",
             ["Home", "Dataset", "Survey", "Maps", "Analysis", "Policy", "Quiz"],
-            key=nav_key
+            key=get_nav_key()
         )
 
     return page
