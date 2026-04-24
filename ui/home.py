@@ -131,7 +131,7 @@ def show_home(df=None):
 
     st.title("🌍 GeoStatLab – Policy Intelligence Dashboard")
 
-   onboarding()
+   
 
     st.markdown("Interactive Spatial Statistics & Policy Simulation Platform")
 
